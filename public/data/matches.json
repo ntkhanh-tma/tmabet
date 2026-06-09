@@ -1,122 +1,362 @@
 [
   {
-    "Date": "2026-06-11",
-    "Time": "20:00",
-    "HomeTeam": "Mexico",
-    "AwayTeam": "Uruguay",
-    "HomeScore": "?",
-    "AwayScore": "?",
+    "Date": "2026-06-12",
+    "Time": "02:00",
+    "Team A": "Mexico",
+    "Team B": "South Africa",
+    "Group": "Group A",
+    "Bet Ratio (1/X/2)": "8/13 | 29/10 | 15/4",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-12",
+    "Time": "09:00",
+    "Team A": "South Korea",
+    "Team B": "Czech Republic",
+    "Group": "Group A",
+    "Bet Ratio (1/X/2)": "10/3 | 5/2 | 3/4",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-13",
+    "Time": "02:00",
+    "Team A": "Canada",
+    "Team B": "Bosnia and Herzegovina",
     "Group": "Group B",
-    "Stage": "Group Stage"
-  },
-  {
-    "Date": "2026-06-11",
-    "Time": "23:00",
-    "HomeTeam": "United States",
-    "AwayTeam": "Panama",
-    "HomeScore": "?",
-    "AwayScore": "?",
-    "Group": "Group A",
-    "Stage": "Group Stage"
-  },
-  {
-    "Date": "2026-06-12",
-    "Time": "17:00",
-    "HomeTeam": "Canada",
-    "AwayTeam": "Bolivia",
-    "HomeScore": "?",
-    "AwayScore": "?",
-    "Group": "Group A",
-    "Stage": "Group Stage"
-  },
-  {
-    "Date": "2026-06-12",
-    "Time": "20:00",
-    "HomeTeam": "Argentina",
-    "AwayTeam": "Chile",
-    "HomeScore": "?",
-    "AwayScore": "?",
-    "Group": "Group C",
-    "Stage": "Group Stage"
+    "Bet Ratio (1/X/2)": "15/4 | 12/5 | 3/4",
+    "Result": "?"
   },
   {
     "Date": "2026-06-13",
-    "Time": "17:00",
-    "HomeTeam": "Brazil",
-    "AwayTeam": "Ecuador",
-    "HomeScore": "?",
-    "AwayScore": "?",
+    "Time": "08:00",
+    "Team A": "United States",
+    "Team B": "Paraguay",
     "Group": "Group D",
-    "Stage": "Group Stage"
-  },
-  {
-    "Date": "2026-06-13",
-    "Time": "20:00",
-    "HomeTeam": "France",
-    "AwayTeam": "Belgium",
-    "HomeScore": "?",
-    "AwayScore": "?",
-    "Group": "Group H",
-    "Stage": "Group Stage"
+    "Bet Ratio (1/X/2)": "23/20 | 11/5 | 12/5",
+    "Result": "?"
   },
   {
     "Date": "2026-06-14",
-    "Time": "17:00",
-    "HomeTeam": "Germany",
-    "AwayTeam": "Switzerland",
-    "HomeScore": "?",
-    "AwayScore": "?",
-    "Group": "Group I",
-    "Stage": "Group Stage"
+    "Time": "02:00",
+    "Team A": "Qatar",
+    "Team B": "Switzerland",
+    "Group": "Group B",
+    "Bet Ratio (1/X/2)": "4/1 | 13/5 | 4/7",
+    "Result": "?"
   },
   {
     "Date": "2026-06-14",
-    "Time": "20:00",
-    "HomeTeam": "Spain",
-    "AwayTeam": "Netherlands",
-    "HomeScore": "?",
-    "AwayScore": "?",
-    "Group": "Group G",
-    "Stage": "Group Stage"
+    "Time": "05:00",
+    "Team A": "Brazil",
+    "Team B": "Morocco",
+    "Group": "Group C",
+    "Bet Ratio (1/X/2)": "2/9 | 5/1 | 10/1",
+    "Result": "?"
   },
   {
     "Date": "2026-06-14",
-    "Time": "23:00",
-    "HomeTeam": "Portugal",
-    "AwayTeam": "Croatia",
-    "HomeScore": "?",
-    "AwayScore": "?",
+    "Time": "08:00",
+    "Team A": "Haiti",
+    "Team B": "Scotland",
+    "Group": "Group C",
+    "Bet Ratio (1/X/2)": "11/2 | 16/5 | 2/5",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-14",
+    "Time": "11:00",
+    "Team A": "Australia",
+    "Team B": "Türkiye",
+    "Group": "Group D",
+    "Bet Ratio (1/X/2)": "13/8 | 9/4 | 3/2",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-15",
+    "Time": "00:00",
+    "Team A": "Germany",
+    "Team B": "Curaçao",
+    "Group": "Group E",
+    "Bet Ratio (1/X/2)": "1/33 | 18/1 | 40/1",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-15",
+    "Time": "03:00",
+    "Team A": "Netherlands",
+    "Team B": "Japan",
+    "Group": "Group E",
+    "Bet Ratio (1/X/2)": "8/15 | 3/1 | 9/2",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-15",
+    "Time": "06:00",
+    "Team A": "Ivory Coast",
+    "Team B": "Ecuador",
     "Group": "Group F",
-    "Stage": "Group Stage"
+    "Bet Ratio (1/X/2)": "7/4 | 21/10 | 13/10",
+    "Result": "?"
   },
   {
     "Date": "2026-06-15",
-    "Time": "17:00",
-    "HomeTeam": "England",
-    "AwayTeam": "Serbia",
-    "HomeScore": "?",
-    "AwayScore": "?",
-    "Group": "Group J",
-    "Stage": "Group Stage"
+    "Time": "09:00",
+    "Team A": "Sweden",
+    "Team B": "Tunisia",
+    "Group": "Group F",
+    "Bet Ratio (1/X/2)": "4/7 | 13/5 | 4/1",
+    "Result": "?"
   },
   {
     "Date": "2026-06-15",
-    "Time": "20:00",
-    "HomeTeam": "Morocco",
-    "AwayTeam": "Senegal",
-    "HomeScore": "?",
-    "AwayScore": "?",
-    "Group": "Group K",
-    "Stage": "Group Stage"
+    "Time": "23:00",
+    "Team A": "Spain",
+    "Team B": "Cape Verde",
+    "Group": "Group G",
+    "Bet Ratio (1/X/2)": "1/14 | 7/1 | 22/1",
+    "Result": "?"
   },
   {
     "Date": "2026-06-16",
-    "Time": "17:00",
-    "HomeTeam": "Japan",
-    "AwayTeam": "South Korea",
-    "HomeScore": "?",
-    "AwayScore": "?",
+    "Time": "02:00",
+    "Team A": "Belgium",
+    "Team B": "Egypt",
+    "Group": "Group G",
+    "Bet Ratio (1/X/2)": "4/9 | 3/1 | 11/2",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-16",
+    "Time": "05:00",
+    "Team A": "Saudi Arabia",
+    "Team B": "Uruguay",
+    "Group": "Group H",
+    "Bet Ratio (1/X/2)": "6/1 | 16/5 | 4/11",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-16",
+    "Time": "08:00",
+    "Team A": "Iran",
+    "Team B": "New Zealand",
+    "Group": "Group H",
+    "Bet Ratio (1/X/2)": "8/11 | 12/5 | 7/2",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-17",
+    "Time": "02:00",
+    "Team A": "France",
+    "Team B": "Senegal",
+    "Group": "Group I",
+    "Bet Ratio (1/X/2)": "2/7 | 4/1 | 8/1",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-17",
+    "Time": "05:00",
+    "Team A": "Iraq",
+    "Team B": "Norway",
+    "Group": "Group I",
+    "Bet Ratio (1/X/2)": "7/1 | 18/5 | 3/10",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-17",
+    "Time": "08:00",
+    "Team A": "Argentina",
+    "Team B": "Algeria",
+    "Group": "Group J",
+    "Bet Ratio (1/X/2)": "1/8 | 6/1 | 14/1",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-17",
+    "Time": "11:00",
+    "Team A": "Austria",
+    "Team B": "Jordan",
+    "Group": "Group J",
+    "Bet Ratio (1/X/2)": "1/5 | 9/2 | 10/1",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-18",
+    "Time": "00:00",
+    "Team A": "Portugal",
+    "Team B": "DR Congo",
+    "Group": "Group K",
+    "Bet Ratio (1/X/2)": "1/7 | 5/1 | 12/1",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-18",
+    "Time": "03:00",
+    "Team A": "England",
+    "Team B": "Croatia",
+    "Group": "Group K",
+    "Bet Ratio (1/X/2)": "8/13 | 13/5 | 4/1",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-18",
+    "Time": "06:00",
+    "Team A": "Ghana",
+    "Team B": "Panama",
     "Group": "Group L",
-    "Stage": "Group Stage"
+    "Bet Ratio (1/X/2)": "4/6 | 5/2 | 18/5",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-18",
+    "Time": "09:00",
+    "Team A": "Uzbekistan",
+    "Team B": "Colombia",
+    "Group": "Group L",
+    "Bet Ratio (1/X/2)": "9/2 | 13/5 | 8/15",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-18",
+    "Time": "23:00",
+    "Team A": "Czech Republic",
+    "Team B": "South Africa",
+    "Group": "Group A",
+    "Bet Ratio (1/X/2)": "4/6 | 12/5 | 18/5",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-19",
+    "Time": "02:00",
+    "Team A": "Switzerland",
+    "Team B": "Bosnia and Herzegovina",
+    "Group": "Group B",
+    "Bet Ratio (1/X/2)": "4/7 | 13/5 | 4/1",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-19",
+    "Time": "05:00",
+    "Team A": "Canada",
+    "Team B": "Qatar",
+    "Group": "Group B",
+    "Bet Ratio (1/X/2)": "4/9 | 3/1 | 11/2",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-19",
+    "Time": "08:00",
+    "Team A": "Mexico",
+    "Team B": "South Korea",
+    "Group": "Group A",
+    "Bet Ratio (1/X/2)": "11/10 | 9/4 | 21/10",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-20",
+    "Time": "02:00",
+    "Team A": "United States",
+    "Team B": "Australia",
+    "Group": "Group D",
+    "Bet Ratio (1/X/2)": "8/15 | 11/4 | 9/2",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-20",
+    "Time": "05:00",
+    "Team A": "Scotland",
+    "Team B": "Morocco",
+    "Group": "Group C",
+    "Bet Ratio (1/X/2)": "6/4 | 9/4 | 13/8",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-20",
+    "Time": "07:30",
+    "Team A": "Brazil",
+    "Team B": "Haiti",
+    "Group": "Group C",
+    "Bet Ratio (1/X/2)": "1/50 | 25/1 | 50/1",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-20",
+    "Time": "10:00",
+    "Team A": "Türkiye",
+    "Team B": "Paraguay",
+    "Group": "Group D",
+    "Bet Ratio (1/X/2)": "10/11 | 9/4 | 5/2",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-21",
+    "Time": "00:00",
+    "Team A": "Netherlands",
+    "Team B": "Sweden",
+    "Group": "Group E",
+    "Bet Ratio (1/X/2)": "11/10 | 9/4 | 21/10",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-21",
+    "Time": "03:00",
+    "Team A": "Germany",
+    "Team B": "Ivory Coast",
+    "Group": "Group E",
+    "Bet Ratio (1/X/2)": "2/9 | 9/2 | 9/1",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-21",
+    "Time": "07:00",
+    "Team A": "Ecuador",
+    "Team B": "Curaçao",
+    "Group": "Group F",
+    "Bet Ratio (1/X/2)": "1/4 | 4/1 | 8/1",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-21",
+    "Time": "11:00",
+    "Team A": "Tunisia",
+    "Team B": "Japan",
+    "Group": "Group F",
+    "Bet Ratio (1/X/2)": "4/1 | 12/5 | 8/13",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-21",
+    "Time": "23:00",
+    "Team A": "Spain",
+    "Team B": "Saudi Arabia",
+    "Group": "Group G",
+    "Bet Ratio (1/X/2)": "1/20 | 10/1 | 28/1",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-22",
+    "Time": "02:00",
+    "Team A": "Belgium",
+    "Team B": "Iran",
+    "Group": "Group G",
+    "Bet Ratio (1/X/2)": "1/3 | 7/2 | 7/1",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-22",
+    "Time": "05:00",
+    "Team A": "Uruguay",
+    "Team B": "Cape Verde",
+    "Group": "Group H",
+    "Bet Ratio (1/X/2)": "1/4 | 4/1 | 9/1",
+    "Result": "?"
+  },
+  {
+    "Date": "2026-06-22",
+    "Time": "08:00",
+    "Team A": "New Zealand",
+    "Team B": "Egypt",
+    "Group": "Group H",
+    "Bet Ratio (1/X/2)": "3/1 | 12/5 | 4/5",
+    "Result": "?"
   }
 ]
