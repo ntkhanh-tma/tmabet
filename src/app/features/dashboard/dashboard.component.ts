@@ -50,13 +50,30 @@ export class DashboardComponent implements OnInit {
     return this.data?.leaderboard[0]?.totalPoints ?? 1;
   }
 
-  /** Columns shown in the bets table depend on which matches are resolved. */
+  /** Columns shown in the bets table depend on which match picks are present in the data. */
   get betColumns(): string[] {
     const cols = ['player'];
-    if (this.data?.betMatch1) cols.push('match1');
-    if (this.data?.betMatch2) cols.push('match2');
+    if (this.data?.betMatch1 || this.hasMatch1Bets) cols.push('match1');
+    if (this.data?.betMatch2 || this.hasMatch2Bets) cols.push('match2');
     cols.push('modifier');
     return cols;
+  }
+
+  get hasMatch1Bets(): boolean {
+    return this.data?.bets.some((b) => b.match1Bet) ?? false;
+  }
+
+  get hasMatch2Bets(): boolean {
+    return this.data?.bets.some((b) => b.match2Bet) ?? false;
+  }
+
+  /** Returns true when the given match is one of the two current bet matches (I2/I3 or I4/I5). */
+  isBetMatch(match: Match): boolean {
+    if (!this.data) return false;
+    return (
+      (this.data.betMatch1 !== null && this.data.betMatch1.id === match.id) ||
+      (this.data.betMatch2 !== null && this.data.betMatch2.id === match.id)
+    );
   }
 
   getFlag(team: string): string {

@@ -19,7 +19,7 @@
         <mat-card-content>
           <div class="matches-grid">
             @for (match of data.featuringMatches; track match.id) {
-              <div class="match-card" [style.background-color]="match.groupColor">
+              <div class="match-card" [class.match-card--featured]="isBetMatch(match)" [style.background-color]="match.groupColor">
                 <div class="match-card__header">
                   <mat-chip [highlighted]="match.status === 'live'" [color]="getStatusColor(match.status)">
                     @if (match.status === 'live') {
@@ -27,7 +27,12 @@
                     }
                     {{ match.status | uppercase }}
                   </mat-chip>
-                  <span class="match-card__group">{{ match.group }}</span>
+                  <div class="match-card__header-right">
+                    @if (isBetMatch(match)) {
+                      <mat-icon class="match-card__bet-icon" matTooltip="Bets open for this match">star</mat-icon>
+                    }
+                    <span class="match-card__group">{{ match.group }}</span>
+                  </div>
                 </div>
 
                 <div class="match-card__teams">
@@ -131,6 +136,20 @@
                     }
                   </td>
                 </ng-container>
+              } @else if (hasMatch1Bets) {
+                <ng-container matColumnDef="match1">
+                  <th mat-header-cell *matHeaderCellDef>Pick 1</th>
+                  <td mat-cell *matCellDef="let bet">
+                    @if (bet.match1Bet) {
+                      <span class="bet-chip">
+                        <span class="fi fi-{{ getFlag(bet.match1Bet) }} bets-table__flag"></span>
+                        {{ bet.match1Bet }}
+                      </span>
+                    } @else {
+                      <span class="bets-table__empty">–</span>
+                    }
+                  </td>
+                </ng-container>
               }
 
               @if (data.betMatch2) {
@@ -143,6 +162,20 @@
                   <td mat-cell *matCellDef="let bet">
                     @if (bet.match2Bet) {
                       <span class="bet-chip" [class.bet-chip--home]="bet.match2Bet === data.betMatch2!.homeTeam">
+                        <span class="fi fi-{{ getFlag(bet.match2Bet) }} bets-table__flag"></span>
+                        {{ bet.match2Bet }}
+                      </span>
+                    } @else {
+                      <span class="bets-table__empty">–</span>
+                    }
+                  </td>
+                </ng-container>
+              } @else if (hasMatch2Bets) {
+                <ng-container matColumnDef="match2">
+                  <th mat-header-cell *matHeaderCellDef>Pick 2</th>
+                  <td mat-cell *matCellDef="let bet">
+                    @if (bet.match2Bet) {
+                      <span class="bet-chip">
                         <span class="fi fi-{{ getFlag(bet.match2Bet) }} bets-table__flag"></span>
                         {{ bet.match2Bet }}
                       </span>

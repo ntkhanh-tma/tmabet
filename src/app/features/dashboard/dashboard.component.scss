@@ -64,10 +64,24 @@
     margin-bottom: 12px;
   }
 
+  &__header-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
   &__group {
     font-size: 11px;
     color: var(--mat-sys-on-surface-variant);
     font-weight: 600;
+  }
+
+  &__bet-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #ffd700;
+    animation: shine 1.4s ease-in-out infinite;
   }
 
   &__teams {
@@ -255,4 +269,22 @@
   background: var(--mat-sys-secondary-container);
   padding: 2px 8px;
   border-radius: 8px;
+}
+
+// ── Featured match highlight ───────────────────────────────────────────────────
+
+.match-card--featured {
+  border: 1px solid rgba(255, 215, 0, 0.6);
+  box-shadow: 0 0 0 1px rgba(255, 215, 0, 0.3);
+  animation: card-glow 1.4s ease-in-out infinite;
+}
+
+@keyframes card-glow {
+  0%, 100% { box-shadow: 0 0 4px 1px rgba(255, 215, 0, 0.25); }
+  50%       { box-shadow: 0 0 14px 4px rgba(255, 215, 0, 0.55); }
+}
+
+@keyframes shine {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.65; transform: scale(1.2); }
 }
