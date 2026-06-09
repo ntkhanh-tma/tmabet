@@ -10,8 +10,43 @@
 
   &__left {
     display: flex;
+    align-items: center;
+    min-width: 180px;
+  }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__user-chip {
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  &__logout-btn {
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  &__login-btn {
+    font-size: 13px;
+  }
+
+  &__center {
+    display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 2px;
+    flex: 1;
   }
 
   &__greeting {
@@ -29,6 +64,8 @@
     display: flex;
     align-items: center;
     gap: 16px;
+    min-width: 180px;
+    justify-content: flex-end;
   }
 
   &__addicts-label {

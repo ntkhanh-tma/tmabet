@@ -9,7 +9,8 @@
  *   SPREADSHEET_ID         – The spreadsheet ID from the sheet URL
  */
 
-import { writeFileSync, mkdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -72,6 +73,23 @@ function rowsToObjects(rows) {
   });
 }
 
+/**
+ * Writes `content` to `filePath` only when its SHA-256 hash differs from the
+ * existing file (or the file does not yet exist). Returns true when a write
+ * actually occurred.
+ */
+function writeIfChanged(filePath, content) {
+  const newHash = createHash('sha256').update(content).digest('hex');
+  if (existsSync(filePath)) {
+    const oldHash = createHash('sha256').update(readFileSync(filePath, 'utf8')).digest('hex');
+    if (oldHash === newHash) {
+      return false;
+    }
+  }
+  writeFileSync(filePath, content, 'utf8');
+  return true;
+}
+
 let hasError = false;
 
 // Fetch full tabs as object arrays (Matches, WC2026 full, WC2026-Result)
@@ -81,8 +99,12 @@ for (const [sheetName, fileName] of SHEETS) {
     const rows = await fetchRange(`${sheetName}!A:ZZ`);
     const data = rowsToObjects(rows);
     const outPath = join(OUT_DIR, fileName);
-    writeFileSync(outPath, JSON.stringify(data, null, 2), 'utf8');
-    console.log(`✅  Wrote ${data.length} rows → ${outPath}`);
+    const changed = writeIfChanged(outPath, JSON.stringify(data, null, 2));
+    if (changed) {
+      console.log(`✅  Wrote ${data.length} rows → ${outPath}`);
+    } else {
+      console.log(`⏭️   No change detected, skipping write → ${outPath}`);
+    }
   } catch (err) {
     console.error(`❌  Failed to fetch "${sheetName}": ${err.message}`);
     hasError = true;
@@ -98,8 +120,12 @@ try {
     console.log(`   • ${range} → ${wc2026Data[key].length} rows`);
   }
   const outPath = join(OUT_DIR, 'wc2026-data.json');
-  writeFileSync(outPath, JSON.stringify(wc2026Data, null, 2), 'utf8');
-  console.log(`✅  Wrote wc2026-data.json`);
+  const changed = writeIfChanged(outPath, JSON.stringify(wc2026Data, null, 2));
+  if (changed) {
+    console.log(`✅  Wrote wc2026-data.json`);
+  } else {
+    console.log(`⏭️   No change detected, skipping write → wc2026-data.json`);
+  }
 } catch (err) {
   console.error(`❌  Failed to fetch WC2026 named ranges: ${err.message}`);
   hasError = true;

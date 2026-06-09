@@ -5,11 +5,11 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { GoogleSheetsService } from '../../core/services/google-sheets.service';
-import { DashboardData, Match } from '../../core/models/dashboard.model';
+import { AuthService } from '../../core/services/auth.service';
+import { DashboardData, Match, BetRow } from '../../core/models/dashboard.model';
 import { getCountryCode } from '../../core/utils/country-flags';
 
 @Component({
@@ -22,7 +22,6 @@ import { getCountryCode } from '../../core/utils/country-flags';
     MatTableModule,
     MatIconModule,
     MatButtonModule,
-    MatDividerModule,
     MatProgressBarModule,
     MatTooltipModule,
   ],
@@ -31,6 +30,7 @@ import { getCountryCode } from '../../core/utils/country-flags';
 })
 export class DashboardComponent implements OnInit {
   private readonly sheetsService = inject(GoogleSheetsService);
+  readonly auth = inject(AuthService);
 
   data: DashboardData | null = null;
   loading = true;
@@ -48,6 +48,23 @@ export class DashboardComponent implements OnInit {
 
   getMaxPoints(): number {
     return this.data?.leaderboard[0]?.totalPoints ?? 1;
+  }
+
+  /** Returns true when this leaderboard entry belongs to the logged-in player. */
+  isMe(playerName: string): boolean {
+    const me = this.auth.username();
+    return !!me && me.trim().toLowerCase() === playerName.trim().toLowerCase();
+  }
+
+  /** The bet row for the currently logged-in player, or null. */
+  get myBet(): BetRow | null {
+    const me = this.auth.username();
+    if (!me || !this.data) return null;
+    return (
+      this.data.bets.find(
+        (b) => b.playerName.trim().toLowerCase() === me.trim().toLowerCase()
+      ) ?? null
+    );
   }
 
   /** Columns shown in the bets table depend on which match picks are present in the data. */

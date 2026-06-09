@@ -1,6 +1,25 @@
 <mat-toolbar class="header">
   <div class="header__left">
-    <span class="header__greeting">{{ greeting }}, Champion! ⚽</span>
+    @if (auth.username()) {
+      <div class="header__user">
+        <mat-chip class="header__user-chip" (click)="openLogin()">
+          <mat-icon matChipAvatar>account_circle</mat-icon>
+          {{ auth.username() }}
+        </mat-chip>
+        <button mat-icon-button matTooltip="Log out" class="header__logout-btn" (click)="logout()">
+          <mat-icon>logout</mat-icon>
+        </button>
+      </div>
+    } @else {
+      <button mat-stroked-button class="header__login-btn" (click)="openLogin()">
+        <mat-icon>login</mat-icon>
+        Sign in
+      </button>
+    }
+  </div>
+
+  <div class="header__center">
+    <span class="header__greeting">{{ greeting }}, {{ auth.username() ?? 'Champion' }}! ⚽</span>
     <span class="header__date">{{ currentDate | date: 'EEEE, MMMM d, y' }}</span>
   </div>
 

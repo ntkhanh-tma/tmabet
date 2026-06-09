@@ -170,6 +170,23 @@
     &--top3 {
       background: var(--mat-sys-secondary-container);
     }
+
+    &--me {
+      background: var(--mat-sys-primary-container);
+      outline: 2px solid var(--mat-sys-primary);
+    }
+  }
+
+  &__me-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    background: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+    border-radius: 6px;
+    padding: 1px 6px;
+    margin-left: 6px;
+    vertical-align: middle;
   }
 
   &__rank {
@@ -243,6 +260,47 @@
     vertical-align: middle;
     margin: 0 2px;
   }
+
+  &__row--me td {
+    background: var(--mat-sys-primary-container);
+    font-weight: 700;
+  }
+}
+
+// ── My Bets card ───────────────────────────────────────────────────────────────
+
+.dashboard__card--my-bets {
+  background: var(--mat-sys-primary-container);
+  outline: 2px solid var(--mat-sys-primary);
+}
+
+.my-bets {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  &__match-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--mat-sys-on-surface);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__arrow {
+    color: var(--mat-sys-primary);
+    font-weight: 700;
+    font-size: 16px;
+  }
 }
 
 .bet-chip {
@@ -259,6 +317,13 @@
   &--home {
     background: var(--mat-sys-primary-container);
     color: var(--mat-sys-on-primary-container);
+  }
+
+  &--mine {
+    background: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+    font-size: 14px;
+    padding: 5px 12px;
   }
 }
 
