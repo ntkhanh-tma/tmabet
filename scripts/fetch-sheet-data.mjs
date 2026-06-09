@@ -28,8 +28,6 @@ const BASE_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID
 
 /** Sheets to fetch as object arrays: [tabName, outputFileName] */
 const SHEETS = [
-  ['WC2026', 'wc2026.json'],
-  ['WC2026-Result', 'wc2026-result.json'],
   ['Matches', 'matches.json'],
 ];
 

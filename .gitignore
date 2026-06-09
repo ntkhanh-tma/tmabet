@@ -11,6 +11,13 @@
 npm-debug.log
 yarn-error.log
 
+# Worker
+/worker/node_modules
+/worker/.wrangler
+
+# Secrets — never commit production environment file (contains Apps Script URL)
+src/environments/environment.prod.ts
+
 # IDEs and editors
 .idea/
 .project

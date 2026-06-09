@@ -21,6 +21,5 @@ export class SidebarComponent {
   navItems: NavItem[] = [
     { label: 'Dashboard', icon: 'dashboard', route: '/' },
     { label: 'Matches', icon: 'sports_soccer', route: '/matches' },
-    { label: 'Leaderboard', icon: 'leaderboard', route: '/leaderboard' },
   ];
 }
