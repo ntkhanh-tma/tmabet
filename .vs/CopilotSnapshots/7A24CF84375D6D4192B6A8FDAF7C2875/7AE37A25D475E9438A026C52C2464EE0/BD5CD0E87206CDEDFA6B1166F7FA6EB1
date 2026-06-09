@@ -1,0 +1,360 @@
+﻿import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of, forkJoin, catchError } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import {
+  DashboardData,
+  Match,
+  MatchDay,
+  SheetMatch,
+  LeaderboardEntry,
+  BetRow,
+} from '../models/dashboard.model';
+import { getCountryCode, getGroupColor } from '../utils/country-flags';
+
+@Injectable({ providedIn: 'root' })
+export class GoogleSheetsService {
+  private readonly http = inject(HttpClient);
+
+  private readonly apiKey = 'AIzaSyAD9--6nWYRTNhBFGga0KF9GTDgAp_Z57M';
+  private readonly spreadsheetId = 'Y1TkO9t_lMRXhzfMOcD6istvi8_7c2opqc_gwZBB6ME6A';
+  private readonly baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${this.spreadsheetId}/values`;
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Public API
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  /**
+   * Returns the count of players who have placed bets (non-empty rows in Bets range).
+   * Used by the header label.
+   */
+  getBetCount(): Observable<number> {
+    return this.getSheetRange('WC2026!Bets').pipe(
+      map((rows) => rows.filter((r) => r[0]?.trim()).length)
+    );
+  }
+
+  /** Builds the full dashboard data from multiple sheet ranges in parallel. */
+  getDashboardData(): Observable<DashboardData> {
+    return forkJoin({
+      openMatchTeams: this.getSheetRange('WC2026!I2:I5'),
+      betsRows: this.getSheetRange('WC2026!Bets'),
+      playersRows: this.getSheetRange('WC2026!Players'),
+      pointsRows: this.getSheetRange('WC2026!Points'),
+      matchDays: this.getMatches(),
+    }).pipe(
+      map(({ openMatchTeams, betsRows, playersRows, pointsRows, matchDays }) => {
+        const allMatches = matchDays.flatMap((d) => d.matches);
+
+        // ── Featuring matches: next 4 from today 00:00 ────────────────────────
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0);
+        const featuringMatches = allMatches
+          .filter((m) => new Date(m.matchDate) >= todayStart)
+          .sort((a, b) => `${a.matchDate}T${a.matchTime}`.localeCompare(`${b.matchDate}T${b.matchTime}`))
+          .slice(0, 4);
+
+        // ── Parse Bets range ──────────────────────────────────────────────────
+        const bets: BetRow[] = betsRows
+          .filter((r) => r[0]?.trim())
+          .map((r) => ({
+            playerName: r[0] ?? '',
+            match1Bet: r[1] ?? '',
+            match2Bet: r[2] ?? '',
+            modifier: r[3] ?? '',
+          }));
+
+        // ── Leaderboard: Players range ordered by Points range descending ─────
+        const players = playersRows.flat().filter(Boolean);
+        const pointsMap = new Map<string, number>();
+        for (const r of pointsRows.filter((r) => r[0]?.trim())) {
+          pointsMap.set(r[0].trim().toLowerCase(), Number(r[1]) || 0);
+        }
+        const leaderboard: LeaderboardEntry[] = players
+          .map((name) => ({
+            rank: 0,
+            playerName: name,
+            totalPoints: pointsMap.get(name.trim().toLowerCase()) ?? 0,
+          }))
+          .sort((a, b) => b.totalPoints - a.totalPoints)
+          .map((e, i) => ({ ...e, rank: i + 1 }));
+
+        // ── Resolve I2:I5 against the flat matches list ───────────────────────
+        // openMatchTeams is a column: [[I2],[I3],[I4],[I5]]
+        const t = openMatchTeams.map((r) => (r[0] ?? '').trim());
+        const match1Home = t[0] ?? '';
+        const match1Away = t[1] ?? '';
+        const match2Home = t[2] ?? '';
+        const match2Away = t[3] ?? '';
+
+        const findMatch = (home: string, away: string): Match | null => {
+          if (!home || !away) return null;
+          const h = home.toLowerCase();
+          const a = away.toLowerCase();
+          return allMatches.find(
+            (m) =>
+              m.homeTeam.toLowerCase() === h && m.awayTeam.toLowerCase() === a
+          ) ?? null;
+        };
+
+        const betMatch1 = findMatch(match1Home, match1Away);
+        const betMatch2 = findMatch(match2Home, match2Away);
+
+        return { featuringMatches, leaderboard, betMatch1, betMatch2, bets };
+      })
+    );
+  }
+
+  /**
+   * Returns all matches grouped by date ascending.
+   * Reads from the cached JSON file first; if the file is empty or missing,
+   * falls back to the Matches sheet via the API.
+   */
+  getMatches(): Observable<MatchDay[]> {
+    return this.http.get<SheetMatch[]>('data/matches.json').pipe(
+      catchError(() => of([] as SheetMatch[])),
+      switchMap((rows) => {
+        if (rows && rows.length > 0) {
+          return of(this.sheetRowsToMatchDays(rows));
+        }
+        // JSON empty or missing — call the API directly
+        return this.getSheetRange('Matches').pipe(
+          map((rawRows) => {
+            if (rawRows.length === 0) return [];
+            const [headers, ...dataRows] = rawRows;
+            const objects: SheetMatch[] = dataRows.map((row) => {
+              const obj: Record<string, string> = {};
+              headers.forEach((h, i) => (obj[h] = row[i] ?? ''));
+              return obj as unknown as SheetMatch;
+            });
+            return this.sheetRowsToMatchDays(objects);
+          })
+        );
+      })
+    );
+  }
+
+  getSheetRange(range: string): Observable<string[][]> {
+    const url = `${this.baseUrl}/${encodeURIComponent(range)}?key=${this.apiKey}`;
+    return this.http.get<{ values: string[][] }>(url).pipe(
+      map((res) => res.values ?? []),
+      catchError(() => of([]))
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Helpers
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  private sheetRowsToMatchDays(rows: SheetMatch[]): MatchDay[] {
+    const matches: Match[] = rows.map((row, i) => {
+      const homeScore = row.HomeScore && row.HomeScore !== '?' ? Number(row.HomeScore) : undefined;
+      const awayScore = row.AwayScore && row.AwayScore !== '?' ? Number(row.AwayScore) : undefined;
+      const hasResult = homeScore !== undefined && awayScore !== undefined;
+
+      return {
+        id: `sheet-${i}`,
+        homeTeam: row.HomeTeam,
+        awayTeam: row.AwayTeam,
+        homeFlag: getCountryCode(row.HomeTeam) ?? 'un',
+        awayFlag: getCountryCode(row.AwayTeam) ?? 'un',
+        matchDate: row.Date,
+        matchTime: row.Time,
+        group: row.Group || row.Stage || '',
+        groupColor: getGroupColor(row.Group || row.Stage || ''),
+        homeScore: hasResult ? homeScore : undefined,
+        awayScore: hasResult ? awayScore : undefined,
+        status: hasResult ? 'finished' : 'upcoming',
+      };
+    });
+
+    matches.sort((a, b) =>
+      `${a.matchDate}T${a.matchTime}`.localeCompare(`${b.matchDate}T${b.matchTime}`)
+    );
+
+    const dayMap = new Map<string, Match[]>();
+    for (const m of matches) {
+      const existing = dayMap.get(m.matchDate);
+      if (existing) existing.push(m);
+      else dayMap.set(m.matchDate, [m]);
+    }
+
+    return Array.from(dayMap.entries()).map(([date, dayMatches]) => ({ date, matches: dayMatches }));
+  }
+}
+
+
+@Injectable({ providedIn: 'root' })
+export class GoogleSheetsService {
+  private readonly http = inject(HttpClient);
+
+  private readonly apiKey = 'AIzaSyAD9--6nWYRTNhBFGga0KF9GTDgAp_Z57M';
+  private readonly spreadsheetId = 'Y1TkO9t_lMRXhzfMOcD6istvi8_7c2opqc_gwZBB6ME6A';
+  private readonly baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${this.spreadsheetId}/values`;
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Public API
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  /** Returns player names from the Players range in WC2026 sheet. */
+  getPlayers(): Observable<string[]> {
+    return this.getSheetRange('WC2026!Players').pipe(
+      map((rows) => rows.flat().filter(Boolean))
+    );
+  }
+
+  /** Builds the full dashboard data from multiple sheet ranges in parallel. */
+  getDashboardData(): Observable<DashboardData> {
+    return forkJoin({
+      matchRows: this.getSheetRange('WC2026!I2:I5'),
+      betsRows: this.getSheetRange('WC2026!Bets'),
+      pointsRows: this.getSheetRange('WC2026!Points'),
+      matchDays: this.getMatches(),
+    }).pipe(
+      map(({ matchRows, betsRows, pointsRows, matchDays }) => {
+        // ── Current open-bet matches from I2:I5 ───────────────────────────────
+        // I2 = match1 home, I3 = match1 away, I4 = match2 home, I5 = match2 away
+        const teams = matchRows.map((r) => r[0] ?? '').filter(Boolean);
+        const match1Home = teams[0] ?? '';
+        const match1Away = teams[1] ?? '';
+        const match2Home = teams[2] ?? '';
+        const match2Away = teams[3] ?? '';
+
+        // ── Parse Bets range ──────────────────────────────────────────────────
+        const bets: BetRow[] = betsRows
+          .filter((r) => r[0])
+          .map((r) => ({
+            playerName: r[0] ?? '',
+            match1Bet: r[1] ?? '',
+            match2Bet: r[2] ?? '',
+            modifier: r[3] ?? '',
+          }));
+
+        // ── Count bets per team ───────────────────────────────────────────────
+        const countBets = (team: string, col: 'match1Bet' | 'match2Bet') =>
+          bets.filter((b) => b[col].trim().toLowerCase() === team.trim().toLowerCase()).length;
+
+        const currentBetMatches: CurrentBetMatch[] = [];
+        if (match1Home && match1Away) {
+          currentBetMatches.push({
+            homeTeam: match1Home,
+            awayTeam: match1Away,
+            homeFlag: getCountryCode(match1Home) ?? 'un',
+            awayFlag: getCountryCode(match1Away) ?? 'un',
+            homeBets: countBets(match1Home, 'match1Bet'),
+            awayBets: countBets(match1Away, 'match1Bet'),
+          });
+        }
+        if (match2Home && match2Away) {
+          currentBetMatches.push({
+            homeTeam: match2Home,
+            awayTeam: match2Away,
+            homeFlag: getCountryCode(match2Home) ?? 'un',
+            awayFlag: getCountryCode(match2Away) ?? 'un',
+            homeBets: countBets(match2Home, 'match2Bet'),
+            awayBets: countBets(match2Away, 'match2Bet'),
+          });
+        }
+
+        // ── Parse Points range → leaderboard ─────────────────────────────────
+        const leaderboard: LeaderboardEntry[] = pointsRows
+          .filter((r) => r[0])
+          .map((r, i) => ({
+            rank: i + 1,
+            playerName: r[0] ?? '',
+            totalPoints: Number(r[1]) || 0,
+          }))
+          .sort((a, b) => b.totalPoints - a.totalPoints)
+          .map((e, i) => ({ ...e, rank: i + 1 }));
+
+        // ── Featuring matches: next 4 from today ─────────────────────────────
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0);
+
+        const allMatches = matchDays.flatMap((d) => d.matches);
+        const featuringMatches = allMatches
+          .filter((m) => new Date(m.matchDate) >= todayStart)
+          .sort((a, b) => `${a.matchDate}T${a.matchTime}`.localeCompare(`${b.matchDate}T${b.matchTime}`))
+          .slice(0, 4);
+
+        return { featuringMatches, leaderboard, currentBetMatches, bets };
+      })
+    );
+  }
+
+  /**
+   * Returns all matches grouped by date in ascending order.
+   * Reads from the cached JSON file first; falls back to the Matches sheet.
+   */
+  getMatches(): Observable<MatchDay[]> {
+    return this.http.get<SheetMatch[]>('data/matches.json').pipe(
+      catchError(() => of([] as SheetMatch[])),
+      switchMap((rows) => {
+        if (rows && rows.length > 0) {
+          return of(this.sheetRowsToMatchDays(rows));
+        }
+        return this.getSheetRange('Matches').pipe(
+          map((rawRows) => {
+            if (rawRows.length === 0) return [];
+            const [headers, ...dataRows] = rawRows;
+            const objects: SheetMatch[] = dataRows.map((row) => {
+              const obj: Record<string, string> = {};
+              headers.forEach((h, i) => (obj[h] = row[i] ?? ''));
+              return obj as unknown as SheetMatch;
+            });
+            return this.sheetRowsToMatchDays(objects);
+          })
+        );
+      })
+    );
+  }
+
+  getSheetRange(range: string): Observable<string[][]> {
+    const url = `${this.baseUrl}/${encodeURIComponent(range)}?key=${this.apiKey}`;
+    return this.http.get<{ values: string[][] }>(url).pipe(
+      map((res) => res.values ?? []),
+      catchError(() => of([]))
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Helpers
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  private sheetRowsToMatchDays(rows: SheetMatch[]): MatchDay[] {
+    const matches: Match[] = rows.map((row, i) => {
+      const homeScore = row.HomeScore && row.HomeScore !== '?' ? Number(row.HomeScore) : undefined;
+      const awayScore = row.AwayScore && row.AwayScore !== '?' ? Number(row.AwayScore) : undefined;
+      const hasResult = homeScore !== undefined && awayScore !== undefined;
+
+      return {
+        id: `sheet-${i}`,
+        homeTeam: row.HomeTeam,
+        awayTeam: row.AwayTeam,
+        homeFlag: getCountryCode(row.HomeTeam) ?? 'un',
+        awayFlag: getCountryCode(row.AwayTeam) ?? 'un',
+        matchDate: row.Date,
+        matchTime: row.Time,
+        group: row.Group || row.Stage || '',
+        groupColor: getGroupColor(row.Group || row.Stage || ''),
+        homeScore: hasResult ? homeScore : undefined,
+        awayScore: hasResult ? awayScore : undefined,
+        status: hasResult ? 'finished' : 'upcoming',
+      };
+    });
+
+    matches.sort((a, b) =>
+      `${a.matchDate}T${a.matchTime}`.localeCompare(`${b.matchDate}T${b.matchTime}`)
+    );
+
+    const dayMap = new Map<string, Match[]>();
+    for (const m of matches) {
+      const existing = dayMap.get(m.matchDate);
+      if (existing) existing.push(m);
+      else dayMap.set(m.matchDate, [m]);
+    }
+
+    return Array.from(dayMap.entries()).map(([date, dayMatches]) => ({ date, matches: dayMatches }));
+  }
+}
+

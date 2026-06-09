@@ -1,0 +1,412 @@
+﻿import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of, forkJoin, catchError } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import {
+  DashboardData,
+  Match,
+  MatchDay,
+  SheetMatch,
+  LeaderboardEntry,
+  BetRow,
+  CurrentBetMatch,
+} from '../models/dashboard.model';
+import { getCountryCode, getGroupColor } from '../utils/country-flags';
+
+@Injectable({ providedIn: 'root' })
+export class GoogleSheetsService {
+  private readonly http = inject(HttpClient);
+
+  private readonly apiKey = 'AIzaSyAD9--6nWYRTNhBFGga0KF9GTDgAp_Z57M';
+  private readonly spreadsheetId = 'Y1TkO9t_lMRXhzfMOcD6istvi8_7c2opqc_gwZBB6ME6A';
+  private readonly baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${this.spreadsheetId}/values`;
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Public API
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  /** Returns player names from the Players range in WC2026 sheet. */
+  getPlayers(): Observable<string[]> {
+    return this.getSheetRange('WC2026!Players').pipe(
+      map((rows) => rows.flat().filter(Boolean))
+    );
+  }
+
+  /** Builds the full dashboard data from multiple sheet ranges in parallel. */
+  getDashboardData(): Observable<DashboardData> {
+    return forkJoin({
+      matchRows: this.getSheetRange('WC2026!I2:I5'),
+      betsRows: this.getSheetRange('WC2026!Bets'),
+      pointsRows: this.getSheetRange('WC2026!Points'),
+      matchDays: this.getMatches(),
+    }).pipe(
+      map(({ matchRows, betsRows, pointsRows, matchDays }) => {
+        // ── Current open-bet matches from I2:I5 ───────────────────────────────
+        // I2 = match1 home, I3 = match1 away, I4 = match2 home, I5 = match2 away
+        const teams = matchRows.map((r) => r[0] ?? '').filter(Boolean);
+        const match1Home = teams[0] ?? '';
+        const match1Away = teams[1] ?? '';
+        const match2Home = teams[2] ?? '';
+        const match2Away = teams[3] ?? '';
+
+        // ── Parse Bets range ──────────────────────────────────────────────────
+        const bets: BetRow[] = betsRows
+          .filter((r) => r[0])
+          .map((r) => ({
+            playerName: r[0] ?? '',
+            match1Bet: r[1] ?? '',
+            match2Bet: r[2] ?? '',
+            modifier: r[3] ?? '',
+          }));
+
+        // ── Count bets per team ───────────────────────────────────────────────
+        const countBets = (team: string, col: 'match1Bet' | 'match2Bet') =>
+          bets.filter((b) => b[col].trim().toLowerCase() === team.trim().toLowerCase()).length;
+
+        const currentBetMatches: CurrentBetMatch[] = [];
+        if (match1Home && match1Away) {
+          currentBetMatches.push({
+            homeTeam: match1Home,
+            awayTeam: match1Away,
+            homeFlag: getCountryCode(match1Home) ?? 'un',
+            awayFlag: getCountryCode(match1Away) ?? 'un',
+            homeBets: countBets(match1Home, 'match1Bet'),
+            awayBets: countBets(match1Away, 'match1Bet'),
+          });
+        }
+        if (match2Home && match2Away) {
+          currentBetMatches.push({
+            homeTeam: match2Home,
+            awayTeam: match2Away,
+            homeFlag: getCountryCode(match2Home) ?? 'un',
+            awayFlag: getCountryCode(match2Away) ?? 'un',
+            homeBets: countBets(match2Home, 'match2Bet'),
+            awayBets: countBets(match2Away, 'match2Bet'),
+          });
+        }
+
+        // ── Parse Points range → leaderboard ─────────────────────────────────
+        const leaderboard: LeaderboardEntry[] = pointsRows
+          .filter((r) => r[0])
+          .map((r, i) => ({
+            rank: i + 1,
+            playerName: r[0] ?? '',
+            totalPoints: Number(r[1]) || 0,
+          }))
+          .sort((a, b) => b.totalPoints - a.totalPoints)
+          .map((e, i) => ({ ...e, rank: i + 1 }));
+
+        // ── Featuring matches: next 4 from today ─────────────────────────────
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0);
+
+        const allMatches = matchDays.flatMap((d) => d.matches);
+        const featuringMatches = allMatches
+          .filter((m) => new Date(m.matchDate) >= todayStart)
+          .sort((a, b) => `${a.matchDate}T${a.matchTime}`.localeCompare(`${b.matchDate}T${b.matchTime}`))
+          .slice(0, 4);
+
+        return { featuringMatches, leaderboard, currentBetMatches, bets };
+      })
+    );
+  }
+
+  /**
+   * Returns all matches grouped by date in ascending order.
+   * Reads from the cached JSON file first; falls back to the Matches sheet.
+   */
+  getMatches(): Observable<MatchDay[]> {
+    return this.http.get<SheetMatch[]>('data/matches.json').pipe(
+      catchError(() => of([] as SheetMatch[])),
+      switchMap((rows) => {
+        if (rows && rows.length > 0) {
+          return of(this.sheetRowsToMatchDays(rows));
+        }
+        return this.getSheetRange('Matches').pipe(
+          map((rawRows) => {
+            if (rawRows.length === 0) return [];
+            const [headers, ...dataRows] = rawRows;
+            const objects: SheetMatch[] = dataRows.map((row) => {
+              const obj: Record<string, string> = {};
+              headers.forEach((h, i) => (obj[h] = row[i] ?? ''));
+              return obj as unknown as SheetMatch;
+            });
+            return this.sheetRowsToMatchDays(objects);
+          })
+        );
+      })
+    );
+  }
+
+  getSheetRange(range: string): Observable<string[][]> {
+    const url = `${this.baseUrl}/${encodeURIComponent(range)}?key=${this.apiKey}`;
+    return this.http.get<{ values: string[][] }>(url).pipe(
+      map((res) => res.values ?? []),
+      catchError(() => of([]))
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Helpers
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  private sheetRowsToMatchDays(rows: SheetMatch[]): MatchDay[] {
+    const matches: Match[] = rows.map((row, i) => {
+      const homeScore = row.HomeScore && row.HomeScore !== '?' ? Number(row.HomeScore) : undefined;
+      const awayScore = row.AwayScore && row.AwayScore !== '?' ? Number(row.AwayScore) : undefined;
+      const hasResult = homeScore !== undefined && awayScore !== undefined;
+
+      return {
+        id: `sheet-${i}`,
+        homeTeam: row.HomeTeam,
+        awayTeam: row.AwayTeam,
+        homeFlag: getCountryCode(row.HomeTeam) ?? 'un',
+        awayFlag: getCountryCode(row.AwayTeam) ?? 'un',
+        matchDate: row.Date,
+        matchTime: row.Time,
+        group: row.Group || row.Stage || '',
+        groupColor: getGroupColor(row.Group || row.Stage || ''),
+        homeScore: hasResult ? homeScore : undefined,
+        awayScore: hasResult ? awayScore : undefined,
+        status: hasResult ? 'finished' : 'upcoming',
+      };
+    });
+
+    matches.sort((a, b) =>
+      `${a.matchDate}T${a.matchTime}`.localeCompare(`${b.matchDate}T${b.matchTime}`)
+    );
+
+    const dayMap = new Map<string, Match[]>();
+    for (const m of matches) {
+      const existing = dayMap.get(m.matchDate);
+      if (existing) existing.push(m);
+      else dayMap.set(m.matchDate, [m]);
+    }
+
+    return Array.from(dayMap.entries()).map(([date, dayMatches]) => ({ date, matches: dayMatches }));
+  }
+}
+
+
+@Injectable({ providedIn: 'root' })
+export class GoogleSheetsService {
+  private readonly http = inject(HttpClient);
+
+  // Replace with your Google Sheets API key and spreadsheet ID
+  private readonly apiKey = 'AIzaSyAD9--6nWYRTNhBFGga0KF9GTDgAp_Z57M';
+  private readonly spreadsheetId = 'Y1TkO9t_lMRXhzfMOcD6istvi8_7c2opqc_gwZBB6ME6A';
+  private readonly baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${this.spreadsheetId}/values`;
+
+  getDashboardData(): Observable<DashboardData> {
+    return of(this.getMockDashboardData());
+  }
+
+  getParticipants(): Observable<Participant[]> {
+    return of(this.getMockParticipants());
+  }
+
+  /**
+   * Returns upcoming matches grouped by date in ascending order.
+   * Reads from the cached JSON file first; if it's empty or missing,
+   * falls back to calling the Google Sheets API directly.
+   */
+  getMatches(): Observable<MatchDay[]> {
+    return this.http.get<SheetMatch[]>('data/matches.json').pipe(
+      catchError(() => of([] as SheetMatch[])),
+      switchMap((rows) => {
+        if (rows && rows.length > 0) {
+          return of(this.sheetRowsToMatchDays(rows));
+        }
+        return this.getSheetRange('Matches').pipe(
+          map((rawRows) => {
+            if (rawRows.length === 0) return [];
+            const [headers, ...dataRows] = rawRows;
+            const objects: SheetMatch[] = dataRows.map((row) => {
+              const obj: Record<string, string> = {};
+              headers.forEach((h, i) => (obj[h] = row[i] ?? ''));
+              return obj as unknown as SheetMatch;
+            });
+            return this.sheetRowsToMatchDays(objects);
+          })
+        );
+      })
+    );
+  }
+
+  getSheetRange(range: string): Observable<string[][]> {
+    const url = `${this.baseUrl}/${range}?key=${this.apiKey}`;
+    return this.http.get<{ values: string[][] }>(url).pipe(
+      map((res) => res.values ?? []),
+      catchError(() => of([]))
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Helpers
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  private sheetRowsToMatchDays(rows: SheetMatch[]): MatchDay[] {
+    const matches: Match[] = rows.map((row, i) => {
+      const homeScore = row.HomeScore && row.HomeScore !== '?' ? Number(row.HomeScore) : undefined;
+      const awayScore = row.AwayScore && row.AwayScore !== '?' ? Number(row.AwayScore) : undefined;
+      const hasResult = homeScore !== undefined && awayScore !== undefined;
+
+      return {
+        id: `sheet-${i}`,
+        homeTeam: row.HomeTeam,
+        awayTeam: row.AwayTeam,
+        homeFlag: getCountryCode(row.HomeTeam) ?? 'un',
+        awayFlag: getCountryCode(row.AwayTeam) ?? 'un',
+        matchDate: row.Date,
+        matchTime: row.Time,
+        group: row.Group || row.Stage || '',
+        groupColor: getGroupColor(row.Group || row.Stage || ''),
+        homeScore: hasResult ? homeScore : undefined,
+        awayScore: hasResult ? awayScore : undefined,
+        status: hasResult ? 'finished' : 'upcoming',
+      };
+    });
+
+    // Sort ascending by date then time
+    matches.sort((a, b) => {
+      const da = `${a.matchDate}T${a.matchTime}`;
+      const db = `${b.matchDate}T${b.matchTime}`;
+      return da.localeCompare(db);
+    });
+
+    // Group by date
+    const dayMap = new Map<string, Match[]>();
+    for (const m of matches) {
+      const existing = dayMap.get(m.matchDate);
+      if (existing) {
+        existing.push(m);
+      } else {
+        dayMap.set(m.matchDate, [m]);
+      }
+    }
+
+    return Array.from(dayMap.entries()).map(([date, dayMatches]) => ({
+      date,
+      matches: dayMatches,
+    }));
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Mock data
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  private getMockDashboardData(): DashboardData {
+    return {
+      featuringMatches: this.getMockMatches(),
+      leaderboard: this.getMockLeaderboard(),
+      recentResults: this.getMockResults(),
+      recentBets: this.getMockBets(),
+    };
+  }
+
+  private getMockMatches(): Match[] {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const addDays = (d: Date, n: number) => {
+      const r = new Date(d);
+      r.setDate(r.getDate() + n);
+      return r.toISOString().split('T')[0];
+    };
+
+    return [
+      {
+        id: 'm1',
+        homeTeam: 'Brazil',
+        awayTeam: 'Argentina',
+        homeFlag: 'br',
+        awayFlag: 'ar',
+        matchDate: addDays(today, 0),
+        matchTime: '18:00',
+        group: 'Group D',
+        groupColor: getGroupColor('Group D'),
+        status: 'upcoming',
+      },
+      {
+        id: 'm2',
+        homeTeam: 'France',
+        awayTeam: 'Belgium',
+        homeFlag: 'fr',
+        awayFlag: 'be',
+        matchDate: addDays(today, 1),
+        matchTime: '21:00',
+        group: 'Group H',
+        groupColor: getGroupColor('Group H'),
+        status: 'upcoming',
+      },
+      {
+        id: 'm3',
+        homeTeam: 'Germany',
+        awayTeam: 'Spain',
+        homeFlag: 'de',
+        awayFlag: 'es',
+        matchDate: addDays(today, 1),
+        matchTime: '15:00',
+        group: 'Group I',
+        groupColor: getGroupColor('Group I'),
+        status: 'upcoming',
+      },
+      {
+        id: 'm4',
+        homeTeam: 'Portugal',
+        awayTeam: 'Netherlands',
+        homeFlag: 'pt',
+        awayFlag: 'nl',
+        matchDate: addDays(today, 2),
+        matchTime: '21:00',
+        group: 'Group F',
+        groupColor: getGroupColor('Group F'),
+        status: 'upcoming',
+      },
+    ];
+  }
+
+  private getMockLeaderboard(): LeaderboardEntry[] {
+    return [
+      { rank: 1, playerName: 'Alice', avatarUrl: 'https://i.pravatar.cc/40?img=1', totalPoints: 124, correctScores: 8, correctOutcomes: 18, totalBets: 24 },
+      { rank: 2, playerName: 'Bob', avatarUrl: 'https://i.pravatar.cc/40?img=2', totalPoints: 118, correctScores: 7, correctOutcomes: 17, totalBets: 24 },
+      { rank: 3, playerName: 'Carol', avatarUrl: 'https://i.pravatar.cc/40?img=3', totalPoints: 110, correctScores: 6, correctOutcomes: 16, totalBets: 22 },
+      { rank: 4, playerName: 'Dave', avatarUrl: 'https://i.pravatar.cc/40?img=4', totalPoints: 105, correctScores: 5, correctOutcomes: 17, totalBets: 23 },
+      { rank: 5, playerName: 'Eve', avatarUrl: 'https://i.pravatar.cc/40?img=5', totalPoints: 98, correctScores: 4, correctOutcomes: 16, totalBets: 22 },
+      { rank: 6, playerName: 'Frank', avatarUrl: 'https://i.pravatar.cc/40?img=6', totalPoints: 90, correctScores: 3, correctOutcomes: 15, totalBets: 20 },
+      { rank: 7, playerName: 'Grace', avatarUrl: 'https://i.pravatar.cc/40?img=7', totalPoints: 85, correctScores: 3, correctOutcomes: 14, totalBets: 21 },
+      { rank: 8, playerName: 'Hank', avatarUrl: 'https://i.pravatar.cc/40?img=8', totalPoints: 80, correctScores: 2, correctOutcomes: 14, totalBets: 20 },
+    ];
+  }
+
+  private getMockResults(): MatchResult[] {
+    return [
+      { matchId: 'r1', homeTeam: 'Morocco', awayTeam: 'Croatia', homeFlag: 'ma', awayFlag: 'hr', homeScore: 0, awayScore: 0, matchDate: '2026-06-12', group: 'Group K' },
+      { matchId: 'r2', homeTeam: 'Mexico', awayTeam: 'Uruguay', homeFlag: 'mx', awayFlag: 'uy', homeScore: 0, awayScore: 0, matchDate: '2026-06-11', group: 'Group B' },
+      { matchId: 'r3', homeTeam: 'United States', awayTeam: 'Panama', homeFlag: 'us', awayFlag: 'pa', homeScore: 1, awayScore: 1, matchDate: '2026-06-11', group: 'Group A' },
+      { matchId: 'r4', homeTeam: 'Senegal', awayTeam: 'South Africa', homeFlag: 'sn', awayFlag: 'za', homeScore: 0, awayScore: 2, matchDate: '2026-06-12', group: 'Group K' },
+      { matchId: 'r5', homeTeam: 'England', awayTeam: 'Serbia', homeFlag: 'gb-eng', awayFlag: 'rs', homeScore: 6, awayScore: 2, matchDate: '2026-06-15', group: 'Group J' },
+    ];
+  }
+
+  private getMockBets(): BetEntry[] {
+    return [
+      { id: 'b1', playerName: 'Alice', homeTeam: 'Brazil', awayTeam: 'Argentina', homeFlag: 'br', awayFlag: 'ar', predictedHomeScore: 2, predictedAwayScore: 1, betDate: '2026-06-13', status: 'pending' },
+      { id: 'b2', playerName: 'Bob', homeTeam: 'France', awayTeam: 'Belgium', homeFlag: 'fr', awayFlag: 'be', predictedHomeScore: 1, predictedAwayScore: 0, betDate: '2026-06-13', status: 'pending' },
+      { id: 'b3', playerName: 'Carol', homeTeam: 'Germany', awayTeam: 'Spain', homeFlag: 'de', awayFlag: 'es', predictedHomeScore: 1, predictedAwayScore: 1, actualHomeScore: 1, actualAwayScore: 1, points: 3, betDate: '2026-06-12', status: 'won' },
+      { id: 'b4', playerName: 'Dave', homeTeam: 'Morocco', awayTeam: 'Croatia', homeFlag: 'ma', awayFlag: 'hr', predictedHomeScore: 1, predictedAwayScore: 0, actualHomeScore: 0, actualAwayScore: 0, points: 1, betDate: '2026-06-11', status: 'partial' },
+      { id: 'b5', playerName: 'Eve', homeTeam: 'United States', awayTeam: 'Panama', homeFlag: 'us', awayFlag: 'pa', predictedHomeScore: 2, predictedAwayScore: 0, actualHomeScore: 1, actualAwayScore: 1, points: 0, betDate: '2026-06-11', status: 'lost' },
+    ];
+  }
+
+  private getMockParticipants(): Participant[] {
+    return [
+      { name: 'Alice', avatarUrl: 'https://i.pravatar.cc/32?img=1', isOnline: true },
+      { name: 'Bob', avatarUrl: 'https://i.pravatar.cc/32?img=2', isOnline: true },
+      { name: 'Carol', avatarUrl: 'https://i.pravatar.cc/32?img=3', isOnline: false },
+      { name: 'Dave', avatarUrl: 'https://i.pravatar.cc/32?img=4', isOnline: true },
+      { name: 'Eve', avatarUrl: 'https://i.pravatar.cc/32?img=5', isOnline: false },
+      { name: 'Frank', avatarUrl: 'https://i.pravatar.cc/32?img=6', isOnline: true },
+    ];
+  }
+}

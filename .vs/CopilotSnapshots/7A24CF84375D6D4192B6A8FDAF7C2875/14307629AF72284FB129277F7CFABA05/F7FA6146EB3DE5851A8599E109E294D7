@@ -1,0 +1,14 @@
+﻿<mat-toolbar class="header">
+  <div class="header__left">
+    <span class="header__greeting">{{ greeting }}, Champion! ⚽</span>
+    <span class="header__date">{{ currentDate | date: 'EEEE, MMMM d, y' }}</span>
+  </div>
+
+  <div class="header__right">
+    <span class="header__addicts-label">{{ addictCount }} con nghiện đã đặt bet cho trận tiếp theo</span>
+
+    <button mat-icon-button matTooltip="Refresh data">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
+</mat-toolbar>

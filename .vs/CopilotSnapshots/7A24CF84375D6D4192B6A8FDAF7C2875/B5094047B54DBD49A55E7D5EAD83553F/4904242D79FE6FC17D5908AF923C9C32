@@ -1,0 +1,325 @@
+﻿.dashboard {
+  padding: 24px;
+  height: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+
+  &__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px;
+    gap: 16px;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  &__card {
+    background: var(--mat-sys-surface-container-low);
+
+    &--full-row {
+      grid-column: 1 / -1;
+    }
+
+    mat-card-avatar {
+      background: var(--mat-sys-primary-container);
+      color: var(--mat-sys-on-primary-container);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+  }
+}
+
+// ── Featuring Matches ──────────────────────────────────────────────────────────
+
+.matches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.match-card {
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  &__group {
+    font-size: 11px;
+    color: var(--mat-sys-on-surface-variant);
+    font-weight: 600;
+  }
+
+  &__teams {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  &__team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+
+    &--away {
+      align-items: flex-end;
+    }
+  }
+
+  &__flag {
+    width: 32px;
+    height: 24px;
+    border-radius: 3px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  }
+
+  &__team-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--mat-sys-on-surface);
+    text-align: center;
+  }
+
+  &__score {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+  }
+
+  &__score-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--mat-sys-primary);
+  }
+
+  &__vs {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--mat-sys-outline);
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__meta-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+}
+
+// ── Leaderboard ────────────────────────────────────────────────────────────────
+
+.leaderboard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    border-radius: 8px;
+    background: var(--mat-sys-surface-container);
+
+    &--top3 {
+      background: var(--mat-sys-secondary-container);
+    }
+  }
+
+  &__rank {
+    width: 28px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--mat-sys-on-surface-variant);
+    flex-shrink: 0;
+  }
+
+  &__avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--mat-sys-on-surface);
+  }
+
+  &__bar {
+    height: 4px;
+    border-radius: 2px;
+  }
+
+  &__points {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex-shrink: 0;
+  }
+
+  &__pts {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--mat-sys-primary);
+  }
+
+  &__pts-label {
+    font-size: 10px;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+// ── Open for Bets ──────────────────────────────────────────────────────────────
+
+.bet-matches {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+
+  &__empty {
+    font-size: 13px;
+    color: var(--mat-sys-on-surface-variant);
+    text-align: center;
+    padding: 16px 0;
+  }
+}
+
+.bet-match {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: var(--mat-sys-surface-container);
+  border-radius: 10px;
+  padding: 12px 16px;
+
+  &__team {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+
+    &--right {
+      justify-content: flex-end;
+    }
+  }
+
+  &__flag {
+    width: 28px;
+    height: 21px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  &__name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--mat-sys-on-surface);
+  }
+
+  &__count {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--mat-sys-primary);
+    min-width: 24px;
+    text-align: center;
+  }
+
+  &__vs {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--mat-sys-outline);
+    padding: 0 8px;
+    flex-shrink: 0;
+  }
+}
+
+// ── Current Bets Table ─────────────────────────────────────────────────────────
+
+.bets-table {
+  width: 100%;
+  margin-top: 8px;
+
+  &__empty {
+    color: var(--mat-sys-outline);
+  }
+
+  &__flag {
+    width: 18px;
+    height: 13px;
+    border-radius: 2px;
+    vertical-align: middle;
+    margin: 0 2px;
+  }
+}
+
+.bet-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface);
+
+  &--home {
+    background: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+  }
+}
+
+.bet-modifier {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mat-sys-secondary);
+  background: var(--mat-sys-secondary-container);
+  padding: 2px 8px;
+  border-radius: 8px;
+}

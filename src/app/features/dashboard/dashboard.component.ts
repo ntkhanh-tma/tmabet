@@ -1,0 +1,66 @@
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { GoogleSheetsService } from '../../core/services/google-sheets.service';
+import { DashboardData, Match } from '../../core/models/dashboard.model';
+import { getCountryCode } from '../../core/utils/country-flags';
+
+@Component({
+  selector: 'app-dashboard',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatChipsModule,
+    MatTableModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatProgressBarModule,
+    MatTooltipModule,
+  ],
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.scss',
+})
+export class DashboardComponent implements OnInit {
+  private readonly sheetsService = inject(GoogleSheetsService);
+
+  data: DashboardData | null = null;
+  loading = true;
+
+  ngOnInit(): void {
+    this.sheetsService.getDashboardData().subscribe((d) => {
+      this.data = d;
+      this.loading = false;
+    });
+  }
+
+  getStatusColor(status: Match['status']): string {
+    return status === 'live' ? 'warn' : status === 'finished' ? 'accent' : 'primary';
+  }
+
+  getMaxPoints(): number {
+    return this.data?.leaderboard[0]?.totalPoints ?? 1;
+  }
+
+  /** Columns shown in the bets table depend on which matches are resolved. */
+  get betColumns(): string[] {
+    const cols = ['player'];
+    if (this.data?.betMatch1) cols.push('match1');
+    if (this.data?.betMatch2) cols.push('match2');
+    cols.push('modifier');
+    return cols;
+  }
+
+  getFlag(team: string): string {
+    return getCountryCode(team) ?? 'un';
+  }
+}
+

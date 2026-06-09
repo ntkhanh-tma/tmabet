@@ -1,0 +1,122 @@
+[
+  {
+    "Date": "2026-06-11",
+    "Time": "20:00",
+    "HomeTeam": "Mexico",
+    "AwayTeam": "Uruguay",
+    "HomeScore": "?",
+    "AwayScore": "?",
+    "Group": "Group B",
+    "Stage": "Group Stage"
+  },
+  {
+    "Date": "2026-06-11",
+    "Time": "23:00",
+    "HomeTeam": "United States",
+    "AwayTeam": "Panama",
+    "HomeScore": "?",
+    "AwayScore": "?",
+    "Group": "Group A",
+    "Stage": "Group Stage"
+  },
+  {
+    "Date": "2026-06-12",
+    "Time": "17:00",
+    "HomeTeam": "Canada",
+    "AwayTeam": "Bolivia",
+    "HomeScore": "?",
+    "AwayScore": "?",
+    "Group": "Group A",
+    "Stage": "Group Stage"
+  },
+  {
+    "Date": "2026-06-12",
+    "Time": "20:00",
+    "HomeTeam": "Argentina",
+    "AwayTeam": "Chile",
+    "HomeScore": "?",
+    "AwayScore": "?",
+    "Group": "Group C",
+    "Stage": "Group Stage"
+  },
+  {
+    "Date": "2026-06-13",
+    "Time": "17:00",
+    "HomeTeam": "Brazil",
+    "AwayTeam": "Ecuador",
+    "HomeScore": "?",
+    "AwayScore": "?",
+    "Group": "Group D",
+    "Stage": "Group Stage"
+  },
+  {
+    "Date": "2026-06-13",
+    "Time": "20:00",
+    "HomeTeam": "France",
+    "AwayTeam": "Belgium",
+    "HomeScore": "?",
+    "AwayScore": "?",
+    "Group": "Group H",
+    "Stage": "Group Stage"
+  },
+  {
+    "Date": "2026-06-14",
+    "Time": "17:00",
+    "HomeTeam": "Germany",
+    "AwayTeam": "Switzerland",
+    "HomeScore": "?",
+    "AwayScore": "?",
+    "Group": "Group I",
+    "Stage": "Group Stage"
+  },
+  {
+    "Date": "2026-06-14",
+    "Time": "20:00",
+    "HomeTeam": "Spain",
+    "AwayTeam": "Netherlands",
+    "HomeScore": "?",
+    "AwayScore": "?",
+    "Group": "Group G",
+    "Stage": "Group Stage"
+  },
+  {
+    "Date": "2026-06-14",
+    "Time": "23:00",
+    "HomeTeam": "Portugal",
+    "AwayTeam": "Croatia",
+    "HomeScore": "?",
+    "AwayScore": "?",
+    "Group": "Group F",
+    "Stage": "Group Stage"
+  },
+  {
+    "Date": "2026-06-15",
+    "Time": "17:00",
+    "HomeTeam": "England",
+    "AwayTeam": "Serbia",
+    "HomeScore": "?",
+    "AwayScore": "?",
+    "Group": "Group J",
+    "Stage": "Group Stage"
+  },
+  {
+    "Date": "2026-06-15",
+    "Time": "20:00",
+    "HomeTeam": "Morocco",
+    "AwayTeam": "Senegal",
+    "HomeScore": "?",
+    "AwayScore": "?",
+    "Group": "Group K",
+    "Stage": "Group Stage"
+  },
+  {
+    "Date": "2026-06-16",
+    "Time": "17:00",
+    "HomeTeam": "Japan",
+    "AwayTeam": "South Korea",
+    "HomeScore": "?",
+    "AwayScore": "?",
+    "Group": "Group L",
+    "Stage": "Group Stage"
+  }
+]

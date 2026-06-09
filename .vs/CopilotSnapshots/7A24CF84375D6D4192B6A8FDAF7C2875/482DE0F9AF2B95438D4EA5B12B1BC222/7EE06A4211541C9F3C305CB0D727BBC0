@@ -1,0 +1,7 @@
+﻿// Serves flag SVGs from public/flags/ which is copied from node_modules/flag-icons/flags/
+// The path must be relative to the built output root.
+$flag-icons-path: "flags";
+
+@use "flag-icons/sass/flag-icons" with (
+  $flag-icons-path: "flags"
+);

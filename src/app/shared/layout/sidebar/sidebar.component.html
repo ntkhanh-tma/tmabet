@@ -1,0 +1,32 @@
+<aside class="sidebar">
+  <div class="sidebar__brand">
+    <span class="sidebar__trophy">🏆</span>
+    <div class="sidebar__brand-text">
+      <span class="sidebar__title">World Cup</span>
+      <span class="sidebar__subtitle">Bet 2026</span>
+    </div>
+  </div>
+
+  <nav class="sidebar__nav">
+    <mat-nav-list>
+      @for (item of navItems; track item.route) {
+        <a
+          mat-list-item
+          [routerLink]="item.route"
+          routerLinkActive="sidebar__nav-item--active"
+          [matTooltip]="item.label"
+          matTooltipPosition="right"
+          class="sidebar__nav-item"
+        >
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      }
+    </mat-nav-list>
+  </nav>
+
+  <div class="sidebar__footer">
+    <span class="sidebar__edition">FIFA World Cup™ 2026</span>
+    <span class="sidebar__host">USA · Canada · Mexico</span>
+  </div>
+</aside>

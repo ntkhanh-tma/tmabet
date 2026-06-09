@@ -1,0 +1,679 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\angular.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:angular.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\ntkhanh\\.copilot\\plans\\plan-fix-empty-leaderboard-wc2026-named-range-cache.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|MarkdownSecurePreview"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\ntkhanh\\.copilot\\plans\\plan-replace-mock-data-with-live-google-sheets-data.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|MarkdownSecurePreview"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\core\\services\\google-sheets.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\core\\services\\google-sheets.service.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\app.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\app.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\app.config.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\app.config.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\public\\data\\wc2026.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:public\\data\\wc2026.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\ntkhanh\\.copilot\\plans\\plan-world-cup-2026-github-actions-data-sync-matches-page-flag-icons.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}|MarkdownSecurePreview"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\shared\\layout\\header\\header.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\shared\\layout\\header\\header.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\shared\\layout\\header\\header.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\shared\\layout\\header\\header.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\shared\\layout\\header\\header.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\shared\\layout\\header\\header.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\shared\\layout\\sidebar\\sidebar.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\shared\\layout\\sidebar\\sidebar.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\core\\utils\\country-flags.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\core\\utils\\country-flags.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\.github\\workflows\\fetch-sheet-data.yml||{06C066C6-04A2-4E5D-8202-439FD4234EF1}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:.github\\workflows\\fetch-sheet-data.yml||{06C066C6-04A2-4E5D-8202-439FD4234EF1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\scripts\\fetch-sheet-data.mjs||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:scripts\\fetch-sheet-data.mjs||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\public\\data\\wc2026-result.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:public\\data\\wc2026-result.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\public\\data\\matches.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:public\\data\\matches.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\core\\models\\dashboard.model.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\core\\models\\dashboard.model.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\features\\matches\\matches.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\features\\matches\\matches.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\features\\matches\\matches.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\features\\matches\\matches.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\features\\matches\\matches.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\features\\matches\\matches.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\app.routes.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\app.routes.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\features\\dashboard\\dashboard.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\features\\dashboard\\dashboard.component.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\features\\dashboard\\dashboard.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\features\\dashboard\\dashboard.component.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\features\\dashboard\\dashboard.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\app\\features\\dashboard\\dashboard.component.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\styles.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\styles.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\flag-icons.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\flag-icons.scss||{181FE41B-5A5D-479F-9F8F-BF665F4EBC2A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\Projects\\Non-Work\\worldcup-bet-2026\\public\\data\\wc2026-data.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:public\\data\\wc2026-data.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 48,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:132:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:136:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:137:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:138:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:141:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:142:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:134:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:136:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:138:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:140:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:141:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:142:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:139:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:143:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:140:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:133:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:140:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:139:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:137:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:138:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:141:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:154:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:155:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:153:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:145:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:146:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:147:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:149:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:148:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:150:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:152:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:151:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:143:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:144:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "wc2026-data.json",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\public\\data\\wc2026-data.json",
+              "RelativeDocumentMoniker": "public\\data\\wc2026-data.json",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\public\\data\\wc2026-data.json",
+              "RelativeToolTip": "public\\data\\wc2026-data.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-06-09T08:22:24.359Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "plan-fix-empty-leaderboard-wc2026-named-range-cache.md [Preview]",
+              "DocumentMoniker": "C:\\Users\\ntkhanh\\.copilot\\plans\\plan-fix-empty-leaderboard-wc2026-named-range-cache.md",
+              "ToolTip": "C:\\Users\\ntkhanh\\.copilot\\plans\\plan-fix-empty-leaderboard-wc2026-named-range-cache.md [Preview]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-06-09T08:20:05.999Z",
+              "EditorCaption": " [Preview]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "plan-replace-mock-data-with-live-google-sheets-data.md [Preview]",
+              "DocumentMoniker": "C:\\Users\\ntkhanh\\.copilot\\plans\\plan-replace-mock-data-with-live-google-sheets-data.md",
+              "ToolTip": "C:\\Users\\ntkhanh\\.copilot\\plans\\plan-replace-mock-data-with-live-google-sheets-data.md [Preview]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-06-09T07:54:45.637Z",
+              "EditorCaption": " [Preview]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "app.ts",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\app.ts",
+              "RelativeDocumentMoniker": "src\\app\\app.ts",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\app.ts",
+              "RelativeToolTip": "src\\app\\app.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-06-09T07:42:57.134Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "app.config.ts",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\app.config.ts",
+              "RelativeDocumentMoniker": "src\\app\\app.config.ts",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\app.config.ts",
+              "RelativeToolTip": "src\\app\\app.config.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-06-09T07:42:51.255Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "wc2026.json",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\public\\data\\wc2026.json",
+              "RelativeDocumentMoniker": "public\\data\\wc2026.json",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\public\\data\\wc2026.json",
+              "RelativeToolTip": "public\\data\\wc2026.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-06-09T07:05:11.265Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "angular.json",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\angular.json",
+              "RelativeDocumentMoniker": "angular.json",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\angular.json",
+              "RelativeToolTip": "angular.json",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAAD0AAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-06-09T07:10:06.293Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "fetch-sheet-data.yml",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\.github\\workflows\\fetch-sheet-data.yml",
+              "RelativeDocumentMoniker": ".github\\workflows\\fetch-sheet-data.yml",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\.github\\workflows\\fetch-sheet-data.yml",
+              "RelativeToolTip": ".github\\workflows\\fetch-sheet-data.yml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003775|",
+              "WhenOpened": "2026-06-09T07:04:40.541Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "country-flags.ts",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\core\\utils\\country-flags.ts",
+              "RelativeDocumentMoniker": "src\\app\\core\\utils\\country-flags.ts",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\core\\utils\\country-flags.ts",
+              "RelativeToolTip": "src\\app\\core\\utils\\country-flags.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-06-09T07:04:29.171Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "index.html",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\index.html",
+              "RelativeDocumentMoniker": "src\\index.html",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\index.html",
+              "RelativeToolTip": "src\\index.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-06-09T07:18:56.118Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "google-sheets.service.ts",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\core\\services\\google-sheets.service.ts",
+              "RelativeDocumentMoniker": "src\\app\\core\\services\\google-sheets.service.ts",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\core\\services\\google-sheets.service.ts",
+              "RelativeToolTip": "src\\app\\core\\services\\google-sheets.service.ts",
+              "ViewState": "AgIAANAAAAAAAAAAAAAWwOsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-06-09T07:06:36.853Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "fetch-sheet-data.mjs",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\scripts\\fetch-sheet-data.mjs",
+              "RelativeDocumentMoniker": "scripts\\fetch-sheet-data.mjs",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\scripts\\fetch-sheet-data.mjs",
+              "RelativeToolTip": "scripts\\fetch-sheet-data.mjs",
+              "ViewState": "AgIAABoAAAAAAAAAAIBJwG4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-06-09T07:05:00.209Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "wc2026-result.json",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\public\\data\\wc2026-result.json",
+              "RelativeDocumentMoniker": "public\\data\\wc2026-result.json",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\public\\data\\wc2026-result.json",
+              "RelativeToolTip": "public\\data\\wc2026-result.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-06-09T07:05:16.862Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "matches.json",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\public\\data\\matches.json",
+              "RelativeDocumentMoniker": "public\\data\\matches.json",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\public\\data\\matches.json",
+              "RelativeToolTip": "public\\data\\matches.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-06-09T07:05:31.064Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "plan-world-cup-2026-github-actions-data-sync-matches-page-flag-icons.md [Preview]",
+              "DocumentMoniker": "C:\\Users\\ntkhanh\\.copilot\\plans\\plan-world-cup-2026-github-actions-data-sync-matches-page-flag-icons.md",
+              "ToolTip": "C:\\Users\\ntkhanh\\.copilot\\plans\\plan-world-cup-2026-github-actions-data-sync-matches-page-flag-icons.md [Preview]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-06-09T07:03:43.603Z",
+              "EditorCaption": " [Preview]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "flag-icons.scss",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\flag-icons.scss",
+              "RelativeDocumentMoniker": "src\\flag-icons.scss",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\flag-icons.scss",
+              "RelativeToolTip": "src\\flag-icons.scss",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2026-06-09T07:15:51.806Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "styles.scss",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\styles.scss",
+              "RelativeDocumentMoniker": "src\\styles.scss",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\styles.scss",
+              "RelativeToolTip": "src\\styles.scss",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAxwAAAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2026-06-09T07:14:52.827Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "dashboard.component.scss",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\features\\dashboard\\dashboard.component.scss",
+              "RelativeDocumentMoniker": "src\\app\\features\\dashboard\\dashboard.component.scss",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\features\\dashboard\\dashboard.component.scss",
+              "RelativeToolTip": "src\\app\\features\\dashboard\\dashboard.component.scss",
+              "ViewState": "AgIAAM8AAAAAAAAAAABBwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2026-06-09T07:09:22.18Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "dashboard.component.html",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\features\\dashboard\\dashboard.component.html",
+              "RelativeDocumentMoniker": "src\\app\\features\\dashboard\\dashboard.component.html",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\features\\dashboard\\dashboard.component.html",
+              "RelativeToolTip": "src\\app\\features\\dashboard\\dashboard.component.html",
+              "ViewState": "AgIAAGEAAAAAAAAAAABRwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-06-09T07:09:05.994Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "dashboard.component.ts",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\features\\dashboard\\dashboard.component.ts",
+              "RelativeDocumentMoniker": "src\\app\\features\\dashboard\\dashboard.component.ts",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\features\\dashboard\\dashboard.component.ts",
+              "RelativeToolTip": "src\\app\\features\\dashboard\\dashboard.component.ts",
+              "ViewState": "AgIAADsAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-06-09T07:08:54.978Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "app.routes.ts",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\app.routes.ts",
+              "RelativeDocumentMoniker": "src\\app\\app.routes.ts",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\app.routes.ts",
+              "RelativeToolTip": "src\\app\\app.routes.ts",
+              "ViewState": "AgIAAAEAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-06-09T07:08:42.116Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "matches.component.scss",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\features\\matches\\matches.component.scss",
+              "RelativeDocumentMoniker": "src\\app\\features\\matches\\matches.component.scss",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\features\\matches\\matches.component.scss",
+              "RelativeToolTip": "src\\app\\features\\matches\\matches.component.scss",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAK8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2026-06-09T07:08:28.174Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "matches.component.html",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\features\\matches\\matches.component.html",
+              "RelativeDocumentMoniker": "src\\app\\features\\matches\\matches.component.html",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\features\\matches\\matches.component.html",
+              "RelativeToolTip": "src\\app\\features\\matches\\matches.component.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-06-09T07:08:11.059Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "matches.component.ts",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\features\\matches\\matches.component.ts",
+              "RelativeDocumentMoniker": "src\\app\\features\\matches\\matches.component.ts",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\features\\matches\\matches.component.ts",
+              "RelativeToolTip": "src\\app\\features\\matches\\matches.component.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-06-09T07:07:57.926Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "dashboard.model.ts",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\core\\models\\dashboard.model.ts",
+              "RelativeDocumentMoniker": "src\\app\\core\\models\\dashboard.model.ts",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\core\\models\\dashboard.model.ts",
+              "RelativeToolTip": "src\\app\\core\\models\\dashboard.model.ts",
+              "ViewState": "AgIAADMAAAAAAAAAAABQwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-06-09T07:05:48.056Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "sidebar.component.ts",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\shared\\layout\\sidebar\\sidebar.component.ts",
+              "RelativeDocumentMoniker": "src\\app\\shared\\layout\\sidebar\\sidebar.component.ts",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\shared\\layout\\sidebar\\sidebar.component.ts",
+              "RelativeToolTip": "src\\app\\shared\\layout\\sidebar\\sidebar.component.ts",
+              "ViewState": "AgIAABUAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-06-09T06:47:26.009Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "header.component.scss",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\shared\\layout\\header\\header.component.scss",
+              "RelativeDocumentMoniker": "src\\app\\shared\\layout\\header\\header.component.scss",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\shared\\layout\\header\\header.component.scss",
+              "RelativeToolTip": "src\\app\\shared\\layout\\header\\header.component.scss",
+              "ViewState": "AgIAACIAAAAAAAAAAABBwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002663|",
+              "WhenOpened": "2026-06-09T06:47:19.182Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "header.component.ts",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\shared\\layout\\header\\header.component.ts",
+              "RelativeDocumentMoniker": "src\\app\\shared\\layout\\header\\header.component.ts",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\shared\\layout\\header\\header.component.ts",
+              "RelativeToolTip": "src\\app\\shared\\layout\\header\\header.component.ts",
+              "ViewState": "AgIAAB4AAAAAAAAAAIBJwAEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-06-09T06:47:07.876Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "header.component.html",
+              "DocumentMoniker": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\shared\\layout\\header\\header.component.html",
+              "RelativeDocumentMoniker": "src\\app\\shared\\layout\\header\\header.component.html",
+              "ToolTip": "E:\\Projects\\Non-Work\\worldcup-bet-2026\\src\\app\\shared\\layout\\header\\header.component.html",
+              "RelativeToolTip": "src\\app\\shared\\layout\\header\\header.component.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-06-09T06:46:36.814Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 1868,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

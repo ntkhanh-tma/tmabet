@@ -1,0 +1,84 @@
+﻿export interface Match {
+  id: string;
+  homeTeam: string;
+  awayTeam: string;
+  /** ISO 3166-1 alpha-2 code used with flag-icons */
+  homeFlag: string;
+  /** ISO 3166-1 alpha-2 code used with flag-icons */
+  awayFlag: string;
+  matchDate: string;
+  matchTime: string;
+  group: string;
+  groupColor: string;
+  homeScore?: number;
+  awayScore?: number;
+  status: 'upcoming' | 'live' | 'finished';
+}
+
+/** Raw row shape from matches.json (column names match the sheet headers) */
+export interface SheetMatch {
+  Date: string;
+  Time: string;
+  HomeTeam: string;
+  AwayTeam: string;
+  HomeScore: string;
+  AwayScore: string;
+  Group: string;
+  Stage: string;
+}
+
+/** Matches grouped by calendar date for the Matches page */
+export interface MatchDay {
+  date: string;
+  matches: Match[];
+}
+
+/** One row from the Points range: player name + total points */
+export interface LeaderboardEntry {
+  rank: number;
+  playerName: string;
+  totalPoints: number;
+}
+
+/** One row from the Bets range */
+export interface BetRow {
+  playerName: string;
+  /** Team the player bet for match 1 */
+  match1Bet: string;
+  /** Team the player bet for match 2 */
+  match2Bet: string;
+  /** Modifier value */
+  modifier: string;
+}
+
+/** Count of how many players bet on a specific team */
+export interface TeamBetCount {
+  team: string;
+  flag: string;
+  count: number;
+}
+
+/** The two currently open matches for betting, with per-team bet counts */
+export interface CurrentBetMatch {
+  homeTeam: string;
+  awayTeam: string;
+  homeFlag: string;
+  awayFlag: string;
+  homeBets: number;
+  awayBets: number;
+}
+
+export interface DashboardData {
+  /** Next 4 upcoming matches (from Matches sheet / JSON) */
+  featuringMatches: Match[];
+  /** Sorted leaderboard from Points range */
+  leaderboard: LeaderboardEntry[];
+  /** Current open-bet matches with bet counts */
+  currentBetMatches: CurrentBetMatch[];
+  /** All bet rows from Bets range */
+  bets: BetRow[];
+}
+
+export interface Participant {
+  name: string;
+}

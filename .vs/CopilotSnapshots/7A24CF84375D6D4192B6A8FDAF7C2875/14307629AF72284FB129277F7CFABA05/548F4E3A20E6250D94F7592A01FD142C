@@ -1,0 +1,65 @@
+﻿export interface Match {
+  id: string;
+  homeTeam: string;
+  awayTeam: string;
+  homeFlag: string;
+  awayFlag: string;
+  matchDate: string;
+  matchTime: string;
+  venue: string;
+  group: string;
+  homeScore?: number;
+  awayScore?: number;
+  status: 'upcoming' | 'live' | 'finished';
+}
+
+export interface LeaderboardEntry {
+  rank: number;
+  playerName: string;
+  avatarUrl: string;
+  totalPoints: number;
+  correctScores: number;
+  correctOutcomes: number;
+  totalBets: number;
+}
+
+export interface MatchResult {
+  matchId: string;
+  homeTeam: string;
+  awayTeam: string;
+  homeFlag: string;
+  awayFlag: string;
+  homeScore: number;
+  awayScore: number;
+  matchDate: string;
+  group: string;
+}
+
+export interface BetEntry {
+  id: string;
+  playerName: string;
+  homeTeam: string;
+  awayTeam: string;
+  homeFlag: string;
+  awayFlag: string;
+  predictedHomeScore: number;
+  predictedAwayScore: number;
+  actualHomeScore?: number;
+  actualAwayScore?: number;
+  points?: number;
+  betDate: string;
+  status: 'pending' | 'won' | 'lost' | 'partial';
+}
+
+export interface DashboardData {
+  featuringMatches: Match[];
+  leaderboard: LeaderboardEntry[];
+  recentResults: MatchResult[];
+  recentBets: BetEntry[];
+}
+
+export interface Participant {
+  name: string;
+  avatarUrl: string;
+  isOnline: boolean;
+}
