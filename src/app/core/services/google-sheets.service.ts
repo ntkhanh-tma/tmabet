@@ -25,7 +25,7 @@ export class GoogleSheetsService {
   private readonly http = inject(HttpClient);
 
   private readonly apiKey = 'AIzaSyAD9--6nWYRTNhBFGga0KF9GTDgAp_Z57M';
-  private readonly spreadsheetId = 'Y1TkO9t_lMRXhzfMOcD6istvi8_7c2opqc_gwZBB6ME6A';
+  private readonly spreadsheetId = '1KN7r6qdlnDKLbAitcn_KeN8ztP05KO2ZhW0nJ81WI78';
   private readonly baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${this.spreadsheetId}/values`;
 
   // ─────────────────────────────────────────────────────────────────────────────
