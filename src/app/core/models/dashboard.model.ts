@@ -19,12 +19,14 @@ export interface Match {
 export interface SheetMatch {
   Date: string;
   Time: string;
-  HomeTeam: string;
-  AwayTeam: string;
-  HomeScore: string;
-  AwayScore: string;
+  /** Column header is "Team A" in the sheet */
+  'Team A': string;
+  /** Column header is "Team B" in the sheet */
+  'Team B': string;
+  /** Combined score "X-Y", "?", or empty */
+  Result: string;
   Group: string;
-  Stage: string;
+  Stage?: string;
 }
 
 /** Matches grouped by calendar date for the Matches page */

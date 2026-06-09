@@ -166,8 +166,9 @@ export class GoogleSheetsService {
     // ── Leaderboard: Players range ordered by Points descending ─────────────
     const players = (data.players ?? []).flat().filter(Boolean);
     const pointsMap = new Map<string, number>();
-    for (const r of (data.points ?? []).filter((r) => r[0]?.trim())) {
-      pointsMap.set(r[0].trim().toLowerCase(), Number(r[1]) || 0);
+    for (const r of (data.points ?? []).filter((r) => r[1]?.trim())) {
+      // Column order in sheet: [score, playerName]
+      pointsMap.set(r[1].trim().toLowerCase(), Number(r[0]) || 0);
     }
     const leaderboard: LeaderboardEntry[] = players
       .map((name) => ({
@@ -199,18 +200,27 @@ export class GoogleSheetsService {
 
   private sheetRowsToMatchDays(rows: SheetMatch[]): MatchDay[] {
     const matches: Match[] = rows.map((row, i) => {
-      const homeScore = row.HomeScore && row.HomeScore !== '?' ? Number(row.HomeScore) : undefined;
-      const awayScore = row.AwayScore && row.AwayScore !== '?' ? Number(row.AwayScore) : undefined;
-      const hasResult = homeScore !== undefined && awayScore !== undefined;
+      const homeTeam = row['Team A'] ?? '';
+      const awayTeam = row['Team B'] ?? '';
+
+      // Result field is "X-Y", "?", or empty
+      const resultParts = row.Result && row.Result !== '?' ? row.Result.split('-') : [];
+      const homeScore = resultParts.length === 2 ? Number(resultParts[0].trim()) : undefined;
+      const awayScore = resultParts.length === 2 ? Number(resultParts[1].trim()) : undefined;
+      const hasResult =
+        homeScore !== undefined &&
+        awayScore !== undefined &&
+        !isNaN(homeScore) &&
+        !isNaN(awayScore);
 
       return {
         id: `sheet-${i}`,
-        homeTeam: row.HomeTeam,
-        awayTeam: row.AwayTeam,
-        homeFlag: getCountryCode(row.HomeTeam) ?? 'un',
-        awayFlag: getCountryCode(row.AwayTeam) ?? 'un',
-        matchDate: row.Date,
-        matchTime: row.Time,
+        homeTeam,
+        awayTeam,
+        homeFlag: getCountryCode(homeTeam) ?? 'un',
+        awayFlag: getCountryCode(awayTeam) ?? 'un',
+        matchDate: row.Date ?? '',
+        matchTime: row.Time ?? '',
         group: row.Group || row.Stage || '',
         groupColor: getGroupColor(row.Group || row.Stage || ''),
         homeScore: hasResult ? homeScore : undefined,

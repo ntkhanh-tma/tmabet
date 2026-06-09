@@ -7,6 +7,7 @@ export const COUNTRY_ISO: Record<string, string> = {
   // Group A
   'United States': 'us',
   'USA': 'us',
+  'US': 'us',
   'Mexico': 'mx',
   'Canada': 'ca',
 
@@ -93,7 +94,8 @@ export const COUNTRY_ISO: Record<string, string> = {
 };
 
 /** Returns the ISO alpha-2 code for a country name, or undefined if not found. */
-export function getCountryCode(country: string): string | undefined {
+export function getCountryCode(country: string | undefined | null): string | undefined {
+  if (!country) return undefined;
   return COUNTRY_ISO[country] ?? COUNTRY_ISO[country.trim()];
 }
 
