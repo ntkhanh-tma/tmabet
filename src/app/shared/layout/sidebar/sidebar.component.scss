@@ -81,4 +81,62 @@
     font-size: 10px;
     color: var(--mat-sys-on-surface-variant);
   }
+
+  &__rules {
+    margin: 0 10px 12px;
+    padding: 10px 12px;
+    border: 1.5px solid #d32f2f;
+    border-radius: 8px;
+    background: rgba(211, 47, 47, 0.07);
+  }
+
+  &__rules-title {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #ef5350;
+    margin-bottom: 8px;
+  }
+
+  &__rules-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    color: #ef5350;
+  }
+
+  &__rules-text {
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--mat-sys-on-surface-variant);
+    margin: 0;
+  }
+}
+
+// ── Rule highlight spans ──────────────────────────────────────────────────────
+
+.rule-hi {
+  border-radius: 3px;
+  padding: 0 2px;
+
+  &--loss {
+    color: #ef5350;
+  }
+
+  &--win {
+    color: #66bb6a;
+  }
+
+  &--time {
+    color: #ffa726;
+  }
+
+  &--optional {
+    color: var(--mat-sys-primary);
+    font-style: italic;
+  }
 }

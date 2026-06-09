@@ -272,34 +272,64 @@
 .dashboard__card--my-bets {
   background: var(--mat-sys-primary-container);
   outline: 2px solid var(--mat-sys-primary);
+
+  .mat-mdc-card-content {
+    padding: 8px 12px 10px !important;
+  }
 }
 
 .my-bets {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 8px;
+  gap: 6px;
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--mat-sys-on-primary-container);
+    margin-bottom: 4px;
+  }
+
+  &__title-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    color: var(--mat-sys-primary);
+  }
+
+  &__modifier {
+    margin-left: auto;
+  }
 
   &__row {
     display: flex;
     align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
+    gap: 8px;
   }
 
-  &__match-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--mat-sys-on-surface);
+  &__vs {
     display: flex;
+    gap: 2px;
     align-items: center;
-    gap: 4px;
+  }
+
+  &__flag {
+    width: 16px;
+    height: 12px;
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
   }
 
   &__arrow {
     color: var(--mat-sys-primary);
     font-weight: 700;
-    font-size: 16px;
+    font-size: 13px;
+    flex-shrink: 0;
   }
 }
 
@@ -322,8 +352,8 @@
   &--mine {
     background: var(--mat-sys-primary);
     color: var(--mat-sys-on-primary);
-    font-size: 14px;
-    padding: 5px 12px;
+    font-size: 11px;
+    padding: 2px 8px;
   }
 }
 

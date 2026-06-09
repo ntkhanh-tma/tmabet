@@ -112,46 +112,39 @@
       <!-- ── Zone 2b: My Bets summary (only when logged in) ──────────────── -->
       @if (auth.username() && myBet) {
         <mat-card class="dashboard__card dashboard__card--my-bets">
-          <mat-card-header>
-            <mat-icon mat-card-avatar>person_pin</mat-icon>
-            <mat-card-title>My Bets</mat-card-title>
-            <mat-card-subtitle>{{ auth.username() }}'s current picks</mat-card-subtitle>
-          </mat-card-header>
           <mat-card-content>
             <div class="my-bets">
+              <div class="my-bets__title">
+                <mat-icon class="my-bets__title-icon">person_pin</mat-icon>
+                <span>My Picks</span>
+                @if (myBet.modifier) {
+                  <span class="bet-modifier my-bets__modifier">×{{ myBet.modifier }}</span>
+                }
+              </div>
               @if (data.betMatch1 && myBet.match1Bet) {
                 <div class="my-bets__row">
-                  <span class="my-bets__match-label">
-                    <span class="fi fi-{{ data.betMatch1.homeFlag }} bets-table__flag"></span>
-                    {{ data.betMatch1.homeTeam }} vs {{ data.betMatch1.awayTeam }}
-                    <span class="fi fi-{{ data.betMatch1.awayFlag }} bets-table__flag"></span>
+                  <span class="my-bets__vs">
+                    <span class="fi fi-{{ data.betMatch1.homeFlag }} my-bets__flag"></span>
+                    <span class="fi fi-{{ data.betMatch1.awayFlag }} my-bets__flag"></span>
                   </span>
                   <span class="my-bets__arrow">→</span>
                   <span class="bet-chip bet-chip--mine">
-                    <span class="fi fi-{{ getFlag(myBet.match1Bet) }} bets-table__flag"></span>
+                    <span class="fi fi-{{ getFlag(myBet.match1Bet) }} my-bets__flag"></span>
                     {{ myBet.match1Bet }}
                   </span>
                 </div>
               }
               @if (data.betMatch2 && myBet.match2Bet) {
                 <div class="my-bets__row">
-                  <span class="my-bets__match-label">
-                    <span class="fi fi-{{ data.betMatch2.homeFlag }} bets-table__flag"></span>
-                    {{ data.betMatch2.homeTeam }} vs {{ data.betMatch2.awayTeam }}
-                    <span class="fi fi-{{ data.betMatch2.awayFlag }} bets-table__flag"></span>
+                  <span class="my-bets__vs">
+                    <span class="fi fi-{{ data.betMatch2.homeFlag }} my-bets__flag"></span>
+                    <span class="fi fi-{{ data.betMatch2.awayFlag }} my-bets__flag"></span>
                   </span>
                   <span class="my-bets__arrow">→</span>
                   <span class="bet-chip bet-chip--mine">
-                    <span class="fi fi-{{ getFlag(myBet.match2Bet) }} bets-table__flag"></span>
+                    <span class="fi fi-{{ getFlag(myBet.match2Bet) }} my-bets__flag"></span>
                     {{ myBet.match2Bet }}
                   </span>
-                </div>
-              }
-              @if (myBet.modifier) {
-                <div class="my-bets__row">
-                  <span class="my-bets__match-label">Modifier</span>
-                  <span class="my-bets__arrow">→</span>
-                  <span class="bet-modifier">{{ myBet.modifier }}</span>
                 </div>
               }
             </div>
