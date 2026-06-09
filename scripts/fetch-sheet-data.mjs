@@ -78,7 +78,7 @@ let hasError = false;
 for (const [sheetName, fileName] of SHEETS) {
   try {
     console.log(`⏳  Fetching sheet: ${sheetName}`);
-    const rows = await fetchRange(sheetName);
+    const rows = await fetchRange(`${sheetName}!A:ZZ`);
     const data = rowsToObjects(rows);
     const outPath = join(OUT_DIR, fileName);
     writeFileSync(outPath, JSON.stringify(data, null, 2), 'utf8');
