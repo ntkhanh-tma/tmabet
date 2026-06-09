@@ -20,13 +20,22 @@
     ],
     [
       "Khoa Tran"
+    ],
+    [
+      "Thai Huynh"
+    ],
+    [
+      "Khánh Nguyễn"
+    ],
+    [
+      "Cường Cao"
     ]
   ],
   "bets": [
     [
       "Khanh Nguyen",
-      "",
-      "",
+      "Mexico",
+      "US",
       "1"
     ],
     [
@@ -66,19 +75,19 @@
       "1"
     ],
     [
-      "",
-      "",
-      "",
-      "1"
-    ],
-    [
-      "",
+      "Thai Huynh",
       "",
       "",
       "1"
     ],
     [
+      "Khánh Nguyễn",
       "",
+      "",
+      "1"
+    ],
+    [
+      "Cường Cao",
       "",
       "",
       "1"
@@ -274,6 +283,18 @@
     [
       "0",
       "Khoa Tran"
+    ],
+    [
+      "0",
+      "Thai Huynh"
+    ],
+    [
+      "",
+      "Khánh Nguyễn"
+    ],
+    [
+      "",
+      "Cường Cao"
     ]
   ],
   "currentMatch": [
