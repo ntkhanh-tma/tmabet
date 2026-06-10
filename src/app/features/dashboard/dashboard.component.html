@@ -1,4 +1,16 @@
 <div class="dashboard">
+
+  <!-- ── Full-screen bet overlay ─────────────────────────────────────────── -->
+  @if (isBetting()) {
+    <div class="bet-overlay" aria-live="polite" aria-label="Saving your bet…">
+      <div class="bet-overlay__box">
+        <mat-spinner diameter="52"></mat-spinner>
+        <span class="bet-overlay__label">Saving your bet…</span>
+        <span class="bet-overlay__hint">Please wait, do not close this page.</span>
+      </div>
+    </div>
+  }
+
   @if (loading) {
     <div class="dashboard__loading">
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>

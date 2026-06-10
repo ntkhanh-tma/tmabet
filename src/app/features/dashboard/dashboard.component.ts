@@ -43,6 +43,8 @@ export class DashboardComponent implements OnInit {
 
   /** Which slot (1|2) is currently submitting. null = none. */
   readonly submitting = signal<1 | 2 | null>(null);
+  /** True whenever any bet submission is in flight — drives the full-screen overlay. */
+  readonly isBetting = computed(() => this.submitting() !== null);
   /** Error message per slot, null = no error. */
   readonly betError = signal<{ slot: 1 | 2; message: string } | null>(null);
 

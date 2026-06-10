@@ -368,6 +368,41 @@
 
 // ── Featured match highlight ───────────────────────────────────────────────────
 
+// ── Bet overlay (full-screen blocking spinner) ────────────────────────────────
+
+.bet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    background: var(--mat-sys-surface-container-high);
+    border-radius: 16px;
+    padding: 36px 48px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  }
+
+  &__label {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--mat-sys-on-surface);
+  }
+
+  &__hint {
+    font-size: 12px;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
 // ── Bet buttons ────────────────────────────────────────────────────────────────
 
 .bet-btn {
