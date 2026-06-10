@@ -4,6 +4,9 @@
   box-sizing: border-box;
   overflow-y: auto;
 
+  @media (max-width: 959px) { padding: 16px; }
+  @media (max-width: 599px) { padding: 12px; }
+
   &__loading {
     display: flex;
     flex-direction: column;
@@ -17,6 +20,18 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
+
+    // Tablet: keep 2 cols but tighter gap
+    @media (min-width: 600px) and (max-width: 959px) {
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    // Phone: single column
+    @media (max-width: 599px) {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
   }
 
   &__card {
@@ -44,6 +59,11 @@
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 16px;
   margin-top: 8px;
+
+  @media (max-width: 599px) {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 }
 
 .match-card {
@@ -264,6 +284,13 @@
   &__row--me td {
     background: var(--mat-sys-primary-container);
     font-weight: 700;
+  }
+}
+
+// Wrap the table in a scroll container on small screens
+mat-card .mat-mdc-card-content {
+  @media (max-width: 599px) {
+    overflow-x: auto;
   }
 }
 

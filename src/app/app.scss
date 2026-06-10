@@ -15,4 +15,14 @@
     flex: 1;
     overflow-y: auto;
   }
+
+  // On mobile/tablet the sidebar becomes a bottom nav, so give back
+  // that space at the bottom of the content area.
+  @media (max-width: 959px) {
+    flex-direction: column;
+
+    &__content {
+      padding-bottom: 56px; // height of the bottom nav bar
+    }
+  }
 }

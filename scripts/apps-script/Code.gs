@@ -42,13 +42,14 @@ function doPost(e) {
       return jsonResponse({ ok: false, message: 'Sheet "' + BETS_SHEET + '" not found' }, 500);
     }
 
-    // Resolve the named range "Bets" to find the actual row bounds
+    // Resolve the named range "Bets" to find the actual row/column bounds
     var betsRange = sheet.getRange(BETS_RANGE);        // named range
     var startRow  = betsRange.getRow();
+    var startCol  = betsRange.getColumn();             // column B = 2
     var numRows   = betsRange.getNumRows();
-    var values    = betsRange.getValues();              // 2-D array
+    var values    = betsRange.getValues();              // 2-D array, index 0 = startCol
 
-    // Find the row whose column A matches the player name (case-insensitive)
+    // Find the row whose first column (player name) matches — case-insensitive
     var rowOffset = -1;
     for (var i = 0; i < values.length; i++) {
       if (String(values[i][0]).trim().toLowerCase() === player.toLowerCase()) {
@@ -59,8 +60,8 @@ function doPost(e) {
 
     var targetRow;
     if (rowOffset === -1) {
-      // Player not found — append to the first empty row inside the named range.
-      // If every row in the range is occupied, extend one row below it.
+      // Player not found — use the first blank row inside the named range,
+      // or append one row below if all rows are occupied.
       var firstEmptyOffset = -1;
       for (var j = 0; j < values.length; j++) {
         if (!String(values[j][0]).trim()) {
@@ -69,20 +70,16 @@ function doPost(e) {
         }
       }
 
-      if (firstEmptyOffset !== -1) {
-        // Use the first blank row inside the existing named range
-        targetRow = startRow + firstEmptyOffset;
-      } else {
-        // All rows are occupied — write one row beyond the range
-        targetRow = startRow + numRows;
-      }
+      targetRow = (firstEmptyOffset !== -1)
+        ? startRow + firstEmptyOffset
+        : startRow + numRows;
 
-      // Write player name into column A and the bets into B, C, D
-      sheet.getRange(targetRow, 1, 1, 4).setValues([[player, match1Bet, match2Bet, modifier]]);
+      // Write player name + bets starting at startCol (B, C, D, E)
+      sheet.getRange(targetRow, startCol, 1, 4).setValues([[player, match1Bet, match2Bet, modifier]]);
     } else {
-      // Player exists — update columns B, C, D; leave column A untouched
+      // Player exists — update only the bet columns (C, D, E); leave player name untouched
       targetRow = startRow + rowOffset;
-      sheet.getRange(targetRow, 2, 1, 3).setValues([[match1Bet, match2Bet, modifier]]);
+      sheet.getRange(targetRow, startCol + 1, 1, 3).setValues([[match1Bet, match2Bet, modifier]]);
     }
 
     SpreadsheetApp.flush();
