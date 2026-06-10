@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/shared/components/login-dialog/login-dialog.component.ts"],
+  "sourcesContent": ["\n    .login-dialog {\n      min-width: 300px;\n\n      &__title {\n        display: flex;\n        align-items: center;\n        gap: 8px;\n      }\n\n      &__icon {\n        color: var(--mat-sys-primary);\n      }\n\n      &__field {\n        width: 100%;\n      }\n    }\n  "],
+  "mappings": ";AACI,CAAA;AACE,aAAA;;AAEA,CAAA;AACE,WAAA;AACA,eAAA;AACA,OAAA;;AAGF,CAAA;AACE,SAAA,IAAA;;AAGF,CAAA;AACE,SAAA;;",
+  "names": []
+}

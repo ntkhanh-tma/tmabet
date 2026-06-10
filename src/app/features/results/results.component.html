@@ -1,15 +1,79 @@
 <div class="results-page">
-  <mat-card class="results-page__card">
-    <mat-card-header>
-      <mat-icon mat-card-avatar>emoji_events</mat-icon>
-      <mat-card-title>Results</mat-card-title>
-      <mat-card-subtitle>Season standings &amp; match outcomes</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="results-page__placeholder">
-        <mat-icon class="results-page__placeholder-icon">construction</mat-icon>
-        <p>Content coming soon.</p>
-      </div>
-    </mat-card-content>
-  </mat-card>
+
+  @if (loading) {
+    <div class="results-page__loading">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      <p>Loading results…</p>
+    </div>
+  }
+
+  @if (!loading && (!data || data.rows.length === 0)) {
+    <div class="results-page__empty">
+      <mat-icon>emoji_events</mat-icon>
+      <p>No results yet.</p>
+    </div>
+  }
+
+  @if (!loading && data && data.rows.length > 0) {
+    <mat-card class="results-page__card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>emoji_events</mat-icon>
+        <mat-card-title>Results</mat-card-title>
+        <mat-card-subtitle>{{ data.rows.length }} players · {{ data.columns.length }} matches</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="results-table-wrap">
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th class="results-table__player-header">Player</th>
+                @for (col of data.columns; track col.matchNumber) {
+                  <th class="results-table__match-header" [matTooltip]="col.label">
+                    <div class="results-table__match-header-inner">
+                      <span class="fi fi-{{ col.homeFlag }} results-table__flag"></span>
+                      <span class="results-table__match-vs">vs</span>
+                      <span class="fi fi-{{ col.awayFlag }} results-table__flag"></span>
+                    </div>
+                    <div class="results-table__match-num">#{{ col.matchNumber }}</div>
+                  </th>
+                }
+                <th class="results-table__total-header">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of data.rows; track row.playerName) {
+                <tr [class.results-table__row--me]="isMe(row.playerName)">
+                  <td class="results-table__player-cell">
+                    {{ row.playerName }}
+                    @if (isMe(row.playerName)) {
+                      <span class="results-table__me-badge">You</span>
+                    }
+                  </td>
+                  @for (col of data.columns; track col.matchNumber) {
+                    <td class="results-table__pick-cell" [ngClass]="pickClass(row.picks[col.matchNumber])">
+                      {{ row.picks[col.matchNumber] || '–' }}
+                    </td>
+                  }
+                  <td class="results-table__total-cell">
+                    <span class="results-table__total-value"
+                      [class.results-table__total--positive]="row.totalPoints > 0"
+                      [class.results-table__total--negative]="row.totalPoints < 0">
+                      {{ row.totalPoints > 0 ? '+' : '' }}{{ row.totalPoints }}
+                    </span>
+                    <mat-progress-bar
+                      class="results-table__bar"
+                      mode="determinate"
+                      [value]="row.totalPoints >= 0
+                        ? (row.totalPoints / getMaxPoints()) * 100
+                        : 0"
+                    ></mat-progress-bar>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
 </div>

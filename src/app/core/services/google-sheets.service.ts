@@ -10,6 +10,9 @@ import {
   LeaderboardEntry,
   BetRow,
   CommentEntry,
+  ResultData,
+  ResultColumn,
+  ResultRow,
 } from '../models/dashboard.model';
 import { getCountryCode, getGroupColor } from '../utils/country-flags';
 
@@ -234,6 +237,7 @@ export class GoogleSheetsService {
         totalPoints: pointsMap.get(name.trim().toLowerCase()) ?? 0,
       }))
       .sort((a, b) => b.totalPoints - a.totalPoints)
+      .slice(0, 10)
       .map((e, i) => ({ ...e, rank: i + 1 }));
 
     // ── Resolve I2:I5 against the flat matches list ─────────────────────────
@@ -283,6 +287,7 @@ export class GoogleSheetsService {
 
       return {
         id: `sheet-${row.Match || i}`,
+        matchNumber: row.Match ?? String(i + 1),
         homeTeam,
         awayTeam,
         homeFlag: getCountryCode(homeTeam) ?? 'un',
@@ -322,5 +327,81 @@ export class GoogleSheetsService {
       .sort((a, b) => b.dateTime.localeCompare(a.dateTime))
       .slice(0, 50);
   }
-}
 
+  /**
+   * Fetches the Results sheet (read-only).
+   * Columns: Player | <matchNumber> | <matchNumber> | …
+   * Tries result.json cache first, falls back to live API.
+   */
+  getResults(): Observable<ResultData> {
+    return forkJoin({
+      matchDays: this.getMatches(),
+      rawRows: this.http
+        .get<Record<string, string>[]>('data/result.json')
+        .pipe(catchError(() => of(null as Record<string, string>[] | null))),
+    }).pipe(
+      switchMap(({ matchDays, rawRows }) => {
+        const allMatches = matchDays.flatMap((d) => d.matches);
+        if (rawRows && rawRows.length > 0) {
+          return of(this.buildResultData(rawRows, allMatches));
+        }
+        return this.getSheetRange('Result!A:ZZ').pipe(
+          map((sheetRows) => {
+            if (sheetRows.length === 0) return { columns: [], rows: [] };
+            const [headers, ...dataRows] = sheetRows;
+            const objects: Record<string, string>[] = dataRows.map((row) => {
+              const obj: Record<string, string> = {};
+              headers.forEach((h, i) => (obj[h] = row[i] ?? ''));
+              return obj;
+            });
+            return this.buildResultData(objects, allMatches);
+          })
+        );
+      })
+    );
+  }
+
+  /** Converts raw Result-sheet rows into ResultData, resolving match numbers → team labels. */
+  private buildResultData(rows: Record<string, string>[], allMatches: Match[]): ResultData {
+    if (rows.length === 0) return { columns: [], rows: [] };
+
+    // Build a lookup: matchNumber → Match
+    const matchByNumber = new Map<string, Match>();
+    for (const m of allMatches) {
+      matchByNumber.set(m.matchNumber.trim(), m);
+    }
+
+    // All keys except "Player" are match-number columns
+    const sampleRow = rows[0];
+    const matchNumberKeys = Object.keys(sampleRow).filter((k) => k.trim().toLowerCase() !== 'player');
+
+    const columns: ResultColumn[] = matchNumberKeys.map((key) => {
+      const m = matchByNumber.get(key.trim());
+      return {
+        matchNumber: key.trim(),
+        label: m ? `${m.homeTeam} vs ${m.awayTeam}` : key,
+        homeTeam: m?.homeTeam ?? '',
+        awayTeam: m?.awayTeam ?? '',
+        homeFlag: m?.homeFlag ?? 'un',
+        awayFlag: m?.awayFlag ?? 'un',
+      };
+    });
+
+    const resultRows: ResultRow[] = rows
+      .filter((r) => r['Player']?.trim())
+      .map((r) => {
+        const picks: Record<string, string> = {};
+        let total = 0;
+        for (const key of matchNumberKeys) {
+          const val = (r[key] ?? '').trim();
+          picks[key.trim()] = val;
+          const num = Number(val);
+          if (!isNaN(num) && val !== '') total += num;
+        }
+        return { playerName: r['Player'].trim(), totalPoints: total, picks };
+      })
+      .sort((a, b) => a.totalPoints - b.totalPoints);
+
+    return { columns, rows: resultRows };
+  }
+}

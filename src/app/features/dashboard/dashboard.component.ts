@@ -283,8 +283,8 @@ export class DashboardComponent implements OnInit {
     if (!match.odds || !match.upper) return { home: '', away: '' };
     const isHomeUpper = match.upper.trim().toLowerCase() === match.homeTeam.trim().toLowerCase();
     return isHomeUpper
-      ? { home: match.odds, away: '' }
-      : { home: '', away: match.odds };
+      ? { home: match.odds, away: '0' }
+      : { home: '0', away: match.odds };
   }
 
   private static readonly ANIMALS = [

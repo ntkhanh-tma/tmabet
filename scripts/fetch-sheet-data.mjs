@@ -30,6 +30,7 @@ const BASE_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID
 const SHEETS = [
   ['Matches',  'matches.json'],
   ['Comments', 'comments.json'],
+  ['Result',   'result.json'],
 ];
 
 /**

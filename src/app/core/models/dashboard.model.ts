@@ -1,5 +1,7 @@
 export interface Match {
   id: string;
+  /** Sequential match number from the sheet (e.g. "1", "2") */
+  matchNumber: string;
   homeTeam: string;
   awayTeam: string;
   /** ISO 3166-1 alpha-2 code used with flag-icons */
@@ -92,4 +94,30 @@ export interface CommentEntry {
   message: string;
   /** Country name the player bet on (may be empty) */
   bet: string;
+}
+
+/** One column in the Results table — represents a featured match */
+export interface ResultColumn {
+  /** The match number as stored in the sheet header (e.g. "1") */
+  matchNumber: string;
+  /** Resolved from Matches: "Home vs Away" label */
+  label: string;
+  homeTeam: string;
+  awayTeam: string;
+  homeFlag: string;
+  awayFlag: string;
+}
+
+/** One player row in the Results table */
+export interface ResultRow {
+  playerName: string;
+  /** Total points for this player (sum of all picks) */
+  totalPoints: number;
+  /** Pick outcome per match column: key = matchNumber, value = raw cell value */
+  picks: Record<string, string>;
+}
+
+export interface ResultData {
+  columns: ResultColumn[];
+  rows: ResultRow[];
 }
