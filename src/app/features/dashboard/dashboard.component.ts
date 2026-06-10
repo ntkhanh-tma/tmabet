@@ -152,6 +152,12 @@ export class DashboardComponent implements OnInit {
           this.betState.saveRecord(slot, this.matchKey(match), team);
           // Immediately reflect the pick in the UI via session signal
           this.sessionBets.update((s) => ({ ...s, [slot]: team }));
+          // Re-fetch WC2026 data directly from the API so the UI reflects
+          // the saved bet without waiting for the next CI run.
+          this.sheetsService.refreshWc2026Data().subscribe((fresh) => {
+            this.data = fresh;
+            this.sessionBets.set({});
+          });
           this.submitting.set(null);
         },
         error: (err: Error) => {

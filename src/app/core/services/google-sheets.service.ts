@@ -109,6 +109,27 @@ export class GoogleSheetsService {
     );
   }
 
+  /**
+   * Fetches WC2026 ranges directly from the API (bypasses the JSON cache).
+   * Used to refresh data immediately after a bet is placed.
+   */
+  refreshWc2026Data(): Observable<DashboardData> {
+    return forkJoin({
+      matchDays: this.getMatches(),
+      playersRows: this.getSheetRange('WC2026!Players'),
+      betsRows: this.getSheetRange('WC2026!Bets'),
+      pointsRows: this.getSheetRange('WC2026!Points'),
+      currentMatch: this.getSheetRange('WC2026!I2:I5'),
+    }).pipe(
+      map(({ matchDays, playersRows, betsRows, pointsRows, currentMatch }) =>
+        this.buildDashboard(
+          { players: playersRows, bets: betsRows, points: pointsRows, currentMatch },
+          matchDays
+        )
+      )
+    );
+  }
+
   getSheetRange(range: string): Observable<string[][]> {
     const url = `${this.baseUrl}/${encodeURIComponent(range)}?key=${this.apiKey}`;
     return this.http.get<{ values: string[][] }>(url).pipe(
