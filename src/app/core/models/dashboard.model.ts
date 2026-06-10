@@ -81,3 +81,13 @@ export interface DashboardData {
 export interface Participant {
   name: string;
 }
+
+/** One row from the Comments sheet */
+export interface CommentEntry {
+  /** ISO datetime string parsed from the sheet value */
+  dateTime: string;
+  /** Player/author name */
+  player: string;
+  /** Message text */
+  message: string;
+}

@@ -9,6 +9,7 @@ import {
   SheetMatch,
   LeaderboardEntry,
   BetRow,
+  CommentEntry,
 } from '../models/dashboard.model';
 import { getCountryCode, getGroupColor } from '../utils/country-flags';
 
@@ -137,6 +138,33 @@ export class GoogleSheetsService {
       catchError((err) => {
         console.error(`[GoogleSheetsService] Failed to fetch range "${range}":`, err);
         return of([]);
+      })
+    );
+  }
+
+  /**
+   * Fetches up to 50 most recent comments from the Comments sheet.
+   * Tries the cached JSON first, falls back to the live API.
+   * Returned array is already sorted newest-first.
+   */
+  getComments(): Observable<CommentEntry[]> {
+    return this.http.get<{ DateTime: string; Player: string; Message: string }[]>('data/comments.json').pipe(
+      catchError(() => of([])),
+      switchMap((cached) => {
+        if (cached && cached.length > 0) {
+          return of(this.parseCommentRows(cached.map((r) => [r.DateTime ?? '', r.Player ?? '', r.Message ?? ''])));
+        }
+        return this.getSheetRange('Comments!A:ZZ').pipe(
+          map((rawRows) => {
+            if (rawRows.length === 0) return [];
+            const [headers, ...dataRows] = rawRows;
+            const dtIdx = headers.findIndex((h) => h.toLowerCase().includes('date') || h.toLowerCase() === 'datetime');
+            const playerIdx = headers.findIndex((h) => h.toLowerCase() === 'player');
+            const msgIdx = headers.findIndex((h) => h.toLowerCase() === 'message');
+            const rows = dataRows.map((r) => [r[dtIdx] ?? '', r[playerIdx] ?? '', r[msgIdx] ?? '']);
+            return this.parseCommentRows(rows);
+          })
+        );
       })
     );
   }
@@ -276,6 +304,15 @@ export class GoogleSheetsService {
     }
 
     return Array.from(dayMap.entries()).map(([date, dayMatches]) => ({ date, matches: dayMatches }));
+  }
+
+  /** Converts raw [dateTime, player, message] rows to CommentEntry[], newest first, max 50. */
+  private parseCommentRows(rows: string[][]): CommentEntry[] {
+    return rows
+      .filter((r) => r[2]?.trim())
+      .map((r) => ({ dateTime: r[0] ?? '', player: r[1] ?? '', message: r[2] ?? '' }))
+      .sort((a, b) => b.dateTime.localeCompare(a.dateTime))
+      .slice(0, 50);
   }
 }
 

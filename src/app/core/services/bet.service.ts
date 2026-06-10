@@ -9,6 +9,8 @@ export interface BetPayload {
   match1Bet: string;
   match2Bet: string;
   modifier: string;
+  /** Optional chat-style comment submitted alongside the bet */
+  comment?: string;
 }
 
 export interface BetResponse {

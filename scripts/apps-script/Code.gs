@@ -17,9 +17,10 @@
  *   Deploy → Manage deployments → edit the existing deployment → new version → Deploy
  */
 
-var SPREADSHEET_ID = '1KN7r6qdlnDKLbAitcn_KeN8ztP05KO2ZhW0nJ81WI78';
-var BETS_SHEET     = 'WC2026';
-var BETS_RANGE     = 'Bets';
+var SPREADSHEET_ID   = '1KN7r6qdlnDKLbAitcn_KeN8ztP05KO2ZhW0nJ81WI78';
+var BETS_SHEET       = 'WC2026';
+var BETS_RANGE       = 'Bets';
+var COMMENTS_SHEET   = 'Comments';
 
 // ---------------------------------------------------------------------------
 // Entry point — handles POST from Angular
@@ -31,6 +32,7 @@ function doPost(e) {
     var match1Bet = (payload.match1Bet || '').trim();
     var match2Bet = (payload.match2Bet || '').trim();
     var modifier  = (payload.modifier  || '').trim();
+    var comment   = (payload.comment   || '').trim();
 
     if (!player) {
       return jsonResponse({ ok: false, message: 'Missing player name' }, 400);
@@ -83,6 +85,19 @@ function doPost(e) {
     }
 
     SpreadsheetApp.flush();
+
+    // ── Write optional comment to Comments sheet ──────────────────────────
+    if (comment) {
+      var commentsSheet = ss.getSheetByName(COMMENTS_SHEET);
+      if (!commentsSheet) {
+        // Create the sheet if it doesn't exist yet
+        commentsSheet = ss.insertSheet(COMMENTS_SHEET);
+        commentsSheet.appendRow(['DateTime', 'Player', 'Message']);
+      }
+      var now = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd'T'HH:mm:ss");
+      commentsSheet.appendRow([now, player, comment]);
+      SpreadsheetApp.flush();
+    }
 
     return jsonResponse({ ok: true, updatedRow: targetRow });
 

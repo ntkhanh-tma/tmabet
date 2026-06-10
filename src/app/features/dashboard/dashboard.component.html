@@ -64,8 +64,9 @@
                       <button
                         class="bet-btn"
                         [class.bet-btn--chosen]="chosenTeam(match) === match.homeTeam"
-                        [disabled]="isBetLocked(match) || isSubmitting(match) || !auth.username()"
-                        (click)="placeBet(match, match.homeTeam)"
+                        [class.bet-btn--pending]="isPendingBet(match, match.homeTeam)"
+                        [disabled]="isBetLocked(match) || isSubmitting(match) || !auth.username() || isConfirmOpen(match)"
+                        (click)="openBetConfirm(match, match.homeTeam)"
                         matTooltip="{{ isBetLocked(match) ? 'Bet locked for 1 hour' : 'Bet on ' + match.homeTeam }}"
                       >
                         @if (chosenTeam(match) === match.homeTeam) {
@@ -104,8 +105,9 @@
                       <button
                         class="bet-btn"
                         [class.bet-btn--chosen]="chosenTeam(match) === match.awayTeam"
-                        [disabled]="isBetLocked(match) || isSubmitting(match) || !auth.username()"
-                        (click)="placeBet(match, match.awayTeam)"
+                        [class.bet-btn--pending]="isPendingBet(match, match.awayTeam)"
+                        [disabled]="isBetLocked(match) || isSubmitting(match) || !auth.username() || isConfirmOpen(match)"
+                        (click)="openBetConfirm(match, match.awayTeam)"
                         matTooltip="{{ isBetLocked(match) ? 'Bet locked for 1 hour' : 'Bet on ' + match.awayTeam }}"
                       >
                         @if (chosenTeam(match) === match.awayTeam) {
@@ -122,21 +124,44 @@
                 @if (isBetMatch(match)) {
                   <div class="match-card__betters">
                     <div class="match-card__betters-side">
-                      @for (e of betAnimalsForTeam(match, match.homeTeam); track $index) {
-                        <span class="match-card__animal" [matTooltip]="match.homeTeam">{{ e }}</span>
+                      @for (b of bettersForTeam(match, match.homeTeam); track b.playerName) {
+                        <span class="match-card__animal" [matTooltip]="b.playerName">{{ b.animal }}</span>
                       }
-                      @if (betAnimalsForTeam(match, match.homeTeam).length === 0) {
+                      @if (bettersForTeam(match, match.homeTeam).length === 0) {
                         <span class="match-card__betters-empty">–</span>
                       }
                     </div>
                     <div class="match-card__betters-divider"></div>
                     <div class="match-card__betters-side match-card__betters-side--right">
-                      @for (e of betAnimalsForTeam(match, match.awayTeam); track $index) {
-                        <span class="match-card__animal" [matTooltip]="match.awayTeam">{{ e }}</span>
+                      @for (b of bettersForTeam(match, match.awayTeam); track b.playerName) {
+                        <span class="match-card__animal" [matTooltip]="b.playerName">{{ b.animal }}</span>
                       }
-                      @if (betAnimalsForTeam(match, match.awayTeam).length === 0) {
+                      @if (bettersForTeam(match, match.awayTeam).length === 0) {
                         <span class="match-card__betters-empty">–</span>
                       }
+                    </div>
+                  </div>
+                }
+
+                @if (isConfirmOpen(match)) {
+                  <div class="match-card__confirm">
+                    <div class="match-card__confirm-header">
+                      <mat-icon class="match-card__confirm-icon">sports_soccer</mat-icon>
+                      <span>Bet on <strong>{{ pendingBet()?.team }}</strong>?</span>
+                    </div>
+                    <textarea
+                      class="match-card__confirm-textarea"
+                      placeholder="Add a comment (optional)…"
+                      rows="2"
+                      [value]="pendingComment()"
+                      (input)="pendingComment.set($any($event.target).value)"
+                    ></textarea>
+                    <div class="match-card__confirm-actions">
+                      <button class="bet-confirm-btn bet-confirm-btn--cancel" (click)="cancelBet()">Cancel</button>
+                      <button class="bet-confirm-btn bet-confirm-btn--go" (click)="confirmBet()">
+                        <mat-icon style="font-size:14px;width:14px;height:14px">check</mat-icon>
+                        Go!
+                      </button>
                     </div>
                   </div>
                 }

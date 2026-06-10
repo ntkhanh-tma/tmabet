@@ -44,6 +44,32 @@
     </p>
   </div>
 
+  @if (auth.username()) {
+    <div class="sidebar__chat">
+      <div class="sidebar__chat-header">
+        <mat-icon class="sidebar__chat-icon">chat_bubble_outline</mat-icon>
+        <span>Chat</span>
+        <button class="sidebar__chat-refresh" (click)="loadComments()" matTooltip="Refresh" matTooltipPosition="right">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
+      <div class="sidebar__chat-messages">
+        @if (comments.length === 0) {
+          <div class="sidebar__chat-empty">No messages yet.</div>
+        }
+        @for (c of comments; track c.dateTime + c.player) {
+          <div class="sidebar__chat-msg">
+            <div class="sidebar__chat-msg-meta">
+              <span class="sidebar__chat-msg-player">{{ c.player }}</span>
+              <span class="sidebar__chat-msg-time">{{ formatDateTime(c.dateTime) }}</span>
+            </div>
+            <div class="sidebar__chat-msg-text">{{ c.message }}</div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
   <div class="sidebar__footer">
     <span class="sidebar__edition">FIFA World Cup™ 2026</span>
     <span class="sidebar__host">USA · Canada · Mexico</span>

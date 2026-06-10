@@ -62,6 +62,52 @@ export class DashboardComponent implements OnInit {
 
   // ─── Bet helpers ──────────────────────────────────────────────────────────
 
+  // ─── Bet confirmation ────────────────────────────────────────────────────
+
+  /**
+   * The match + team selection awaiting confirmation.
+   * null means no confirmation dialog is open.
+   */
+  readonly pendingBet = signal<{ match: Match; team: string } | null>(null);
+
+  /** Optional comment the user types in the confirmation panel. */
+  readonly pendingComment = signal<string>('');
+
+  /** Open the inline confirmation panel instead of immediately placing a bet. */
+  openBetConfirm(match: Match, team: string): void {
+    const slot = this.betSlot(match);
+    const player = this.auth.username();
+    if (!slot || !player || this.isBetLocked(match) || this.submitting() !== null) return;
+    this.pendingBet.set({ match, team });
+    this.pendingComment.set('');
+  }
+
+  cancelBet(): void {
+    this.pendingBet.set(null);
+    this.pendingComment.set('');
+  }
+
+  confirmBet(): void {
+    const pending = this.pendingBet();
+    if (!pending) return;
+    const comment = this.pendingComment().trim();
+    this.pendingBet.set(null);
+    this.pendingComment.set('');
+    this.placeBet(pending.match, pending.team, comment);
+  }
+
+  isPendingBet(match: Match, team: string): boolean {
+    const p = this.pendingBet();
+    return p !== null && p.match.id === match.id && p.team === team;
+  }
+
+  isConfirmOpen(match: Match): boolean {
+    const p = this.pendingBet();
+    return p !== null && p.match.id === match.id;
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+
   /** Stable "HomeTeam|AwayTeam" key for a match; used to scope localStorage. */
   matchKey(match: Match): string {
     return `${match.homeTeam}|${match.awayTeam}`;
@@ -115,7 +161,7 @@ export class DashboardComponent implements OnInit {
     return err && err.slot === slot ? err.message : null;
   }
 
-  placeBet(match: Match, team: string): void {
+  placeBet(match: Match, team: string, comment = ''): void {
     const slot = this.betSlot(match);
     const player = this.auth.username();
     if (!slot || !player || this.isBetLocked(match) || this.submitting() !== null) return;
@@ -145,6 +191,7 @@ export class DashboardComponent implements OnInit {
         match1Bet,
         match2Bet,
         modifier: sheetBet?.modifier ?? '',
+        ...(comment ? { comment } : {}),
       })
       .subscribe({
         next: () => {
@@ -245,19 +292,29 @@ export class DashboardComponent implements OnInit {
     '🐞','🐜','🦗','🕷','🦂','🐢','🐍','🦎','🦖','🦕','🐙','🦑','🦐','🦞','🦀',
   ];
 
-  /** Returns an array of random animal emojis, one per bettor for the given team on a match. */
-  betAnimalsForTeam(match: Match, team: string): string[] {
+  /**
+   * Returns bettors for the given team on a match, each with an animal emoji and player name.
+   * Works for BOTH current bet matches (slot-based) and falls back to scanning all bets
+   * so the counter also appears when the bets cache is stale.
+   */
+  bettersForTeam(match: Match, team: string): { animal: string; playerName: string }[] {
     if (!this.data) return [];
     const slot = this.betSlot(match);
-    if (!slot) return [];
-    const betters = this.data.bets.filter((b) => {
+    // Slot-based: exact match against match1/match2 bet columns
+    let betters = this.data.bets.filter((b) => {
+      if (!slot) return false;
       const pick = slot === 1 ? b.match1Bet : b.match2Bet;
-      return pick.trim().toLowerCase() === team.trim().toLowerCase();
+      return pick?.trim().toLowerCase() === team.trim().toLowerCase();
     });
-    return betters.map((_, i) => {
-      // Deterministic per-player index based on player name length + position
-      const seed = (betters[i].playerName.length * 7 + i * 13) % DashboardComponent.ANIMALS.length;
-      return DashboardComponent.ANIMALS[seed];
+    // Fallback: if slot-based returns nothing but there are bets with this team name anywhere, use those
+    if (betters.length === 0) {
+      betters = this.data.bets.filter((b) =>
+        [b.match1Bet, b.match2Bet].some((p) => p?.trim().toLowerCase() === team.trim().toLowerCase())
+      );
+    }
+    return betters.map((b, i) => {
+      const seed = (b.playerName.length * 7 + i * 13) % DashboardComponent.ANIMALS.length;
+      return { animal: DashboardComponent.ANIMALS[seed], playerName: b.playerName };
     });
   }
 }
