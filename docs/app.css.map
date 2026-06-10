@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/app.scss"],
-  "sourcesContent": [".app-shell {\r\n  display: flex;\r\n  height: 100vh;\r\n  overflow: hidden;\r\n\r\n  &__main {\r\n    display: flex;\r\n    flex-direction: column;\r\n    flex: 1;\r\n    min-width: 0;\r\n    overflow: hidden;\r\n  }\r\n\r\n  &__content {\r\n    flex: 1;\r\n    overflow-y: auto;\r\n  }\r\n\r\n  // On mobile/tablet the sidebar becomes a bottom nav, so give back\r\n  // that space at the bottom of the content area.\r\n  @media (max-width: 959px) {\r\n    flex-direction: column;\r\n\r\n    &__content {\r\n      padding-bottom: 56px; // height of the bottom nav bar\r\n    }\r\n  }\r\n}\r\n"],
-  "mappings": ";AAAA,CAAA;AACE,WAAA;AACA,UAAA;AACA,YAAA;;AAEA,CAAA;AACE,WAAA;AACA,kBAAA;AACA,QAAA;AACA,aAAA;AACA,YAAA;;AAGF,CAAA;AACE,QAAA;AACA,cAAA;;AAKF,QAAA,WAAA;AApBF,GAAA;AAqBI,oBAAA;;AAEA,GAVF;AAWI,oBAAA;;;",
-  "names": []
-}
