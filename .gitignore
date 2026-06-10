@@ -15,9 +15,6 @@ yarn-error.log
 /worker/node_modules
 /worker/.wrangler
 
-# Secrets — never commit production environment file (contains Apps Script URL)
-src/environments/environment.prod.ts
-
 # IDEs and editors
 .idea/
 .project
@@ -47,3 +44,4 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
