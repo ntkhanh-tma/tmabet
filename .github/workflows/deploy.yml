@@ -25,6 +25,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Fetch latest sheet data
+        run: node scripts/fetch-sheet-data.mjs
+        env:
+          GOOGLE_SHEETS_API_KEY: ${{ secrets.GOOGLE_SHEETS_API_KEY }}
+          SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
+
       - name: Inject Apps Script URL
         run: |
           sed -i "s|appsScriptUrl: ''|appsScriptUrl: '${{ secrets.APPS_SCRIPT_URL }}'|g" src/environments/environment.prod.ts
