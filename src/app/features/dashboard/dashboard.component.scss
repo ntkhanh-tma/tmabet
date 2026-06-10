@@ -441,6 +441,18 @@
     margin: 0 2px;
   }
 
+  &__match-header {
+    white-space: nowrap;
+    cursor: default;
+  }
+
+  &__match-vs {
+    font-size: 10px;
+    color: var(--mat-sys-outline);
+    vertical-align: middle;
+    margin: 0 1px;
+  }
+
   &__row--me td {
     background: var(--mat-sys-primary-container);
     font-weight: 700;

@@ -32,6 +32,7 @@ function doPost(e) {
     var match1Bet = (payload.match1Bet || '').trim();
     var match2Bet = (payload.match2Bet || '').trim();
     var modifier  = (payload.modifier  || '').trim();
+    var betTeam   = (payload.betTeam   || '').trim();
     var comment   = (payload.comment   || '').trim();
 
     if (!player) {
@@ -92,10 +93,10 @@ function doPost(e) {
       if (!commentsSheet) {
         // Create the sheet if it doesn't exist yet
         commentsSheet = ss.insertSheet(COMMENTS_SHEET);
-        commentsSheet.appendRow(['DateTime', 'Player', 'Message']);
+        commentsSheet.appendRow(['Datetime', 'Player', 'Comment', 'Bet']);
       }
       var now = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd'T'HH:mm:ss");
-      commentsSheet.appendRow([now, player, comment]);
+      commentsSheet.appendRow([now, player, comment, betTeam]);
       SpreadsheetApp.flush();
     }
 

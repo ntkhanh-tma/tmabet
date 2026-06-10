@@ -191,6 +191,7 @@ export class DashboardComponent implements OnInit {
         match1Bet,
         match2Bet,
         modifier: sheetBet?.modifier ?? '',
+        betTeam: team,
         ...(comment ? { comment } : {}),
       })
       .subscribe({

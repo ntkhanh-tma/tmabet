@@ -261,9 +261,11 @@
 
               @if (data.betMatch1) {
                 <ng-container matColumnDef="match1">
-                  <th mat-header-cell *matHeaderCellDef>
+                  <th mat-header-cell *matHeaderCellDef
+                    [matTooltip]="data.betMatch1.homeTeam + ' vs ' + data.betMatch1.awayTeam"
+                    class="bets-table__match-header">
                     <span class="fi fi-{{ data.betMatch1.homeFlag }} bets-table__flag"></span>
-                    {{ data.betMatch1.homeTeam }} vs {{ data.betMatch1.awayTeam }}
+                    <span class="bets-table__match-vs">vs</span>
                     <span class="fi fi-{{ data.betMatch1.awayFlag }} bets-table__flag"></span>
                   </th>
                   <td mat-cell *matCellDef="let bet">
@@ -295,9 +297,11 @@
 
               @if (data.betMatch2) {
                 <ng-container matColumnDef="match2">
-                  <th mat-header-cell *matHeaderCellDef>
+                  <th mat-header-cell *matHeaderCellDef
+                    [matTooltip]="data.betMatch2.homeTeam + ' vs ' + data.betMatch2.awayTeam"
+                    class="bets-table__match-header">
                     <span class="fi fi-{{ data.betMatch2.homeFlag }} bets-table__flag"></span>
-                    {{ data.betMatch2.homeTeam }} vs {{ data.betMatch2.awayTeam }}
+                    <span class="bets-table__match-vs">vs</span>
                     <span class="fi fi-{{ data.betMatch2.awayFlag }} bets-table__flag"></span>
                   </th>
                   <td mat-cell *matCellDef="let bet">

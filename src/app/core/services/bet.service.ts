@@ -9,6 +9,8 @@ export interface BetPayload {
   match1Bet: string;
   match2Bet: string;
   modifier: string;
+  /** The specific team chosen in this action — used to tag the comment row */
+  betTeam?: string;
   /** Optional chat-style comment submitted alongside the bet */
   comment?: string;
 }
