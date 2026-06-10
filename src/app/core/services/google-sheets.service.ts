@@ -148,19 +148,25 @@ export class GoogleSheetsService {
    * Returned array is already sorted newest-first.
    */
   getComments(): Observable<CommentEntry[]> {
-    return this.http.get<{ DateTime: string; Player: string; Message: string }[]>('data/comments.json').pipe(
+    return this.http.get<Record<string, string>[]>('data/comments.json').pipe(
       catchError(() => of([])),
       switchMap((cached) => {
         if (cached && cached.length > 0) {
-          return of(this.parseCommentRows(cached.map((r) => [r.DateTime ?? '', r.Player ?? '', r.Message ?? ''])));
+          // Handle both possible key names written by the fetch script (sheet header as-is)
+          return of(this.parseCommentRows(cached.map((r) => [
+            r['DateTime'] ?? r['Datetime'] ?? '',
+            r['Player'] ?? '',
+            r['Message'] ?? r['Comment'] ?? '',
+          ])));
         }
         return this.getSheetRange('Comments!A:ZZ').pipe(
           map((rawRows) => {
             if (rawRows.length === 0) return [];
             const [headers, ...dataRows] = rawRows;
-            const dtIdx = headers.findIndex((h) => h.toLowerCase().includes('date') || h.toLowerCase() === 'datetime');
+            const dtIdx = headers.findIndex((h) => h.toLowerCase().includes('date'));
             const playerIdx = headers.findIndex((h) => h.toLowerCase() === 'player');
-            const msgIdx = headers.findIndex((h) => h.toLowerCase() === 'message');
+            // Accept both "Message" and "Comment" as the text column
+            const msgIdx = headers.findIndex((h) => h.toLowerCase() === 'message' || h.toLowerCase() === 'comment');
             const rows = dataRows.map((r) => [r[dtIdx] ?? '', r[playerIdx] ?? '', r[msgIdx] ?? '']);
             return this.parseCommentRows(rows);
           })
