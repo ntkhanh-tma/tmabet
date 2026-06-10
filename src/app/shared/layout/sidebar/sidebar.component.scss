@@ -217,6 +217,15 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__chat-msg-flag {
+    width: 14px;
+    height: 11px;
+    flex-shrink: 0;
   }
 
   &__chat-msg-time {
@@ -306,5 +315,10 @@
   &--optional {
     color: var(--mat-sys-primary);
     font-style: italic;
+  }
+
+  &--highlight {
+    color: #ab47bc;
+    font-weight: 700;
   }
 }

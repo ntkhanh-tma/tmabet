@@ -157,6 +157,7 @@ export class GoogleSheetsService {
             r['DateTime'] ?? r['Datetime'] ?? '',
             r['Player'] ?? '',
             r['Message'] ?? r['Comment'] ?? '',
+            r['Bet'] ?? r['Country'] ?? '',
           ])));
         }
         return this.getSheetRange('Comments!A:ZZ').pipe(
@@ -167,7 +168,8 @@ export class GoogleSheetsService {
             const playerIdx = headers.findIndex((h) => h.toLowerCase() === 'player');
             // Accept both "Message" and "Comment" as the text column
             const msgIdx = headers.findIndex((h) => h.toLowerCase() === 'message' || h.toLowerCase() === 'comment');
-            const rows = dataRows.map((r) => [r[dtIdx] ?? '', r[playerIdx] ?? '', r[msgIdx] ?? '']);
+            const betIdx = headers.findIndex((h) => h.toLowerCase() === 'bet' || h.toLowerCase() === 'country');
+            const rows = dataRows.map((r) => [r[dtIdx] ?? '', r[playerIdx] ?? '', r[msgIdx] ?? '', betIdx >= 0 ? (r[betIdx] ?? '') : '']);
             return this.parseCommentRows(rows);
           })
         );
@@ -312,11 +314,11 @@ export class GoogleSheetsService {
     return Array.from(dayMap.entries()).map(([date, dayMatches]) => ({ date, matches: dayMatches }));
   }
 
-  /** Converts raw [dateTime, player, message] rows to CommentEntry[], newest first, max 50. */
+  /** Converts raw [dateTime, player, message, bet] rows to CommentEntry[], newest first, max 50. */
   private parseCommentRows(rows: string[][]): CommentEntry[] {
     return rows
       .filter((r) => r[2]?.trim())
-      .map((r) => ({ dateTime: r[0] ?? '', player: r[1] ?? '', message: r[2] ?? '' }))
+      .map((r) => ({ dateTime: r[0] ?? '', player: r[1] ?? '', message: r[2] ?? '', bet: r[3] ?? '' }))
       .sort((a, b) => b.dateTime.localeCompare(a.dateTime))
       .slice(0, 50);
   }

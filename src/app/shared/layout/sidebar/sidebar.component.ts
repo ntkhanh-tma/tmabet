@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 import { GoogleSheetsService } from '../../../core/services/google-sheets.service';
 import { CommentEntry } from '../../../core/models/dashboard.model';
+import { getCountryCode } from '../../../core/utils/country-flags';
 
 interface NavItem {
   label: string;
@@ -30,6 +31,7 @@ export class SidebarComponent implements OnInit {
   navItems: NavItem[] = [
     { label: 'Dashboard', icon: 'dashboard', route: '/' },
     { label: 'Matches', icon: 'sports_soccer', route: '/matches' },
+    { label: 'Results', icon: 'emoji_events', route: '/results' },
   ];
 
   ngOnInit(): void {
@@ -46,5 +48,9 @@ export class SidebarComponent implements OnInit {
     const d = new Date(dt);
     if (isNaN(d.getTime())) return dt;
     return d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+  }
+
+  getFlag(country: string): string {
+    return getCountryCode(country) ?? 'un';
   }
 }

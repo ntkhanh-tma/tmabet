@@ -90,4 +90,6 @@ export interface CommentEntry {
   player: string;
   /** Message text */
   message: string;
+  /** Country name the player bet on (may be empty) */
+  bet: string;
 }
