@@ -135,6 +135,107 @@
     font-weight: 600;
     color: var(--mat-sys-on-surface);
     text-align: center;
+
+    &--upper {
+      color: #ff5252;
+      text-shadow:
+        0 0 6px rgba(255, 82, 82, 0.9),
+        0 0 14px rgba(255, 82, 82, 0.6),
+        0 0 28px rgba(255, 82, 82, 0.35);
+      animation: upper-pulse 1.8s ease-in-out infinite;
+    }
+  }
+
+  &__odds-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__odds-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: #ffd740;
+    background: rgba(255, 215, 64, 0.15);
+    border: 1px solid rgba(255, 215, 64, 0.4);
+    border-radius: 8px;
+    padding: 1px 7px;
+    letter-spacing: 0.3px;
+  }
+
+  &__odds-side {
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 0.5px;
+
+    &--upper {
+      color: #ffd740;
+      text-shadow: 0 0 8px rgba(255, 215, 64, 0.7);
+      font-size: 13px;
+    }
+  }
+
+  &__betters {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 8px 0 4px;
+    min-height: 22px;
+  }
+
+  &__betters-side {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    flex: 1;
+
+    &--right {
+      justify-content: flex-end;
+    }
+  }
+
+  &__betters-divider {
+    width: 1px;
+    align-self: stretch;
+    background: rgba(255, 255, 255, 0.15);
+    flex-shrink: 0;
+  }
+
+  &__betters-empty {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.25);
+  }
+
+  &__animal {
+    font-size: 16px;
+    line-height: 1;
+    cursor: default;
+  }
+
+  &__comment {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    margin-top: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border-left: 2px solid #ffd740;
+    font-size: 11px;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.5;
+  }
+
+  &__comment-icon {
+    font-size: 13px;
+    width: 13px;
+    height: 13px;
+    color: #ffd740;
+    flex-shrink: 0;
+    margin-top: 1px;
   }
 
   &__score {
@@ -443,6 +544,11 @@ mat-card .mat-mdc-card-content {
 @keyframes card-glow {
   0%, 100% { box-shadow: 0 0 4px 1px rgba(255, 215, 0, 0.25); }
   50%       { box-shadow: 0 0 14px 4px rgba(255, 215, 0, 0.55); }
+}
+
+@keyframes upper-pulse {
+  0%, 100% { text-shadow: 0 0 6px rgba(255, 82, 82, 0.9), 0 0 14px rgba(255, 82, 82, 0.5); }
+  50%       { text-shadow: 0 0 10px rgba(255, 82, 82, 1),  0 0 24px rgba(255, 82, 82, 0.8), 0 0 40px rgba(255, 82, 82, 0.4); }
 }
 
 @keyframes shine {

@@ -13,6 +13,12 @@ export interface Match {
   homeScore?: number;
   awayScore?: number;
   status: 'upcoming' | 'live' | 'finished';
+  /** The favoured/upper team name from the sheet */
+  upper: string;
+  /** Handicap odds value (e.g. "0.5", "1") */
+  odds: string;
+  /** Analyst comment from the sheet */
+  comment: string;
 }
 
 /** Raw row shape from matches.json (column names match the sheet headers) */

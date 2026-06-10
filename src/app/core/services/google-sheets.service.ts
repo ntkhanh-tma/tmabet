@@ -258,11 +258,9 @@ export class GoogleSheetsService {
         homeScore: hasResult ? homeScore : undefined,
         awayScore: hasResult ? awayScore : undefined,
         status: hasResult ? 'finished' : 'upcoming',
-      };
-    });
-        homeScore: hasResult ? homeScore : undefined,
-        awayScore: hasResult ? awayScore : undefined,
-        status: hasResult ? 'finished' : 'upcoming',
+        upper: row.Upper ?? '',
+        odds: row.Odds ?? '',
+        comment: row.Comment ?? '',
       };
     });
 

@@ -50,7 +50,16 @@
                 <div class="match-card__teams">
                   <div class="match-card__team">
                     <span class="fi fi-{{ match.homeFlag }} match-card__flag"></span>
-                    <span class="match-card__team-name">{{ match.homeTeam }}</span>
+                    <span class="match-card__team-name"
+                      [class.match-card__team-name--upper]="match.upper && match.upper.toLowerCase() === match.homeTeam.toLowerCase()">
+                      {{ match.homeTeam }}
+                    </span>
+                    @if (match.odds && match.upper) {
+                      <span class="match-card__odds-side"
+                        [class.match-card__odds-side--upper]="match.upper.toLowerCase() === match.homeTeam.toLowerCase()">
+                        {{ oddsDisplay(match).home }}
+                      </span>
+                    }
                     @if (auth.username() && isBetMatch(match)) {
                       <button
                         class="bet-btn"
@@ -81,7 +90,16 @@
 
                   <div class="match-card__team match-card__team--away">
                     <span class="fi fi-{{ match.awayFlag }} match-card__flag"></span>
-                    <span class="match-card__team-name">{{ match.awayTeam }}</span>
+                    <span class="match-card__team-name"
+                      [class.match-card__team-name--upper]="match.upper && match.upper.toLowerCase() === match.awayTeam.toLowerCase()">
+                      {{ match.awayTeam }}
+                    </span>
+                    @if (match.odds && match.upper) {
+                      <span class="match-card__odds-side"
+                        [class.match-card__odds-side--upper]="match.upper.toLowerCase() === match.awayTeam.toLowerCase()">
+                        {{ oddsDisplay(match).away }}
+                      </span>
+                    }
                     @if (auth.username() && isBetMatch(match)) {
                       <button
                         class="bet-btn"
@@ -100,6 +118,35 @@
                     }
                   </div>
                 </div>
+
+                @if (isBetMatch(match)) {
+                  <div class="match-card__betters">
+                    <div class="match-card__betters-side">
+                      @for (e of betAnimalsForTeam(match, match.homeTeam); track $index) {
+                        <span class="match-card__animal" [matTooltip]="match.homeTeam">{{ e }}</span>
+                      }
+                      @if (betAnimalsForTeam(match, match.homeTeam).length === 0) {
+                        <span class="match-card__betters-empty">–</span>
+                      }
+                    </div>
+                    <div class="match-card__betters-divider"></div>
+                    <div class="match-card__betters-side match-card__betters-side--right">
+                      @for (e of betAnimalsForTeam(match, match.awayTeam); track $index) {
+                        <span class="match-card__animal" [matTooltip]="match.awayTeam">{{ e }}</span>
+                      }
+                      @if (betAnimalsForTeam(match, match.awayTeam).length === 0) {
+                        <span class="match-card__betters-empty">–</span>
+                      }
+                    </div>
+                  </div>
+                }
+
+                @if (match.comment) {
+                  <div class="match-card__comment">
+                    <mat-icon class="match-card__comment-icon">tips_and_updates</mat-icon>
+                    <span>{{ match.comment }}</span>
+                  </div>
+                }
 
                 @if (auth.username() && isBetMatch(match) && isSubmitting(match)) {
                   <div class="match-card__bet-status">

@@ -226,5 +226,39 @@ export class DashboardComponent implements OnInit {
   getFlag(team: string): string {
     return getCountryCode(team) ?? 'un';
   }
+
+  /**
+   * Returns the odds formatted as "X – 0" (home is upper) or "0 – X" (away is upper).
+   * Both sides are empty strings when odds or upper is missing.
+   */
+  oddsDisplay(match: Match): { home: string; away: string } {
+    if (!match.odds || !match.upper) return { home: '', away: '' };
+    const isHomeUpper = match.upper.trim().toLowerCase() === match.homeTeam.trim().toLowerCase();
+    return isHomeUpper
+      ? { home: match.odds, away: '0' }
+      : { home: '0', away: match.odds };
+  }
+
+  private static readonly ANIMALS = [
+    '🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵',
+    '🐔','🐧','🐦','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄','🐝','🐛','🦋','🐌',
+    '🐞','🐜','🦗','🕷','🦂','🐢','🐍','🦎','🦖','🦕','🐙','🦑','🦐','🦞','🦀',
+  ];
+
+  /** Returns an array of random animal emojis, one per bettor for the given team on a match. */
+  betAnimalsForTeam(match: Match, team: string): string[] {
+    if (!this.data) return [];
+    const slot = this.betSlot(match);
+    if (!slot) return [];
+    const betters = this.data.bets.filter((b) => {
+      const pick = slot === 1 ? b.match1Bet : b.match2Bet;
+      return pick.trim().toLowerCase() === team.trim().toLowerCase();
+    });
+    return betters.map((_, i) => {
+      // Deterministic per-player index based on player name length + position
+      const seed = (betters[i].playerName.length * 7 + i * 13) % DashboardComponent.ANIMALS.length;
+      return DashboardComponent.ANIMALS[seed];
+    });
+  }
 }
 
