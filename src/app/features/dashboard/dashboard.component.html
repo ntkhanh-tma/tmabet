@@ -166,53 +166,8 @@
         </mat-card-content>
       </mat-card>
 
-      <!-- ── Zone 2b: My Bets summary (only when logged in) ──────────────── -->
-      @if (auth.username() && myBet) {
-        <mat-card class="dashboard__card dashboard__card--my-bets">
-          <mat-card-content>
-            <div class="my-bets">
-              <div class="my-bets__title">
-                <mat-icon class="my-bets__title-icon">person_pin</mat-icon>
-                <span>My Picks</span>
-                @if (myBet.modifier) {
-                  <span class="bet-modifier my-bets__modifier">×{{ myBet.modifier }}</span>
-                }
-              </div>
-              @if (data.betMatch1 && myBet.match1Bet) {
-                <div class="my-bets__row">
-                  <span class="my-bets__vs">
-                    <span class="fi fi-{{ data.betMatch1.homeFlag }} my-bets__flag"></span>
-                     vs 
-                    <span class="fi fi-{{ data.betMatch1.awayFlag }} my-bets__flag"></span>
-                  </span>
-                  <span class="my-bets__arrow">→</span>
-                  <span class="bet-chip bet-chip--mine">
-                    <span class="fi fi-{{ getFlag(myBet.match1Bet) }} my-bets__flag"></span>
-                    {{ myBet.match1Bet }}
-                  </span>
-                </div>
-              }
-              @if (data.betMatch2 && myBet.match2Bet) {
-                <div class="my-bets__row">
-                  <span class="my-bets__vs">
-                    <span class="fi fi-{{ data.betMatch2.homeFlag }} my-bets__flag"></span>
-                    vs
-                    <span class="fi fi-{{ data.betMatch2.awayFlag }} my-bets__flag"></span>
-                  </span>
-                  <span class="my-bets__arrow">→</span>
-                  <span class="bet-chip bet-chip--mine">
-                    <span class="fi fi-{{ getFlag(myBet.match2Bet) }} my-bets__flag"></span>
-                    {{ myBet.match2Bet }}
-                  </span>
-                </div>
-              }
-            </div>
-          </mat-card-content>
-        </mat-card>
-      }
-
       <!-- ── Zone 3: Current Bets Table ──────────────────────────────────── -->
-      <mat-card class="dashboard__card dashboard__card--full-row">
+      <mat-card class="dashboard__card">
         <mat-card-header>
           <mat-icon mat-card-avatar>casino</mat-icon>
           <mat-card-title>Current Bets</mat-card-title>

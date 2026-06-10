@@ -295,70 +295,7 @@ mat-card .mat-mdc-card-content {
 }
 
 // ── My Bets card ───────────────────────────────────────────────────────────────
-
-.dashboard__card--my-bets {
-  background: var(--mat-sys-primary-container);
-  outline: 2px solid var(--mat-sys-primary);
-
-  .mat-mdc-card-content {
-    padding: 8px 12px 10px !important;
-  }
-}
-
-.my-bets {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-
-  &__title {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--mat-sys-on-primary-container);
-    margin-bottom: 4px;
-  }
-
-  &__title-icon {
-    font-size: 14px;
-    width: 14px;
-    height: 14px;
-    color: var(--mat-sys-primary);
-  }
-
-  &__modifier {
-    margin-left: auto;
-  }
-
-  &__row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  &__vs {
-    display: flex;
-    gap: 2px;
-    align-items: center;
-  }
-
-  &__flag {
-    width: 16px;
-    height: 12px;
-    border-radius: 2px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-  }
-
-  &__arrow {
-    color: var(--mat-sys-primary);
-    font-weight: 700;
-    font-size: 13px;
-    flex-shrink: 0;
-  }
-}
+// (removed — Current Bets table now occupies this position)
 
 .bet-chip {
   display: inline-flex;
@@ -374,13 +311,6 @@ mat-card .mat-mdc-card-content {
   &--home {
     background: var(--mat-sys-primary-container);
     color: var(--mat-sys-on-primary-container);
-  }
-
-  &--mine {
-    background: var(--mat-sys-primary);
-    color: var(--mat-sys-on-primary);
-    font-size: 11px;
-    padding: 2px 8px;
   }
 }
 

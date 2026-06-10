@@ -47,6 +47,11 @@ export class DashboardComponent implements OnInit {
   readonly isBetting = computed(() => this.submitting() !== null);
   /** Error message per slot, null = no error. */
   readonly betError = signal<{ slot: 1 | 2; message: string } | null>(null);
+  /**
+   * Bets placed in the current session — used to immediately reflect a new
+   * pick without waiting for the next sheet fetch.
+   */
+  readonly sessionBets = signal<Partial<Record<1 | 2, string>>>({});
 
   ngOnInit(): void {
     this.sheetsService.getDashboardData().subscribe((d) => {
@@ -74,14 +79,16 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
-   * For a bet-match card, returns the team the user already chose (from
-   * localStorage), or null if no bet exists for this match.
+   * Returns the team the user has already bet on for this match.
+   * Priority: sheet data (myBet) → session signal (placed this page load).
    */
   chosenTeam(match: Match): string | null {
     const slot = this.betSlot(match);
     if (!slot) return null;
-    const record = this.betState.getRecord(slot, this.matchKey(match));
-    return record?.chosenTeam ?? null;
+    // Prefer sheet-loaded pick; fall back to in-session pick
+    const sheetPick = slot === 1 ? this.myBet?.match1Bet : this.myBet?.match2Bet;
+    if (sheetPick) return sheetPick;
+    return this.sessionBets()[slot] ?? null;
   }
 
   /**
@@ -141,7 +148,10 @@ export class DashboardComponent implements OnInit {
       })
       .subscribe({
         next: () => {
+          // Record the lock timestamp in localStorage
           this.betState.saveRecord(slot, this.matchKey(match), team);
+          // Immediately reflect the pick in the UI via session signal
+          this.sessionBets.update((s) => ({ ...s, [slot]: team }));
           this.submitting.set(null);
         },
         error: (err: Error) => {
