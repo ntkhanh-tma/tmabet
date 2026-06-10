@@ -1,1 +1,314 @@
-﻿{"players":[],"bets":[],"points":[],"currentMatch":[]}
+{
+  "players": [
+    [
+      "Khanh Nguyen"
+    ],
+    [
+      "Cuong Trinh"
+    ],
+    [
+      "Vu Duc"
+    ],
+    [
+      "Thai Huynh"
+    ],
+    [
+      "Khánh Nguyễn"
+    ],
+    [
+      "Nguyễn Văn Thắng Vip Pro 95"
+    ],
+    [
+      "hong le"
+    ],
+    [
+      "lvcu"
+    ],
+    [
+      "An Phan"
+    ],
+    [
+      "Thien Nguyen Messi"
+    ],
+    [
+      "Huy Nguyễn (jerry)"
+    ],
+    [
+      "Cường Cao"
+    ]
+  ],
+  "bets": [
+    [
+      "Khanh Nguyen",
+      "South Africa",
+      "Paraguay",
+      "1"
+    ],
+    [
+      "Cuong Trinh",
+      "Mexico",
+      "",
+      "1"
+    ],
+    [
+      "Vu Duc",
+      "Mexico"
+    ],
+    [
+      "Thai Huynh",
+      "Mexico",
+      "United States"
+    ],
+    [
+      "Khánh Nguyễn",
+      "South Africa"
+    ],
+    [
+      "Nguyễn Văn Thắng Vip Pro 95",
+      "Mexico",
+      "United States"
+    ],
+    [
+      "hong le",
+      "Mexico"
+    ],
+    [
+      "lvcu",
+      "Mexico",
+      "United States"
+    ],
+    [
+      "An Phan",
+      "Mexico",
+      "United States"
+    ],
+    [
+      "Thien Nguyen Messi",
+      "South Africa"
+    ],
+    [
+      "Huy Nguyễn (jerry)",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "Cường Cao",
+      "Mexico"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ],
+    [
+      "",
+      "",
+      "",
+      "1"
+    ]
+  ],
+  "points": [
+    [
+      "0",
+      "Khanh Nguyen"
+    ],
+    [
+      "",
+      "Cuong Trinh"
+    ],
+    [
+      "",
+      "Vu Duc"
+    ],
+    [
+      "",
+      "Thai Huynh"
+    ],
+    [
+      "",
+      "Khánh Nguyễn"
+    ],
+    [
+      "",
+      "Nguyễn Văn Thắng Vip Pro 95"
+    ],
+    [
+      "",
+      "hong le"
+    ],
+    [
+      "",
+      "lvcu"
+    ],
+    [
+      "",
+      "An Phan"
+    ],
+    [
+      "",
+      "Thien Nguyen Messi"
+    ],
+    [
+      "",
+      "Huy Nguyễn (jerry)"
+    ],
+    [
+      "",
+      "Cường Cao"
+    ]
+  ],
+  "currentMatch": [
+    [
+      "Mexico"
+    ],
+    [
+      "South Africa"
+    ],
+    [
+      "United States"
+    ],
+    [
+      "Paraguay"
+    ]
+  ]
+}
