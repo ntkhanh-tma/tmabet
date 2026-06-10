@@ -221,8 +221,8 @@ export class GoogleSheetsService {
 
   private sheetRowsToMatchDays(rows: SheetMatch[]): MatchDay[] {
     const matches: Match[] = rows.map((row, i) => {
-      const homeTeam = row['Team A'] ?? '';
-      const awayTeam = row['Team B'] ?? '';
+      const homeTeam = row.Home ?? '';
+      const awayTeam = row.Away ?? '';
 
       // Result field is "X-Y", "?", or empty
       const resultParts = row.Result && row.Result !== '?' ? row.Result.split('-') : [];
@@ -234,16 +234,32 @@ export class GoogleSheetsService {
         !isNaN(homeScore) &&
         !isNaN(awayScore);
 
+      // Date comes as DD/MM/YYYY — convert to YYYY-MM-DD for consistent sorting
+      const rawDate = row.Date ?? '';
+      let isoDate = rawDate;
+      const dmyMatch = rawDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      if (dmyMatch) {
+        isoDate = `${dmyMatch[3]}-${dmyMatch[2]}-${dmyMatch[1]}`;
+      }
+
+      // Group column is a single letter — prefix for display
+      const groupLabel = row.Group ? `Group ${row.Group}` : '';
+
       return {
-        id: `sheet-${i}`,
+        id: `sheet-${row.Match || i}`,
         homeTeam,
         awayTeam,
         homeFlag: getCountryCode(homeTeam) ?? 'un',
         awayFlag: getCountryCode(awayTeam) ?? 'un',
-        matchDate: row.Date ?? '',
+        matchDate: isoDate,
         matchTime: row.Time ?? '',
-        group: row.Group || row.Stage || '',
-        groupColor: getGroupColor(row.Group || row.Stage || ''),
+        group: groupLabel,
+        groupColor: getGroupColor(groupLabel),
+        homeScore: hasResult ? homeScore : undefined,
+        awayScore: hasResult ? awayScore : undefined,
+        status: hasResult ? 'finished' : 'upcoming',
+      };
+    });
         homeScore: hasResult ? homeScore : undefined,
         awayScore: hasResult ? awayScore : undefined,
         status: hasResult ? 'finished' : 'upcoming',

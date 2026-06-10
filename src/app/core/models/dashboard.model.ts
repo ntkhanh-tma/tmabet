@@ -17,16 +17,22 @@ export interface Match {
 
 /** Raw row shape from matches.json (column names match the sheet headers) */
 export interface SheetMatch {
+  /** Sequential match number */
+  Match: string;
+  /** Single letter group identifier, e.g. "A", "B" */
+  Group: string;
+  /** Date in DD/MM/YYYY format */
   Date: string;
   Time: string;
-  /** Column header is "Team A" in the sheet */
-  'Team A': string;
-  /** Column header is "Team B" in the sheet */
-  'Team B': string;
+  Home: string;
+  Away: string;
+  /** The favoured team name (handicap upper) */
+  Upper: string;
+  /** Handicap odds value */
+  Odds: string;
+  Comment: string;
   /** Combined score "X-Y", "?", or empty */
   Result: string;
-  Group: string;
-  Stage?: string;
 }
 
 /** Matches grouped by calendar date for the Matches page */
