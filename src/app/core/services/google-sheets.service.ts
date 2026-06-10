@@ -376,40 +376,39 @@ export class GoogleSheetsService {
       matchByNumber.set(m.matchNumber.trim(), m);
     }
 
-    // Detect the player-name key: "Player", "player", or empty string (blank header in sheet)
     const sampleRow = rows[0];
     const allKeys = Object.keys(sampleRow);
+
+    // Column A header is blank → player names; last column "Points" → pre-computed total
     const playerKey = allKeys.find((k) => k.trim().toLowerCase() === 'player') ?? '';
+    const pointsKey = allKeys.find((k) => k.trim().toLowerCase() === 'points') ?? 'Points';
 
-    // All other keys are match-number columns
-    const matchNumberKeys = allKeys.filter((k) => k !== playerKey);
+    // Match-number columns: everything except the player key and the Points key
+    const matchNumberKeys = allKeys.filter(
+      (k) => k !== playerKey && k.trim().toLowerCase() !== 'points' && k.trim() !== ''
+    );
 
-    const columns: ResultColumn[] = matchNumberKeys
-      .filter((key) => key.trim() !== '')
-      .map((key) => {
-        const m = matchByNumber.get(key.trim());
-        return {
-          matchNumber: key.trim(),
-          label: m ? `${m.homeTeam} vs ${m.awayTeam}` : key,
-          homeTeam: m?.homeTeam ?? '',
-          awayTeam: m?.awayTeam ?? '',
-          homeFlag: m?.homeFlag ?? 'un',
-          awayFlag: m?.awayFlag ?? 'un',
-        };
-      });
+    const columns: ResultColumn[] = matchNumberKeys.map((key) => {
+      const m = matchByNumber.get(key.trim());
+      return {
+        matchNumber: key.trim(),
+        label: m ? `${m.homeTeam} vs ${m.awayTeam}` : key,
+        homeTeam: m?.homeTeam ?? '',
+        awayTeam: m?.awayTeam ?? '',
+        homeFlag: m?.homeFlag ?? 'un',
+        awayFlag: m?.awayFlag ?? 'un',
+      };
+    });
 
     const resultRows: ResultRow[] = rows
       .filter((r) => r[playerKey]?.trim())
       .map((r) => {
         const picks: Record<string, string> = {};
-        let total = 0;
         for (const key of matchNumberKeys) {
-          const val = (r[key] ?? '').trim();
-          picks[key.trim()] = val;
-          const num = Number(val);
-          if (!isNaN(num) && val !== '') total += num;
+          picks[key.trim()] = (r[key] ?? '').trim();
         }
-        return { playerName: r[playerKey].trim(), totalPoints: total, picks };
+        const totalPoints = Number(r[pointsKey] ?? '0') || 0;
+        return { playerName: r[playerKey].trim(), totalPoints, picks };
       })
       .sort((a, b) => a.totalPoints - b.totalPoints);
 

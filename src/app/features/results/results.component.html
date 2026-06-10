@@ -63,9 +63,7 @@
                     <mat-progress-bar
                       class="results-table__bar"
                       mode="determinate"
-                      [value]="row.totalPoints >= 0
-                        ? (row.totalPoints / getMaxPoints()) * 100
-                        : 0"
+                      [value]="row.totalPoints > 0 ? (row.totalPoints / getMaxPoints()) * 100 : 0"
                     ></mat-progress-bar>
                   </td>
                 </tr>

@@ -80,10 +80,6 @@ export interface DashboardData {
   bets: BetRow[];
 }
 
-export interface Participant {
-  name: string;
-}
-
 /** One row from the Comments sheet */
 export interface CommentEntry {
   /** ISO datetime string parsed from the sheet value */
@@ -111,9 +107,9 @@ export interface ResultColumn {
 /** One player row in the Results table */
 export interface ResultRow {
   playerName: string;
-  /** Total points for this player (sum of all picks) */
+  /** Total points read directly from the Points column in the sheet */
   totalPoints: number;
-  /** Pick outcome per match column: key = matchNumber, value = raw cell value */
+  /** Pick per match column: key = matchNumber, value = "W", "L", or "" */
   picks: Record<string, string>;
 }
 

@@ -34,23 +34,17 @@ export class ResultsComponent implements OnInit {
     return !!me && me.trim().toLowerCase() === playerName.trim().toLowerCase();
   }
 
-  /** Returns a CSS class based on whether the pick value is positive, negative, or empty. */
+  /** Returns a CSS class for a pick cell: W/W2…W5 = win (green), L/L2…L5 = loss (red), empty = muted. */
   pickClass(val: string): string {
-    if (!val || val === '') return 'result-cell--empty';
-    const n = Number(val);
-    if (isNaN(n)) return '';
-    if (n > 0) return 'result-cell--win';
-    if (n < 0) return 'result-cell--loss';
-    return 'result-cell--neutral';
+    if (!val) return 'result-cell--empty';
+    const upper = val.toUpperCase();
+    if (upper.startsWith('W')) return 'result-cell--win';
+    if (upper.startsWith('L')) return 'result-cell--loss';
+    return '';
   }
 
   getMaxPoints(): number {
     if (!this.data || this.data.rows.length === 0) return 1;
     return Math.max(...this.data.rows.map((r) => r.totalPoints), 1);
-  }
-
-  getMinPoints(): number {
-    if (!this.data || this.data.rows.length === 0) return 0;
-    return Math.min(...this.data.rows.map((r) => r.totalPoints), 0);
   }
 }
