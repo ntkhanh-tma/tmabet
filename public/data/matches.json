@@ -7,7 +7,7 @@
     "Home": "Mexico",
     "Away": "South Africa",
     "Upper": "Mexico",
-    "Odds": "1.5",
+    "Odds": "-1.5",
     "Comment": "Mexico đá sân nhà Azteca mở màn, khí thế vượt trội. Dự đoán: Mexico thắng cách biệt.",
     "Result": ""
   },
@@ -19,7 +19,7 @@
     "Home": "Korea Republic",
     "Away": "Czechia",
     "Upper": "Czechia",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Trận đấu cân bằng, đại diện châu Âu nhỉnh hơn một chút về thể hình. Dự đoán: Hòa.",
     "Result": ""
   },
@@ -31,7 +31,7 @@
     "Home": "Canada",
     "Away": "Bosnia and Herzegovina",
     "Upper": "Canada",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Canada có lợi thế sân nhà Toronto rất lớn trước một Bosnia đang trẻ hóa. Dự đoán: Canada thắng.",
     "Result": ""
   },
@@ -43,7 +43,7 @@
     "Home": "United States",
     "Away": "Paraguay",
     "Upper": "United States",
-    "Odds": "1",
+    "Odds": "-1",
     "Comment": "Dàn sao trẻ của Mỹ có điểm tựa Los Angeles sẽ ép sân ngay từ đầu. Dự đoán: Mỹ thắng tối thiểu.",
     "Result": ""
   },
@@ -55,7 +55,7 @@
     "Home": "Qatar",
     "Away": "Switzerland",
     "Upper": "Switzerland",
-    "Odds": "1",
+    "Odds": "-1",
     "Comment": "Thụy Sĩ già rơ và đẳng cấp vượt trội hoàn toàn so với đại diện châu Á. Dự đoán: Thụy Sĩ thắng đậm.",
     "Result": ""
   },
@@ -67,7 +67,7 @@
     "Home": "Brazil",
     "Away": "Morocco",
     "Upper": "Brazil",
-    "Odds": "1",
+    "Odds": "-1",
     "Comment": "Tâm điểm vòng đầu. Morocco phòng ngự kiên cường nhưng Brazil quá nhiều ngôi sao tạo đột biến. Dự đoán: Brazil thắng sát nút.",
     "Result": ""
   },
@@ -79,7 +79,7 @@
     "Home": "Haiti",
     "Away": "Scotland",
     "Upper": "Scotland",
-    "Odds": "1",
+    "Odds": "-1",
     "Comment": "Scotland đá thực dụng, vượt trội về thể hình và bóng bổng trước Haiti. Dự đoán: Scotland giành 3 điểm.",
     "Result": ""
   },
@@ -91,7 +91,7 @@
     "Home": "Australia",
     "Away": "Türkiye",
     "Upper": "Türkiye",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Thổ Nhĩ Kỳ sở hữu nhiều ngôi sao chơi bóng đỉnh cao tại châu Âu. Dự đoán: Thổ Nhĩ Kỳ thắng sát nút.",
     "Result": ""
   },
@@ -103,7 +103,7 @@
     "Home": "Germany",
     "Away": "Curaçao",
     "Upper": "Germany",
-    "Odds": "2.5",
+    "Odds": "-2.5",
     "Comment": "Đức quá mạnh so với đối thủ lót đường Curaçao. Trận đấu bùng nổ bàn thắng. Dự đoán: Đức thắng đậm.",
     "Result": ""
   },
@@ -115,7 +115,7 @@
     "Home": "Netherlands",
     "Away": "Japan",
     "Upper": "Netherlands",
-    "Odds": "1",
+    "Odds": "-1",
     "Comment": "Nhật Bản chơi kỷ luật nhưng Hà Lan nhỉnh hơn hoàn toàn ở các pha không chiến. Dự đoán: Hà Lan thắng.",
     "Result": ""
   },
@@ -139,7 +139,7 @@
     "Home": "Sweden",
     "Away": "Tunisia",
     "Upper": "Sweden",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Thụy Điển thi đấu khoa học và lạnh lùng sẽ biết cách kết liễu trận đấu. Dự đoán: Thụy Điển thắng.",
     "Result": ""
   },
@@ -151,7 +151,7 @@
     "Home": "Spain",
     "Away": "Cabo Verde",
     "Upper": "Spain",
-    "Odds": "2",
+    "Odds": "-2",
     "Comment": "Lối đá tiki-taka của Tây Ban Nha sẽ bóp nghẹt mọi ý đồ phản công của Cabo Verde. Dự đoán: Tây Ban Nha thắng đậm.",
     "Result": ""
   },
@@ -163,7 +163,7 @@
     "Home": "Belgium",
     "Away": "Egypt",
     "Upper": "Belgium",
-    "Odds": "1",
+    "Odds": "-1",
     "Comment": "Thế hệ mới của Bỉ khát khao khẳng định mình trước một Ai Cập lỳ lợm. Dự đoán: Bỉ thắng sát nút.",
     "Result": ""
   },
@@ -175,7 +175,7 @@
     "Home": "Saudi Arabia",
     "Away": "Uruguay",
     "Upper": "Uruguay",
-    "Odds": "1",
+    "Odds": "-1",
     "Comment": "Uruguay sở hữu hàng công đẳng cấp thế giới, vượt trội so với Saudi Arabia. Dự đoán: Uruguay thắng cách biệt.",
     "Result": ""
   },
@@ -187,7 +187,7 @@
     "Home": "IR Iran",
     "Away": "New Zealand",
     "Upper": "IR Iran",
-    "Odds": "1",
+    "Odds": "-1",
     "Comment": "Iran là ông lớn châu Á, dày dặn bản lĩnh World Cup hơn đối thủ rất nhiều. Dự đoán: Iran thắng.",
     "Result": ""
   },
@@ -199,7 +199,7 @@
     "Home": "France",
     "Away": "Senegal",
     "Upper": "France",
-    "Odds": "1.5",
+    "Odds": "-1.5",
     "Comment": "Pháp sở hữu binh hùng tướng mạnh, quyết đòi lại món nợ lịch sử năm 2002. Dự đoán: Pháp thắng cách biệt.",
     "Result": ""
   },
@@ -211,7 +211,7 @@
     "Home": "Iraq",
     "Away": "Norway",
     "Upper": "Norway",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Erling Haaland sẽ là bài toán không có lời giải cho hàng thủ Iraq. Dự đoán: Na Uy thắng.",
     "Result": ""
   },
@@ -223,7 +223,7 @@
     "Home": "Argentina",
     "Away": "Algeria",
     "Upper": "Argentina",
-    "Odds": "1.5",
+    "Odds": "-1.5",
     "Comment": "Nhà đương kim vô địch thế giới quá mạnh và toàn diện trước đại diện Bắc Phi. Dự đoán: Argentina thắng đậm.",
     "Result": ""
   },
@@ -235,7 +235,7 @@
     "Home": "Austria",
     "Away": "Jordan",
     "Upper": "Austria",
-    "Odds": "1",
+    "Odds": "-1",
     "Comment": "Áo tổ chức lối chơi khoa học và kỷ luật dưới thời Ralf Rangnick. Dự đoán: Áo thắng dễ.",
     "Result": ""
   },
@@ -247,7 +247,7 @@
     "Home": "Portugal",
     "Away": "Congo DR",
     "Upper": "Portugal",
-    "Odds": "1.5",
+    "Odds": "-1.5",
     "Comment": "Bồ Đào Nha quá dư thừa ngôi sao tấn công dội bom đối thủ. Dự đoán: Bồ Đào Nha thắng đậm.",
     "Result": ""
   },
@@ -259,7 +259,7 @@
     "Home": "England",
     "Away": "Croatia",
     "Upper": "England",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Đại chiến duyên nợ. Tam Sư trẻ trung, giàu tốc độ sẽ chiếm ưu thế trước một Croatia già cỗi. Dự đoán: Anh thắng.",
     "Result": ""
   },
@@ -271,7 +271,7 @@
     "Home": "Ghana",
     "Away": "Panama",
     "Upper": "Ghana",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Những ngôi sao đen Ghana vượt trội về mặt thể chất và kinh nghiệm. Dự đoán: Ghana thắng tối thiểu.",
     "Result": ""
   },
@@ -283,7 +283,7 @@
     "Home": "Uzbekistan",
     "Away": "Colombia",
     "Upper": "Colombia",
-    "Odds": "1",
+    "Odds": "-1",
     "Comment": "Tân binh Uzbekistan sẽ choáng ngợp trước lối đá rực lửa, kỹ thuật của Colombia. Dự đoán: Colombia thắng.",
     "Result": ""
   },
@@ -295,7 +295,7 @@
     "Home": "Czechia",
     "Away": "South Africa",
     "Upper": "Czechia",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Czechia cần điểm để đua vé đi tiếp, Nam Phi phòng ngự lỏng lẻo. Dự đoán: Czechia thắng.",
     "Result": ""
   },
@@ -307,7 +307,7 @@
     "Home": "Switzerland",
     "Away": "Bosnia and Herzegovina",
     "Upper": "Switzerland",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Thụy Sĩ chơi thực dụng và tổ chức tốt hơn hẳn tập thể Bosnia. Dự đoán: Thụy Sĩ thắng sát nút.",
     "Result": ""
   },
@@ -319,7 +319,7 @@
     "Home": "Canada",
     "Away": "Qatar",
     "Upper": "Canada",
-    "Odds": "1",
+    "Odds": "-1",
     "Comment": "Chủ nhà Canada dồn tổng lực tấn công tại Vancouver để sớm giành vé. Dự đoán: Canada thắng đậm.",
     "Result": ""
   },
@@ -331,7 +331,7 @@
     "Home": "Mexico",
     "Away": "Korea Republic",
     "Upper": "Mexico",
-    "Odds": "1",
+    "Odds": "-1",
     "Comment": "Sân nhà Guadalajara sẽ là điểm tựa tiếp thêm sức mạnh cho El Tri trước Hàn Quốc. Dự đoán: Mexico thắng.",
     "Result": ""
   },
@@ -343,7 +343,7 @@
     "Home": "United States",
     "Away": "Australia",
     "Upper": "United States",
-    "Odds": "1",
+    "Odds": "-1",
     "Comment": "Mỹ kiểm soát bóng vượt trội, Australia chủ động phòng ngự lỳ lợm. Dự đoán: Mỹ thắng sát nút.",
     "Result": ""
   },
@@ -355,7 +355,7 @@
     "Home": "Scotland",
     "Away": "Morocco",
     "Upper": "Morocco",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Morocco nhỉnh hơn về kỹ thuật và khả năng tổ chức phản công. Dự đoán: Morocco thắng tối thiểu.",
     "Result": ""
   },
@@ -367,7 +367,7 @@
     "Home": "Brazil",
     "Away": "Haiti",
     "Upper": "Brazil",
-    "Odds": "2.5",
+    "Odds": "-2.5",
     "Comment": "Trận đấu chênh lệch nhất bảng C. Các vũ công Samba sẽ tạo nên cơn mưa bàn thắng. Dự đoán: Brazil thắng đậm.",
     "Result": ""
   },
@@ -379,7 +379,7 @@
     "Home": "Türkiye",
     "Away": "Paraguay",
     "Upper": "Türkiye",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Thổ Nhĩ Kỳ có hàng tiền vệ sáng tạo hơn, Paraguay đá rát nhưng khó giữ điểm. Dự đoán: Thổ Nhĩ Kỳ thắng.",
     "Result": ""
   },
@@ -391,7 +391,7 @@
     "Home": "Netherlands",
     "Away": "Sweden",
     "Upper": "Netherlands",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Trận thư hùng châu Âu căng thẳng. Hà Lan nhỉnh hơn ở các nhân tố đột biến trên hàng công. Dự đoán: Hà Lan thắng.",
     "Result": ""
   },
@@ -403,7 +403,7 @@
     "Home": "Germany",
     "Away": "Côte d'Ivoire",
     "Upper": "Germany",
-    "Odds": "1.5",
+    "Odds": "-1.5",
     "Comment": "Cỗ xe tăng Đức thể hiện sức mạnh vượt trội áp đặt thế trận. Dự đoán: Đức thắng cách biệt.",
     "Result": ""
   },
@@ -415,7 +415,7 @@
     "Home": "Ecuador",
     "Away": "Curaçao",
     "Upper": "Ecuador",
-    "Odds": "1.5",
+    "Odds": "-1.5",
     "Comment": "Ecuador với lối đá giàu tốc độ sẽ dễ dàng xé toang hàng thủ Curaçao. Dự đoán: Ecuador thắng đậm.",
     "Result": ""
   },
@@ -427,7 +427,7 @@
     "Home": "Tunisia",
     "Away": "Japan",
     "Upper": "Japan",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Nhật Bản pressing tầm cao và chuyển trạng thái cực nhanh trước một Tunisia chậm chạp. Dự đoán: Nhật Bản thắng.",
     "Result": ""
   },
@@ -439,7 +439,7 @@
     "Home": "Spain",
     "Away": "Saudi Arabia",
     "Upper": "Spain",
-    "Odds": "2",
+    "Odds": "-2",
     "Comment": "Đẳng cấp chênh lệch rất lớn. Tây Ban Nha sẽ làm chủ hoàn toàn thế trận. Dự đoán: Tây Ban Nha thắng đậm.",
     "Result": ""
   },
@@ -451,7 +451,7 @@
     "Home": "Belgium",
     "Away": "IR Iran",
     "Upper": "Belgium",
-    "Odds": "1",
+    "Odds": "-1",
     "Comment": "Bỉ kiểm soát thế trận, hàng thủ Iran chơi lùi sâu để tìm kiếm 1 trận hòa. Dự đoán: Bỉ thắng cách biệt.",
     "Result": ""
   },
@@ -463,7 +463,7 @@
     "Home": "Uruguay",
     "Away": "Cabo Verde",
     "Upper": "Uruguay",
-    "Odds": "1.5",
+    "Odds": "-1.5",
     "Comment": "Uruguay cần chiến thắng đậm để cạnh tranh ngôi đầu bảng H với Tây Ban Nha. Dự đoán: Uruguay thắng đậm.",
     "Result": ""
   },
@@ -475,7 +475,7 @@
     "Home": "New Zealand",
     "Away": "Egypt",
     "Upper": "Egypt",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Mohamed Salah và đồng đội sẽ tận dụng tốt các cơ hội phản công. Dự đoán: Ai Cập thắng cách biệt.",
     "Result": ""
   },
@@ -487,7 +487,7 @@
     "Home": "Argentina",
     "Away": "Austria",
     "Upper": "Argentina",
-    "Odds": "1",
+    "Odds": "-1",
     "Comment": "Thử thách thực sự cho hàng thủ của ÁO trước thiên tài Messi và các vệ tinh. Dự đoán: Argentina thắng.",
     "Result": ""
   },
@@ -499,7 +499,7 @@
     "Home": "France",
     "Away": "Iraq",
     "Upper": "France",
-    "Odds": "2",
+    "Odds": "-2",
     "Comment": "Sức tấn công bão táp của Gà trống Gô-loa sẽ cuốn phăng đại diện Tây Á. Dự đoán: Pháp thắng đậm.",
     "Result": ""
   },
@@ -511,7 +511,7 @@
     "Home": "Norway",
     "Away": "Senegal",
     "Upper": "Norway",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Na Uy với lối đá bóng bổng châu Âu đụng độ thể lực dồi dào của Senegal. Dự đoán: Hòa kịch tính.",
     "Result": ""
   },
@@ -523,7 +523,7 @@
     "Home": "Jordan",
     "Away": "Algeria",
     "Upper": "Algeria",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Algeria già rơ và có nhiều ngôi sao thi đấu ở châu Âu hơn hẳn Jordan. Dự đoán: Algeria thắng.",
     "Result": ""
   },
@@ -535,7 +535,7 @@
     "Home": "Portugal",
     "Away": "Uzbekistan",
     "Upper": "Portugal",
-    "Odds": "1.5",
+    "Odds": "-1.5",
     "Comment": "Bồ Đào Nha áp đảo hoàn toàn, tấm vé đi tiếp nằm chắc trong tay Selecao. Dự đoán: Portugal thắng đậm.",
     "Result": ""
   },
@@ -547,7 +547,7 @@
     "Home": "England",
     "Away": "Ghana",
     "Upper": "England",
-    "Odds": "1",
+    "Odds": "-1",
     "Comment": "Tam Sư vượt trội về tính tổ chức và chiều sâu băng ghế dự bị. Dự đoán: Anh thắng cách biệt.",
     "Result": ""
   },
@@ -559,7 +559,7 @@
     "Home": "Panama",
     "Away": "Croatia",
     "Upper": "Croatia",
-    "Odds": "1",
+    "Odds": "-1",
     "Comment": "Croatia buộc phải thắng để nuôi hy vọng đi tiếp, kinh nghiệm của họ sẽ lên tiếng. Dự đoán: Croatia thắng.",
     "Result": ""
   },
@@ -571,7 +571,7 @@
     "Home": "Colombia",
     "Away": "Congo DR",
     "Upper": "Colombia",
-    "Odds": "1.5",
+    "Odds": "-1.5",
     "Comment": "Colombia thăng hoa nhờ lối đá tấn công biên biến ảo đầy kỹ thuật. Dự đoán: Colombia thắng đậm.",
     "Result": ""
   },
@@ -595,7 +595,7 @@
     "Home": "Bosnia and Herzegovina",
     "Away": "Qatar",
     "Upper": "Bosnia and Herzegovina",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Cả hai đều muốn chia tay giải đấu bằng một kết quả danh dự. Dự đoán: Bosnia thắng sát nút.",
     "Result": ""
   },
@@ -607,7 +607,7 @@
     "Home": "Scotland",
     "Away": "Brazil",
     "Upper": "Brazil",
-    "Odds": "1.5",
+    "Odds": "-1.5",
     "Comment": "Brazil đá thong dong giữ sức cho vòng knock-out vẫn quá mạnh trước Scotland. Dự đoán: Brazil thắng đậm.",
     "Result": ""
   },
@@ -619,7 +619,7 @@
     "Home": "Morocco",
     "Away": "Haiti",
     "Upper": "Morocco",
-    "Odds": "1.5",
+    "Odds": "-1.5",
     "Comment": "Morocco dồn lên trút giận để giành tấm vé nhì bảng C bước vào vòng trong. Dự đoán: Morocco thắng đậm.",
     "Result": ""
   },
@@ -631,7 +631,7 @@
     "Home": "Czechia",
     "Away": "Mexico",
     "Upper": "Mexico",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Mexico có điểm tựa Azteca cuồng nhiệt, quyết giữ ngôi đầu bảng A. Dự đoán: Mexico thắng tối thiểu.",
     "Result": ""
   },
@@ -643,7 +643,7 @@
     "Home": "South Africa",
     "Away": "Korea Republic",
     "Upper": "Korea Republic",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Hàn Quốc chơi quyết tử để tìm kiếm suất vé vớt cho đội đứng thứ 3 xuất sắc. Dự đoán: Hàn Quốc thắng.",
     "Result": ""
   },
@@ -655,7 +655,7 @@
     "Home": "Curaçao",
     "Away": "Côte d'Ivoire",
     "Upper": "Côte d'Ivoire",
-    "Odds": "1.5",
+    "Odds": "-1.5",
     "Comment": "Bờ Biển Ngà vượt trội về mọi mặt trước đội bóng yếu nhất giải. Dự đoán: Bờ Biển Ngà thắng cách biệt.",
     "Result": ""
   },
@@ -667,7 +667,7 @@
     "Home": "Ecuador",
     "Away": "Germany",
     "Upper": "Germany",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Đức muốn khẳng định vị thế ngôi đầu bảng E bằng một trận thắng thuyết phục. Dự đoán: Đức thắng.",
     "Result": ""
   },
@@ -691,7 +691,7 @@
     "Home": "Tunisia",
     "Away": "Netherlands",
     "Upper": "Netherlands",
-    "Odds": "1.5",
+    "Odds": "-1.5",
     "Comment": "Hà Lan dễ dàng áp đặt thế trận tấn công dồn dập trước đối thủ yếu Tunisia. Dự đoán: Hà Lan thắng đậm.",
     "Result": ""
   },
@@ -703,7 +703,7 @@
     "Home": "Türkiye",
     "Away": "United States",
     "Upper": "United States",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Mỹ đá sân nhà SoFi Stadium sẽ có lợi thế cực lớn để chốt hạ ngôi đầu bảng D. Dự đoán: Mỹ thắng sát nút.",
     "Result": ""
   },
@@ -727,7 +727,7 @@
     "Home": "Norway",
     "Away": "France",
     "Upper": "France",
-    "Odds": "1",
+    "Odds": "-1",
     "Comment": "Pháp muốn chốt hạ chuỗi thắng tuyệt đối vòng bảng, Na Uy phòng ngự lỏng lẻo. Dự đoán: Pháp thắng.",
     "Result": ""
   },
@@ -739,7 +739,7 @@
     "Home": "Senegal",
     "Away": "Iraq",
     "Upper": "Senegal",
-    "Odds": "1",
+    "Odds": "-1",
     "Comment": "Senegal dồn lực tấn công biên nhằm lấy trọn 3 điểm quyết định vé đi tiếp. Dự đoán: Senegal thắng.",
     "Result": ""
   },
@@ -751,7 +751,7 @@
     "Home": "Cabo Verde",
     "Away": "Saudi Arabia",
     "Upper": "Saudi Arabia",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Trận đấu danh dự giữa hai đội, Saudi Arabia nhỉnh hơn về tính tổ chức tập thể. Dự đoán: Saudi Arabia thắng.",
     "Result": ""
   },
@@ -763,7 +763,7 @@
     "Home": "Uruguay",
     "Away": "Spain",
     "Upper": "Spain",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Trận đại chiến phân định ngôi vương bảng H. Tây Ban Nha kiểm soát bóng tốt hơn. Dự đoán: Tây Ban Nha thắng sát nút.",
     "Result": ""
   },
@@ -775,7 +775,7 @@
     "Home": "Egypt",
     "Away": "IR Iran",
     "Upper": "Egypt",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Ai Cập quyết tâm giành chiến thắng để xây chắc vị trí nhì bảng G. Dự đoán: Ai Cập thắng tối thiểu.",
     "Result": ""
   },
@@ -787,7 +787,7 @@
     "Home": "New Zealand",
     "Away": "Belgium",
     "Upper": "Belgium",
-    "Odds": "2",
+    "Odds": "-2",
     "Comment": "Quỷ Đỏ Bỉ sẽ dễ dàng bắn phá khung thành New Zealand để khép lại vòng bảng thăng hoa. Dự đoán: Bỉ thắng đậm.",
     "Result": ""
   },
@@ -799,7 +799,7 @@
     "Home": "Jordan",
     "Away": "Argentina",
     "Upper": "Argentina",
-    "Odds": "2",
+    "Odds": "-2",
     "Comment": "Argentina đá giữ chân nhưng khoảng cách đẳng cấp vẫn quá rộng lớn. Dự đoán: Argentina thắng đậm.",
     "Result": ""
   },
@@ -811,7 +811,7 @@
     "Home": "Algeria",
     "Away": "Austria",
     "Upper": "Austria",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Trận chiến trực tiếp giành tấm vé thứ 2 của bảng J. Áo bản lĩnh hơn ở thời khắc quyết định. Dự đoán: Áo thắng.",
     "Result": ""
   },
@@ -835,7 +835,7 @@
     "Home": "Colombia",
     "Away": "Portugal",
     "Upper": "Portugal",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Siêu đại chiến bảng K. Bồ Đào Nha già rơ tinh quái hơn sẽ giành ngôi đầu bảng. Dự đoán: Bồ Đào Nha thắng sát nút.",
     "Result": ""
   },
@@ -847,7 +847,7 @@
     "Home": "Panama",
     "Away": "England",
     "Upper": "England",
-    "Odds": "2",
+    "Odds": "-2",
     "Comment": "Tam Sư dễ dàng có một trận đấu nhàn nhã ghi nhiều bàn thắng trước Panama. Dự đoán: Anh thắng đậm.",
     "Result": ""
   },
@@ -859,7 +859,7 @@
     "Home": "Croatia",
     "Away": "Ghana",
     "Upper": "Croatia",
-    "Odds": "0.5",
+    "Odds": "-0.5",
     "Comment": "Kinh nghiệm và bản lĩnh của các cựu binh Croatia sẽ lên tiếng đúng lúc để lấy vé đi tiếp. Dự đoán: Croatia thắng.",
     "Result": ""
   },
