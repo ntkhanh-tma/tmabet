@@ -164,6 +164,49 @@
     font-weight: 600;
     color: rgba(255, 255, 255, 0.85);
     text-align: center;
+
+    &--upper {
+      color: #ff5252;
+      text-shadow:
+        0 0 6px rgba(255, 82, 82, 0.9),
+        0 0 14px rgba(255, 82, 82, 0.6),
+        0 0 28px rgba(255, 82, 82, 0.35);
+    }
+  }
+
+  &__odds-side {
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.4);
+
+    &--upper {
+      color: #ffd740;
+      text-shadow: 0 0 8px rgba(255, 215, 64, 0.7);
+      font-size: 12px;
+    }
+  }
+
+  &__comment {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.5;
+    font-style: italic;
+  }
+
+  &__comment-icon {
+    font-size: 13px;
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: #ffd740;
+    opacity: 0.8;
   }
 
   &__score {

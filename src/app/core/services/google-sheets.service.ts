@@ -376,24 +376,30 @@ export class GoogleSheetsService {
       matchByNumber.set(m.matchNumber.trim(), m);
     }
 
-    // All keys except "Player" are match-number columns
+    // Detect the player-name key: "Player", "player", or empty string (blank header in sheet)
     const sampleRow = rows[0];
-    const matchNumberKeys = Object.keys(sampleRow).filter((k) => k.trim().toLowerCase() !== 'player');
+    const allKeys = Object.keys(sampleRow);
+    const playerKey = allKeys.find((k) => k.trim().toLowerCase() === 'player') ?? '';
 
-    const columns: ResultColumn[] = matchNumberKeys.map((key) => {
-      const m = matchByNumber.get(key.trim());
-      return {
-        matchNumber: key.trim(),
-        label: m ? `${m.homeTeam} vs ${m.awayTeam}` : key,
-        homeTeam: m?.homeTeam ?? '',
-        awayTeam: m?.awayTeam ?? '',
-        homeFlag: m?.homeFlag ?? 'un',
-        awayFlag: m?.awayFlag ?? 'un',
-      };
-    });
+    // All other keys are match-number columns
+    const matchNumberKeys = allKeys.filter((k) => k !== playerKey);
+
+    const columns: ResultColumn[] = matchNumberKeys
+      .filter((key) => key.trim() !== '')
+      .map((key) => {
+        const m = matchByNumber.get(key.trim());
+        return {
+          matchNumber: key.trim(),
+          label: m ? `${m.homeTeam} vs ${m.awayTeam}` : key,
+          homeTeam: m?.homeTeam ?? '',
+          awayTeam: m?.awayTeam ?? '',
+          homeFlag: m?.homeFlag ?? 'un',
+          awayFlag: m?.awayFlag ?? 'un',
+        };
+      });
 
     const resultRows: ResultRow[] = rows
-      .filter((r) => r['Player']?.trim())
+      .filter((r) => r[playerKey]?.trim())
       .map((r) => {
         const picks: Record<string, string> = {};
         let total = 0;
@@ -403,7 +409,7 @@ export class GoogleSheetsService {
           const num = Number(val);
           if (!isNaN(num) && val !== '') total += num;
         }
-        return { playerName: r['Player'].trim(), totalPoints: total, picks };
+        return { playerName: r[playerKey].trim(), totalPoints: total, picks };
       })
       .sort((a, b) => a.totalPoints - b.totalPoints);
 

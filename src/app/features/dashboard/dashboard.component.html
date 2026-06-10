@@ -270,9 +270,9 @@
                   </th>
                   <td mat-cell *matCellDef="let bet">
                     @if (bet.match1Bet) {
-                      <span class="bet-chip" [class.bet-chip--home]="bet.match1Bet === data.betMatch1!.homeTeam">
+                      <span class="bet-chip" [class.bet-chip--home]="bet.match1Bet === data.betMatch1!.homeTeam"
+                        [matTooltip]="bet.match1Bet">
                         <span class="fi fi-{{ getFlag(bet.match1Bet) }} bets-table__flag"></span>
-                        {{ bet.match1Bet }}
                       </span>
                     } @else {
                       <span class="bets-table__empty">–</span>
@@ -284,9 +284,8 @@
                   <th mat-header-cell *matHeaderCellDef>Pick 1</th>
                   <td mat-cell *matCellDef="let bet">
                     @if (bet.match1Bet) {
-                      <span class="bet-chip">
+                      <span class="bet-chip" [matTooltip]="bet.match1Bet">
                         <span class="fi fi-{{ getFlag(bet.match1Bet) }} bets-table__flag"></span>
-                        {{ bet.match1Bet }}
                       </span>
                     } @else {
                       <span class="bets-table__empty">–</span>
@@ -306,9 +305,9 @@
                   </th>
                   <td mat-cell *matCellDef="let bet">
                     @if (bet.match2Bet) {
-                      <span class="bet-chip" [class.bet-chip--home]="bet.match2Bet === data.betMatch2!.homeTeam">
+                      <span class="bet-chip" [class.bet-chip--home]="bet.match2Bet === data.betMatch2!.homeTeam"
+                        [matTooltip]="bet.match2Bet">
                         <span class="fi fi-{{ getFlag(bet.match2Bet) }} bets-table__flag"></span>
-                        {{ bet.match2Bet }}
                       </span>
                     } @else {
                       <span class="bets-table__empty">–</span>
@@ -320,9 +319,8 @@
                   <th mat-header-cell *matHeaderCellDef>Pick 2</th>
                   <td mat-cell *matCellDef="let bet">
                     @if (bet.match2Bet) {
-                      <span class="bet-chip">
+                      <span class="bet-chip" [matTooltip]="bet.match2Bet">
                         <span class="fi fi-{{ getFlag(bet.match2Bet) }} bets-table__flag"></span>
-                        {{ bet.match2Bet }}
                       </span>
                     } @else {
                       <span class="bets-table__empty">–</span>

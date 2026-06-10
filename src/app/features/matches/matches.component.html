@@ -45,7 +45,16 @@
             <div class="match-card__teams">
               <div class="match-card__team">
                 <span class="fi fi-{{ match.homeFlag }} match-card__flag"></span>
-                <span class="match-card__team-name">{{ match.homeTeam }}</span>
+                <span class="match-card__team-name"
+                  [class.match-card__team-name--upper]="match.upper && match.upper.toLowerCase() === match.homeTeam.toLowerCase()">
+                  {{ match.homeTeam }}
+                </span>
+                @if (match.odds && match.upper) {
+                  <span class="match-card__odds-side"
+                    [class.match-card__odds-side--upper]="match.upper.toLowerCase() === match.homeTeam.toLowerCase()">
+                    {{ oddsDisplay(match).home }}
+                  </span>
+                }
               </div>
 
               <div class="match-card__score">
@@ -60,9 +69,25 @@
 
               <div class="match-card__team match-card__team--away">
                 <span class="fi fi-{{ match.awayFlag }} match-card__flag"></span>
-                <span class="match-card__team-name">{{ match.awayTeam }}</span>
+                <span class="match-card__team-name"
+                  [class.match-card__team-name--upper]="match.upper && match.upper.toLowerCase() === match.awayTeam.toLowerCase()">
+                  {{ match.awayTeam }}
+                </span>
+                @if (match.odds && match.upper) {
+                  <span class="match-card__odds-side"
+                    [class.match-card__odds-side--upper]="match.upper.toLowerCase() === match.awayTeam.toLowerCase()">
+                    {{ oddsDisplay(match).away }}
+                  </span>
+                }
               </div>
             </div>
+
+            @if (match.comment) {
+              <div class="match-card__comment">
+                <mat-icon class="match-card__comment-icon">tips_and_updates</mat-icon>
+                <span>{{ match.comment }}</span>
+              </div>
+            }
           </div>
         }
       </div>
