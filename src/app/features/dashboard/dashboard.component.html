@@ -39,6 +39,22 @@
                   <div class="match-card__team">
                     <span class="fi fi-{{ match.homeFlag }} match-card__flag"></span>
                     <span class="match-card__team-name">{{ match.homeTeam }}</span>
+                    @if (auth.username() && isBetMatch(match)) {
+                      <button
+                        class="bet-btn"
+                        [class.bet-btn--chosen]="chosenTeam(match) === match.homeTeam"
+                        [disabled]="isBetLocked(match) || isSubmitting(match) || !auth.username()"
+                        (click)="placeBet(match, match.homeTeam)"
+                        matTooltip="{{ isBetLocked(match) ? 'Bet locked for 1 hour' : 'Bet on ' + match.homeTeam }}"
+                      >
+                        @if (chosenTeam(match) === match.homeTeam) {
+                          <mat-icon class="bet-btn__icon">check_circle</mat-icon>
+                        } @else {
+                          <mat-icon class="bet-btn__icon">sports_soccer</mat-icon>
+                        }
+                        {{ chosenTeam(match) === match.homeTeam ? 'Picked' : 'BET' }}
+                      </button>
+                    }
                   </div>
 
                   <div class="match-card__score">
@@ -54,8 +70,37 @@
                   <div class="match-card__team match-card__team--away">
                     <span class="fi fi-{{ match.awayFlag }} match-card__flag"></span>
                     <span class="match-card__team-name">{{ match.awayTeam }}</span>
+                    @if (auth.username() && isBetMatch(match)) {
+                      <button
+                        class="bet-btn"
+                        [class.bet-btn--chosen]="chosenTeam(match) === match.awayTeam"
+                        [disabled]="isBetLocked(match) || isSubmitting(match) || !auth.username()"
+                        (click)="placeBet(match, match.awayTeam)"
+                        matTooltip="{{ isBetLocked(match) ? 'Bet locked for 1 hour' : 'Bet on ' + match.awayTeam }}"
+                      >
+                        @if (chosenTeam(match) === match.awayTeam) {
+                          <mat-icon class="bet-btn__icon">check_circle</mat-icon>
+                        } @else {
+                          <mat-icon class="bet-btn__icon">sports_soccer</mat-icon>
+                        }
+                        {{ chosenTeam(match) === match.awayTeam ? 'Picked' : 'BET' }}
+                      </button>
+                    }
                   </div>
                 </div>
+
+                @if (auth.username() && isBetMatch(match) && isSubmitting(match)) {
+                  <div class="match-card__bet-status">
+                    <mat-spinner diameter="16"></mat-spinner>
+                    <span>Saving bet…</span>
+                  </div>
+                }
+                @if (auth.username() && isBetMatch(match) && matchBetError(match)) {
+                  <div class="match-card__bet-error">
+                    <mat-icon class="match-card__bet-error-icon">error_outline</mat-icon>
+                    {{ matchBetError(match) }}
+                  </div>
+                }
 
                   <div class="match-card__meta">
                     <mat-icon class="match-card__meta-icon">schedule</mat-icon>

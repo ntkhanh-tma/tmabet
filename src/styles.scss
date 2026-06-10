@@ -1,5 +1,8 @@
 @use "@angular/material" as mat;
-@import "flag-icons/css/flag-icons.css";
+
+// Only include 4x3 (rectangular) flags — avoids esbuild collision between
+// 1x1 and 4x3 variants sharing the same filenames when output to media/.
+@use "flag-icons/sass/flag-icons" with ($flag-icons-use-square: false);
 
 // -- Custom World Cup dark palette --------------------------------------------
 // Primary: Deep gold (trophy gold)

@@ -51,11 +51,6 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              },
-              {
-                "glob": "flags/**/*",
-                "input": "node_modules/flag-icons",
-                "output": "/"
               }
             ],
             "styles": [

@@ -57,13 +57,34 @@ function doPost(e) {
       }
     }
 
+    var targetRow;
     if (rowOffset === -1) {
-      return jsonResponse({ ok: false, message: 'Player "' + player + '" not found in Bets' }, 404);
+      // Player not found — append to the first empty row inside the named range.
+      // If every row in the range is occupied, extend one row below it.
+      var firstEmptyOffset = -1;
+      for (var j = 0; j < values.length; j++) {
+        if (!String(values[j][0]).trim()) {
+          firstEmptyOffset = j;
+          break;
+        }
+      }
+
+      if (firstEmptyOffset !== -1) {
+        // Use the first blank row inside the existing named range
+        targetRow = startRow + firstEmptyOffset;
+      } else {
+        // All rows are occupied — write one row beyond the range
+        targetRow = startRow + numRows;
+      }
+
+      // Write player name into column A and the bets into B, C, D
+      sheet.getRange(targetRow, 1, 1, 4).setValues([[player, match1Bet, match2Bet, modifier]]);
+    } else {
+      // Player exists — update columns B, C, D; leave column A untouched
+      targetRow = startRow + rowOffset;
+      sheet.getRange(targetRow, 2, 1, 3).setValues([[match1Bet, match2Bet, modifier]]);
     }
 
-    // Write only columns B, C, D (index 1-3) — leave column A (player name) untouched
-    var targetRow = startRow + rowOffset;
-    sheet.getRange(targetRow, 2, 1, 3).setValues([[match1Bet, match2Bet, modifier]]);
     SpreadsheetApp.flush();
 
     return jsonResponse({ ok: true, updatedRow: targetRow });

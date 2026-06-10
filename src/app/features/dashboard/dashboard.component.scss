@@ -368,6 +368,80 @@
 
 // ── Featured match highlight ───────────────────────────────────────────────────
 
+// ── Bet buttons ────────────────────────────────────────────────────────────────
+
+.bet-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  padding: 4px 10px;
+  border-radius: 16px;
+  border: 1px solid var(--mat-sys-outline);
+  background: transparent;
+  color: var(--mat-sys-on-surface);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+
+  &:hover:not(:disabled) {
+    background: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+    border-color: var(--mat-sys-primary);
+  }
+
+  &--chosen {
+    background: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+    border-color: var(--mat-sys-primary);
+    box-shadow: 0 0 6px 2px rgba(var(--mat-sys-primary-rgb, 103, 80, 164), 0.4);
+
+    &:hover:not(:disabled) {
+      background: var(--mat-sys-primary);
+      color: var(--mat-sys-on-primary);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &__icon {
+    font-size: 13px;
+    width: 13px;
+    height: 13px;
+  }
+}
+
+.match-card__bet-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--mat-sys-on-surface-variant);
+  margin: 4px 0 2px;
+}
+
+.match-card__bet-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--mat-sys-error);
+  margin: 4px 0 2px;
+  line-height: 1.4;
+}
+
+.match-card__bet-error-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
 .match-card--featured {
   border: 1px solid rgba(255, 215, 0, 0.6);
   box-shadow: 0 0 0 1px rgba(255, 215, 0, 0.3);
