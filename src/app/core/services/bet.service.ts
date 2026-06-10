@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
 export interface BetPayload {
@@ -22,24 +22,29 @@ export class BetService {
   private readonly appsScriptUrl = environment.appsScriptUrl;
 
   /**
-   * Submits a player's bet picks to the Google Apps Script web app which
-   * writes them directly to the Google Sheet's WC2026!Bets range.
+   * Submits a player's bet picks to the Google Apps Script web app.
    *
-   * Apps Script web apps only support no-cors requests, so we send the JSON
-   * payload as a plain-text body and read back a JSON response via JSONP-style
-   * redirect. Angular HttpClient handles the actual POST.
+   * Apps Script web apps redirect POST requests (302) which causes the browser
+   * to re-issue them as GET, losing the body. We side-step this by encoding
+   * the payload as a single `payload` query parameter on a GET request.
+   * The doGet handler in Code.gs detects the parameter and writes the sheet.
    */
   submitBet(payload: BetPayload): Observable<BetResponse> {
     if (!this.appsScriptUrl) {
       return throwError(() => new Error('Apps Script URL is not configured.'));
     }
 
-    // Apps Script requires Content-Type text/plain to avoid CORS preflight
-    const headers = new HttpHeaders({ 'Content-Type': 'text/plain' });
+    const params = new HttpParams().set('payload', JSON.stringify(payload));
 
     return this.http
-      .post<BetResponse>(this.appsScriptUrl, JSON.stringify(payload), { headers })
+      .get<BetResponse>(this.appsScriptUrl, { params })
       .pipe(
+        map((res) => {
+          if (!res.ok) {
+            throw new Error(res.message ?? 'Server returned ok: false');
+          }
+          return res;
+        }),
         catchError((err) => {
           const message = err.error?.message ?? err.message ?? 'Unknown error';
           return throwError(() => new Error(message));

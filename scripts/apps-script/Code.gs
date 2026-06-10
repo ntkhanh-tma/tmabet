@@ -95,9 +95,16 @@ function doPost(e) {
 }
 
 // ---------------------------------------------------------------------------
-// GET handler — simple health-check so you can test the URL in a browser
+// GET handler — handles bet submissions (payload param) and health-checks
 // ---------------------------------------------------------------------------
-function doGet() {
+function doGet(e) {
+  if (e && e.parameter && e.parameter.payload) {
+    try {
+      return doPost({ postData: { contents: e.parameter.payload } });
+    } catch (err) {
+      return jsonResponse({ ok: false, message: err.message });
+    }
+  }
   return jsonResponse({ ok: true, message: 'tmabet-proxy is running' });
 }
 
