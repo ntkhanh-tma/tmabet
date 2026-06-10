@@ -91,7 +91,7 @@ export class GoogleSheetsService {
    * Reads from matches.json first; falls back to the Matches sheet when empty/missing.
    */
   getMatches(): Observable<MatchDay[]> {
-    return this.http.get<SheetMatch[]>('data/matches.json').pipe(
+    return this.http.get<SheetMatch[]>(this.bust('data/matches.json')).pipe(
       catchError(() => of([] as SheetMatch[])),
       switchMap((rows) => {
         if (rows && rows.length > 0) {
@@ -151,7 +151,7 @@ export class GoogleSheetsService {
    * Returned array is already sorted newest-first.
    */
   getComments(): Observable<CommentEntry[]> {
-    return this.http.get<Record<string, string>[]>('data/comments.json').pipe(
+    return this.http.get<Record<string, string>[]>(this.bust('data/comments.json')).pipe(
       catchError(() => of([])),
       switchMap((cached) => {
         if (cached && cached.length > 0) {
@@ -184,12 +184,17 @@ export class GoogleSheetsService {
   // Private helpers
   // ─────────────────────────────────────────────────────────────────────────────
 
+  /** Appends a timestamp query param so browsers never serve a stale cached copy of a data JSON file. */
+  private bust(path: string): string {
+    return `${path}?_=${Date.now()}`;
+  }
+
   /**
    * Tries to load public/data/wc2026-data.json.
    * Returns null when the file is missing or all four ranges are empty.
    */
   private loadWc2026Data(): Observable<Wc2026Data | null> {
-    return this.http.get<Wc2026Data>('data/wc2026-data.json').pipe(
+    return this.http.get<Wc2026Data>(this.bust('data/wc2026-data.json')).pipe(
       map((d) => {
         const hasData =
           (d.players?.length ?? 0) > 0 ||
@@ -337,7 +342,7 @@ export class GoogleSheetsService {
     return forkJoin({
       matchDays: this.getMatches(),
       rawRows: this.http
-        .get<Record<string, string>[]>('data/result.json')
+        .get<Record<string, string>[]>(this.bust('data/result.json'))
         .pipe(catchError(() => of(null as Record<string, string>[] | null))),
     }).pipe(
       switchMap(({ matchDays, rawRows }) => {
