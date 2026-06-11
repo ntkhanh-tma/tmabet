@@ -22,13 +22,7 @@
       "hong le"
     ],
     [
-      "lvcu"
-    ],
-    [
       "An Phan"
-    ],
-    [
-      "Huy Nguyễn (jerry)"
     ],
     [
       "Cường Cao"
@@ -50,6 +44,21 @@
     ],
     [
       "Tai Pham"
+    ],
+    [
+      "Thi Le"
+    ],
+    [
+      "Anti Khanh Nguyen"
+    ],
+    [
+      "wuy"
+    ],
+    [
+      "Pepe"
+    ],
+    [
+      "Phuoc Nguyen"
     ]
   ],
   "bets": [
@@ -96,21 +105,9 @@
       "1"
     ],
     [
-      "lvcu",
-      "Mexico",
-      "United States",
-      "1"
-    ],
-    [
       "An Phan",
       "Mexico",
       "United States",
-      "1"
-    ],
-    [
-      "Huy Nguyễn (jerry)",
-      "",
-      "",
       "1"
     ],
     [
@@ -156,32 +153,32 @@
       "1"
     ],
     [
-      "",
-      "",
-      "",
-      "1"
-    ],
-    [
-      "",
-      "",
+      "Thi Le",
+      "South Africa",
       "",
       "1"
     ],
     [
-      "",
-      "",
+      "Anti Khanh Nguyen",
+      "Mexico",
+      "United States",
+      "1"
+    ],
+    [
+      "wuy",
+      "Mexico",
+      "United States",
+      "1"
+    ],
+    [
+      "Pepe",
+      "South Africa",
       "",
       "1"
     ],
     [
-      "",
-      "",
-      "",
-      "1"
-    ],
-    [
-      "",
-      "",
+      "Phuoc Nguyen",
+      "South Africa",
       "",
       "1"
     ],
@@ -301,15 +298,7 @@
     ],
     [
       "",
-      "lvcu"
-    ],
-    [
-      "",
       "An Phan"
-    ],
-    [
-      "",
-      "Huy Nguyễn (jerry)"
     ],
     [
       "",
@@ -338,6 +327,26 @@
     [
       "",
       "Tai Pham"
+    ],
+    [
+      "",
+      "Thi Le"
+    ],
+    [
+      "",
+      "Anti Khanh Nguyen"
+    ],
+    [
+      "",
+      "wuy"
+    ],
+    [
+      "",
+      "Pepe"
+    ],
+    [
+      "",
+      "Phuoc Nguyen"
     ]
   ],
   "currentMatch": [
