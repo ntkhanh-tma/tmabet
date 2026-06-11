@@ -31,7 +31,7 @@ function doPost(e) {
     var player    = (payload.player    || '').trim();
     var match1Bet = (payload.match1Bet || '').trim();
     var match2Bet = (payload.match2Bet || '').trim();
-    var modifier  = (payload.modifier  || '').trim();
+    var modifier  = (payload.modifier  || '').trim() || '1';
     var betTeam   = (payload.betTeam   || '').trim();
     var comment   = (payload.comment   || '').trim();
 

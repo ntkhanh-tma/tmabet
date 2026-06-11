@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -32,7 +32,7 @@ import { getCountryCode } from '../../core/utils/country-flags';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   private readonly sheetsService = inject(GoogleSheetsService);
   private readonly betService = inject(BetService);
   private readonly betState = inject(BetStateService);
@@ -53,11 +53,75 @@ export class DashboardComponent implements OnInit {
    */
   readonly sessionBets = signal<Partial<Record<1 | 2, string>>>({});
 
+  /**
+   * Set of match IDs that are currently kickoff-locked (≤ 8 h to kickoff).
+   * Updated on load and reactively via scheduled timers.
+   */
+  readonly kickoffLockedIds = signal<Set<string>>(new Set());
+
+  /** Timer handles scheduled to flip a match into kickoff-lock state. */
+  private lockTimers: ReturnType<typeof setTimeout>[] = [];
+
   ngOnInit(): void {
     this.sheetsService.getDashboardData().subscribe((d) => {
       this.data = d;
       this.loading = false;
+      this.scheduleLockTimers(d);
     });
+  }
+
+  ngOnDestroy(): void {
+    this.lockTimers.forEach((t) => clearTimeout(t));
+    this.lockTimers = [];
+  }
+
+  /**
+   * For each bet match, check immediately whether it is kickoff-locked and
+   * update the signal. If it is not yet locked, schedule a timer to flip the
+   * signal at exactly kickoffTime - 8h so the UI reacts without a page reload.
+   */
+  private scheduleLockTimers(d: DashboardData): void {
+    // Clear any previously scheduled timers
+    this.lockTimers.forEach((t) => clearTimeout(t));
+    this.lockTimers = [];
+
+    const betMatches = [d.betMatch1, d.betMatch2].filter((m): m is Match => m !== null);
+    const initialLocked = new Set<string>();
+
+    for (const match of betMatches) {
+      if (this.betState.isKickoffLocked(match)) {
+        initialLocked.add(match.id);
+      } else {
+        const activatesAt = this.betState.kickoffLockActivatesAt(match);
+        if (activatesAt !== null) {
+          const msUntilLock = activatesAt - Date.now();
+          if (msUntilLock > 0) {
+            const timer = setTimeout(() => {
+              this.kickoffLockedIds.update((s) => new Set([...s, match.id]));
+            }, msUntilLock);
+            this.lockTimers.push(timer);
+          }
+        }
+      }
+    }
+
+    this.kickoffLockedIds.set(initialLocked);
+  }
+
+  /**
+   * Returns a human-readable reason string when a bet match is kickoff-locked,
+   * or null when betting is open. Used for tooltips and the lock badge.
+   */
+  kickoffLockReason(match: Match): string | null {
+    if (!this.kickoffLockedIds().has(match.id)) return null;
+    const kickoff = this.betState.kickoffTime(match);
+    if (!kickoff) return 'Bets are closed for this match';
+    const hhmm = kickoff.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    const dateLabel = kickoff.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    const now = Date.now();
+    return now >= kickoff.getTime()
+      ? `Match already started (${dateLabel} ${hhmm})`
+      : `Bets closed – kicks off ${dateLabel} at ${hhmm}`;
   }
 
   // ─── Bet helpers ──────────────────────────────────────────────────────────
@@ -73,6 +137,12 @@ export class DashboardComponent implements OnInit {
   /** Optional comment the user types in the confirmation panel. */
   readonly pendingComment = signal<string>('');
 
+  /** Modifier multiplier selected in the confirmation panel (1–5, default 1). */
+  readonly pendingModifier = signal<number>(1);
+
+  /** Available modifier values shown in the dropdown. */
+  readonly modifierOptions = [1, 2, 3, 4, 5];
+
   /** Open the inline confirmation panel instead of immediately placing a bet. */
   openBetConfirm(match: Match, team: string): void {
     const slot = this.betSlot(match);
@@ -80,20 +150,24 @@ export class DashboardComponent implements OnInit {
     if (!slot || !player || this.isBetLocked(match) || this.submitting() !== null) return;
     this.pendingBet.set({ match, team });
     this.pendingComment.set('');
+    this.pendingModifier.set(1);
   }
 
   cancelBet(): void {
     this.pendingBet.set(null);
     this.pendingComment.set('');
+    this.pendingModifier.set(1);
   }
 
   confirmBet(): void {
     const pending = this.pendingBet();
     if (!pending) return;
     const comment = this.pendingComment().trim();
+    const modifier = this.pendingModifier();
     this.pendingBet.set(null);
     this.pendingComment.set('');
-    this.placeBet(pending.match, pending.team, comment);
+    this.pendingModifier.set(1);
+    this.placeBet(pending.match, pending.team, comment, modifier);
   }
 
   isPendingBet(match: Match, team: string): boolean {
@@ -138,10 +212,15 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
-   * Returns true when the user placed a bet on this match within the last hour,
-   * locking out any further changes.
+   * Returns true when betting is locked for this match.
+   * Locked when:
+   *  - The match is within 8 hours of kickoff (kickoff-based lock), OR
+   *  - The user placed a bet within the last hour (post-bet cooldown)
    */
   isBetLocked(match: Match): boolean {
+    // Kickoff-based lock: within 8h of kickoff
+    if (this.kickoffLockedIds().has(match.id)) return true;
+    // Post-bet cooldown: 1h after placing a bet
     const slot = this.betSlot(match);
     if (!slot) return false;
     const record = this.betState.getRecord(slot, this.matchKey(match));
@@ -161,7 +240,7 @@ export class DashboardComponent implements OnInit {
     return err && err.slot === slot ? err.message : null;
   }
 
-  placeBet(match: Match, team: string, comment = ''): void {
+  placeBet(match: Match, team: string, comment = '', modifier = 1): void {
     const slot = this.betSlot(match);
     const player = this.auth.username();
     if (!slot || !player || this.isBetLocked(match) || this.submitting() !== null) return;
@@ -190,7 +269,7 @@ export class DashboardComponent implements OnInit {
         player,
         match1Bet,
         match2Bet,
-        modifier: sheetBet?.modifier ?? '',
+        modifier: String(modifier),
         betTeam: team,
         ...(comment ? { comment } : {}),
       })

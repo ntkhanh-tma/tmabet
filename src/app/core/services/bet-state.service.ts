@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Match } from '../models/dashboard.model';
 
 const BET_KEY_1 = 'tmabet_bet_1';
 const BET_KEY_2 = 'tmabet_bet_2';
-const LOCK_MS = 60 * 60 * 1000; // 1 hour
+const LOCK_MS = 60 * 60 * 1000; // 1 hour (post-bet cooldown)
+const KICKOFF_LOCK_MS = 8 * 60 * 60 * 1000; // 8 hours before kickoff
 
 export interface LocalBetRecord {
   /** "HomeTeam|AwayTeam" — scopes the record to the current match rotation */
@@ -40,8 +42,39 @@ export class BetStateService {
     localStorage.setItem(this.storageKey(slot), JSON.stringify(record));
   }
 
-  /** Returns true when the bet was placed less than 1 hour ago. */
+  /** Returns true when the bet was placed less than 1 hour ago (post-bet cooldown). */
   isLocked(record: LocalBetRecord): boolean {
     return Date.now() - record.betTime < LOCK_MS;
+  }
+
+  /**
+   * Parses the match's date + time fields into a UTC-aware Date object.
+   * matchDate is YYYY-MM-DD, matchTime is HH:MM (local/server time as stored in the sheet).
+   * Returns null when either field is missing or unparseable.
+   */
+  kickoffTime(match: Match): Date | null {
+    if (!match.matchDate || !match.matchTime) return null;
+    const dt = new Date(`${match.matchDate}T${match.matchTime}:00`);
+    return isNaN(dt.getTime()) ? null : dt;
+  }
+
+  /**
+   * Returns true when the current time is within 8 hours of kickoff (or past it).
+   * Betting is locked for the entire 8-hour window leading up to the match.
+   */
+  isKickoffLocked(match: Match): boolean {
+    const kickoff = this.kickoffTime(match);
+    if (!kickoff) return false;
+    return Date.now() >= kickoff.getTime() - KICKOFF_LOCK_MS;
+  }
+
+  /**
+   * Returns the epoch ms at which the kickoff lock activates for this match,
+   * i.e. kickoffTime - 8h. Returns null if the kickoff cannot be parsed.
+   */
+  kickoffLockActivatesAt(match: Match): number | null {
+    const kickoff = this.kickoffTime(match);
+    if (!kickoff) return null;
+    return kickoff.getTime() - KICKOFF_LOCK_MS;
   }
 }

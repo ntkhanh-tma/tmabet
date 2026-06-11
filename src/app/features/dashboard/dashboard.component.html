@@ -40,7 +40,12 @@
                     {{ match.status | uppercase }}
                   </mat-chip>
                   <div class="match-card__header-right">
-                    @if (isBetMatch(match)) {
+                    @if (isBetMatch(match) && kickoffLockReason(match)) {
+                      <div class="match-card__lock-badge" [matTooltip]="kickoffLockReason(match)!">
+                        <mat-icon class="match-card__lock-icon">lock</mat-icon>
+                        <span class="match-card__lock-label">Bets closed</span>
+                      </div>
+                    } @else if (isBetMatch(match)) {
                       <mat-icon class="match-card__bet-icon" matTooltip="Bets open for this match">star</mat-icon>
                     }
                     <span class="match-card__group">{{ match.group }}</span>
@@ -67,7 +72,7 @@
                         [class.bet-btn--pending]="isPendingBet(match, match.homeTeam)"
                         [disabled]="isBetLocked(match) || isSubmitting(match) || !auth.username() || isConfirmOpen(match)"
                         (click)="openBetConfirm(match, match.homeTeam)"
-                        matTooltip="{{ isBetLocked(match) ? 'Bet locked for 1 hour' : 'Bet on ' + match.homeTeam }}"
+                        [matTooltip]="isBetLocked(match) ? (kickoffLockReason(match) ?? 'Bet locked') : 'Bet on ' + match.homeTeam"
                       >
                         @if (chosenTeam(match) === match.homeTeam) {
                           <mat-icon class="bet-btn__icon">check_circle</mat-icon>
@@ -108,7 +113,7 @@
                         [class.bet-btn--pending]="isPendingBet(match, match.awayTeam)"
                         [disabled]="isBetLocked(match) || isSubmitting(match) || !auth.username() || isConfirmOpen(match)"
                         (click)="openBetConfirm(match, match.awayTeam)"
-                        matTooltip="{{ isBetLocked(match) ? 'Bet locked for 1 hour' : 'Bet on ' + match.awayTeam }}"
+                        [matTooltip]="isBetLocked(match) ? (kickoffLockReason(match) ?? 'Bet locked') : 'Bet on ' + match.awayTeam"
                       >
                         @if (chosenTeam(match) === match.awayTeam) {
                           <mat-icon class="bet-btn__icon">check_circle</mat-icon>
@@ -148,6 +153,19 @@
                     <div class="match-card__confirm-header">
                       <mat-icon class="match-card__confirm-icon">sports_soccer</mat-icon>
                       <span>Bet on <strong>{{ pendingBet()?.team }}</strong>?</span>
+                      <div class="match-card__modifier">
+                        <mat-icon class="match-card__modifier-icon">local_fire_department</mat-icon>
+                        <select
+                          class="match-card__modifier-select"
+                          disabled
+                          [value]="pendingModifier()"
+                          (change)="pendingModifier.set(+$any($event.target).value)"
+                        >
+                          @for (opt of modifierOptions; track opt) {
+                            <option [value]="opt" [selected]="opt === pendingModifier()">{{ opt }}</option>
+                          }
+                        </select>
+                      </div>
                     </div>
                     <textarea
                       class="match-card__confirm-textarea"
