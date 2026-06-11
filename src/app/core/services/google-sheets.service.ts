@@ -161,11 +161,17 @@ export class GoogleSheetsService {
   private buildDashboard(data: Wc2026Data, matchDays: MatchDay[]): DashboardData {
     const allMatches = matchDays.flatMap((d) => d.matches);
 
-    // ── Featuring matches: next 4 from today 00:00 ──────────────────────────
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
+    // ── Featuring matches: next 4 that kicked off within the last 2 h or are still upcoming ──
+    // A match drops off the list only once its kickoff was more than 2 hours ago, which
+    // covers the full duration of a typical football match.
+    const cutoff = new Date(Date.now() - 2 * 60 * 60 * 1000);
     const featuringMatches = allMatches
-      .filter((m) => new Date(m.matchDate) >= todayStart)
+      .filter((m) => {
+        const kickoff = m.matchTime
+          ? new Date(`${m.matchDate}T${m.matchTime}:00`)
+          : new Date(`${m.matchDate}T00:00:00`);
+        return !isNaN(kickoff.getTime()) && kickoff >= cutoff;
+      })
       .sort((a, b) => `${a.matchDate}T${a.matchTime}`.localeCompare(`${b.matchDate}T${b.matchTime}`))
       .slice(0, 4);
 
