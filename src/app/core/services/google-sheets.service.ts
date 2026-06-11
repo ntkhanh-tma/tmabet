@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, forkJoin, catchError } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import {
   DashboardData,
   Match,
@@ -15,8 +15,8 @@ import {
   ResultRow,
 } from '../models/dashboard.model';
 import { getCountryCode, getGroupColor } from '../utils/country-flags';
+import { SheetCacheService } from './sheet-cache.service';
 
-/** Shape of public/data/wc2026-data.json written by the GitHub Actions script */
 interface Wc2026Data {
   players: string[][];
   bets: string[][];
@@ -24,9 +24,17 @@ interface Wc2026Data {
   currentMatch: string[][];
 }
 
+const CACHE_KEYS = {
+  wc2026: 'tmabet_cache_wc2026',
+  matches: 'tmabet_cache_matches',
+  comments: 'tmabet_cache_comments',
+  results: 'tmabet_cache_results',
+} as const;
+
 @Injectable({ providedIn: 'root' })
 export class GoogleSheetsService {
   private readonly http = inject(HttpClient);
+  private readonly cache = inject(SheetCacheService);
 
   private readonly apiKey = 'AIzaSyAD9--6nWYRTNhBFGga0KF9GTDgAp_Z57M';
   private readonly spreadsheetId = '1KN7r6qdlnDKLbAitcn_KeN8ztP05KO2ZhW0nJ81WI78';
@@ -38,106 +46,59 @@ export class GoogleSheetsService {
 
   /**
    * Returns the count of players who have placed bets (non-empty rows in Bets range).
-   * Used by the header label.
+   * Shares the wc2026 cache with getDashboardData — no extra API call when both run.
    */
   getBetCount(): Observable<number> {
     return this.loadWc2026Data().pipe(
-      switchMap((cached) => {
-        if (cached) {
-          return of(cached.bets.filter((r) => r[0]?.trim()).length);
-        }
-        return this.getSheetRange('WC2026!Bets').pipe(
-          map((rows) => rows.filter((r) => r[0]?.trim()).length)
-        );
-      })
+      map((data) => data.bets.filter((r) => r[0]?.trim()).length)
     );
   }
 
-  /** Builds the full dashboard data from wc2026-data.json (or direct API fallback). */
+  /** Builds the full dashboard data, served from sessionStorage cache when within 5 min TTL. */
   getDashboardData(): Observable<DashboardData> {
     return forkJoin({
       wc2026: this.loadWc2026Data(),
       matchDays: this.getMatches(),
     }).pipe(
-      switchMap(({ wc2026, matchDays }) => {
-        if (wc2026) {
-          return of(this.buildDashboard(wc2026, matchDays));
-        }
-        // JSON not available — fetch all ranges directly
-        return forkJoin({
-          playersRows: this.getSheetRange('WC2026!Players'),
-          betsRows: this.getSheetRange('WC2026!Bets'),
-          pointsRows: this.getSheetRange('WC2026!Points'),
-          currentMatch: this.getSheetRange('WC2026!I2:I5'),
-        }).pipe(
-          map((ranges) =>
-            this.buildDashboard(
-              {
-                players: ranges.playersRows,
-                bets: ranges.betsRows,
-                points: ranges.pointsRows,
-                currentMatch: ranges.currentMatch,
-              },
-              matchDays
-            )
-          )
-        );
-      })
+      map(({ wc2026, matchDays }) => this.buildDashboard(wc2026, matchDays))
     );
   }
 
-  /**
-   * Returns all matches grouped by date ascending.
-   * Reads from matches.json first; falls back to the Matches sheet when empty/missing.
-   */
+  /** Returns all matches grouped by date ascending, served from sessionStorage cache when within 5 min TTL. */
   getMatches(): Observable<MatchDay[]> {
-    return this.http.get<SheetMatch[]>(this.bust('data/matches.json')).pipe(
-      catchError(() => of([] as SheetMatch[])),
-      switchMap((rows) => {
-        if (rows && rows.length > 0) {
-          return of(this.sheetRowsToMatchDays(rows));
-        }
-        return this.getSheetRange('Matches').pipe(
-          map((rawRows) => {
-            if (rawRows.length === 0) return [];
-            const [headers, ...dataRows] = rawRows;
-            const objects: SheetMatch[] = dataRows.map((row) => {
-              const obj: Record<string, string> = {};
-              headers.forEach((h, i) => (obj[h] = row[i] ?? ''));
-              return obj as unknown as SheetMatch;
-            });
-            return this.sheetRowsToMatchDays(objects);
-          })
-        );
+    const fetcher$ = this.rawRange('Matches').pipe(
+      map((rawRows) => {
+        if (rawRows.length === 0) return [] as SheetMatch[];
+        const [headers, ...dataRows] = rawRows;
+        return dataRows.map((row) => {
+          const obj: Record<string, string> = {};
+          headers.forEach((h, i) => (obj[h] = row[i] ?? ''));
+          return obj as unknown as SheetMatch;
+        });
       })
+    );
+    return this.cache.getCached<SheetMatch[]>(CACHE_KEYS.matches, fetcher$).pipe(
+      map((rows) => this.sheetRowsToMatchDays(rows))
     );
   }
 
   /**
-   * Fetches WC2026 ranges directly from the API (bypasses the JSON cache).
-   * Used to refresh data immediately after a bet is placed.
+   * Invalidates the WC2026 sessionStorage cache and re-fetches fresh data directly
+   * from the API. Called immediately after a bet is placed so the UI reflects the
+   * saved pick without waiting for the TTL to expire.
    */
   refreshWc2026Data(): Observable<DashboardData> {
+    this.cache.invalidate(CACHE_KEYS.wc2026);
     return forkJoin({
+      wc2026: this.loadWc2026Data(),
       matchDays: this.getMatches(),
-      playersRows: this.getSheetRange('WC2026!Players'),
-      betsRows: this.getSheetRange('WC2026!Bets'),
-      pointsRows: this.getSheetRange('WC2026!Points'),
-      currentMatch: this.getSheetRange('WC2026!I2:I5'),
     }).pipe(
-      map(({ matchDays, playersRows, betsRows, pointsRows, currentMatch }) =>
-        this.buildDashboard(
-          { players: playersRows, bets: betsRows, points: pointsRows, currentMatch },
-          matchDays
-        )
-      )
+      map(({ wc2026, matchDays }) => this.buildDashboard(wc2026, matchDays))
     );
   }
 
   getSheetRange(range: string): Observable<string[][]> {
-    const url = `${this.baseUrl}/${encodeURIComponent(range)}?key=${this.apiKey}`;
-    return this.http.get<{ values: string[][] }>(url).pipe(
-      map((res) => res.values ?? []),
+    return this.rawRange(range).pipe(
       catchError((err) => {
         console.error(`[GoogleSheetsService] Failed to fetch range "${range}":`, err);
         return of([]);
@@ -147,63 +108,53 @@ export class GoogleSheetsService {
 
   /**
    * Fetches up to 50 most recent comments from the Comments sheet.
-   * Tries the cached JSON first, falls back to the live API.
+   * Served from sessionStorage cache when within 5 min TTL; falls back to
+   * stale cache on API error rather than showing an empty list.
    * Returned array is already sorted newest-first.
    */
   getComments(): Observable<CommentEntry[]> {
-    return this.http.get<Record<string, string>[]>(this.bust('data/comments.json')).pipe(
-      catchError(() => of([])),
-      switchMap((cached) => {
-        if (cached && cached.length > 0) {
-          // Handle both possible key names written by the fetch script (sheet header as-is)
-          return of(this.parseCommentRows(cached.map((r) => [
-            r['DateTime'] ?? r['Datetime'] ?? '',
-            r['Player'] ?? '',
-            r['Message'] ?? r['Comment'] ?? '',
-            r['Bet'] ?? r['Country'] ?? '',
-          ])));
-        }
-        return this.getSheetRange('Comments!A:ZZ').pipe(
-          map((rawRows) => {
-            if (rawRows.length === 0) return [];
-            const [headers, ...dataRows] = rawRows;
-            const dtIdx = headers.findIndex((h) => h.toLowerCase().includes('date'));
-            const playerIdx = headers.findIndex((h) => h.toLowerCase() === 'player');
-            // Accept both "Message" and "Comment" as the text column
-            const msgIdx = headers.findIndex((h) => h.toLowerCase() === 'message' || h.toLowerCase() === 'comment');
-            const betIdx = headers.findIndex((h) => h.toLowerCase() === 'bet' || h.toLowerCase() === 'country');
-            const rows = dataRows.map((r) => [r[dtIdx] ?? '', r[playerIdx] ?? '', r[msgIdx] ?? '', betIdx >= 0 ? (r[betIdx] ?? '') : '']);
-            return this.parseCommentRows(rows);
-          })
-        );
+    const fetcher$ = this.rawRange('Comments!A:ZZ').pipe(
+      map((rawRows) => {
+        if (rawRows.length === 0) return [] as CommentEntry[];
+        const [headers, ...dataRows] = rawRows;
+        const dtIdx = headers.findIndex((h) => h.toLowerCase().includes('date'));
+        const playerIdx = headers.findIndex((h) => h.toLowerCase() === 'player');
+        const msgIdx = headers.findIndex((h) => h.toLowerCase() === 'message' || h.toLowerCase() === 'comment');
+        const betIdx = headers.findIndex((h) => h.toLowerCase() === 'bet' || h.toLowerCase() === 'country');
+        const rows = dataRows.map((r) => [r[dtIdx] ?? '', r[playerIdx] ?? '', r[msgIdx] ?? '', betIdx >= 0 ? (r[betIdx] ?? '') : '']);
+        return this.parseCommentRows(rows);
       })
     );
+    return this.cache.getCached<CommentEntry[]>(CACHE_KEYS.comments, fetcher$);
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
   // Private helpers
   // ─────────────────────────────────────────────────────────────────────────────
 
-  /** Appends a timestamp query param so browsers never serve a stale cached copy of a data JSON file. */
-  private bust(path: string): string {
-    return `${path}?_=${Date.now()}`;
+  /**
+   * Fetches a raw sheet range from the API without swallowing errors, so that
+   * SheetCacheService can fall back to stale sessionStorage data on failure.
+   */
+  private rawRange(range: string): Observable<string[][]> {
+    const url = `${this.baseUrl}/${encodeURIComponent(range)}?key=${this.apiKey}`;
+    return this.http.get<{ values: string[][] }>(url).pipe(
+      map((res) => res.values ?? [])
+    );
   }
 
   /**
-   * Tries to load public/data/wc2026-data.json.
-   * Returns null when the file is missing or all four ranges are empty.
+   * Fetches all four WC2026 ranges in parallel and stores the result in
+   * sessionStorage under CACHE_KEYS.wc2026 for up to 5 minutes.
    */
-  private loadWc2026Data(): Observable<Wc2026Data | null> {
-    return this.http.get<Wc2026Data>(this.bust('data/wc2026-data.json')).pipe(
-      map((d) => {
-        const hasData =
-          (d.players?.length ?? 0) > 0 ||
-          (d.bets?.length ?? 0) > 0 ||
-          (d.points?.length ?? 0) > 0;
-        return hasData ? d : null;
-      }),
-      catchError(() => of(null))
-    );
+  private loadWc2026Data(): Observable<Wc2026Data> {
+    const fetcher$ = forkJoin({
+      players: this.rawRange('WC2026!Players'),
+      bets: this.rawRange('WC2026!Bets'),
+      points: this.rawRange('WC2026!Points'),
+      currentMatch: this.rawRange('WC2026!I2:I5'),
+    });
+    return this.cache.getCached<Wc2026Data>(CACHE_KEYS.wc2026, fetcher$);
   }
 
   /** Converts raw range arrays into `DashboardData`. */
@@ -334,39 +285,32 @@ export class GoogleSheetsService {
   }
 
   /**
-   * Fetches the Results sheet (read-only).
+   * Fetches the Results sheet (read-only), served from sessionStorage cache
+   * when within 5 min TTL. Falls back to stale cache on API error.
    * Columns: Player | <matchNumber> | <matchNumber> | …
-   * Tries result.json cache first, falls back to live API.
    */
   getResults(): Observable<ResultData> {
+    const resultFetcher$ = this.rawRange('Result!A:ZZ').pipe(
+      map((sheetRows) => {
+        if (sheetRows.length === 0) return [] as Record<string, string>[];
+        // Normalise blank first-column header → "Player"
+        const rawHeaders = sheetRows[0];
+        const headers = rawHeaders.map((h, i) => (i === 0 && !h.trim() ? 'Player' : h));
+        const dataRows = sheetRows.slice(1);
+        return dataRows.map((row) => {
+          const obj: Record<string, string> = {};
+          headers.forEach((h, i) => (obj[h] = row[i] ?? ''));
+          return obj;
+        });
+      })
+    );
     return forkJoin({
       matchDays: this.getMatches(),
-      rawRows: this.http
-        .get<Record<string, string>[]>(this.bust('data/result.json'))
-        .pipe(catchError(() => of(null as Record<string, string>[] | null))),
+      rawRows: this.cache.getCached<Record<string, string>[]>(CACHE_KEYS.results, resultFetcher$),
     }).pipe(
-      switchMap(({ matchDays, rawRows }) => {
-        const allMatches = matchDays.flatMap((d) => d.matches);
-        if (rawRows && rawRows.length > 0) {
-          return of(this.buildResultData(rawRows, allMatches));
-        }
-        return this.getSheetRange('Result!A:ZZ').pipe(
-          map((sheetRows) => {
-            if (sheetRows.length === 0) return { columns: [], rows: [] };
-            // Normalise blank first-column header → "Player" to match the JSON cache produced by
-            // fetch-sheet-data.mjs and what buildResultData expects.
-            const rawHeaders = sheetRows[0];
-            const headers = rawHeaders.map((h, i) => (i === 0 && !h.trim() ? 'Player' : h));
-            const dataRows = sheetRows.slice(1);
-            const objects: Record<string, string>[] = dataRows.map((row) => {
-              const obj: Record<string, string> = {};
-              headers.forEach((h, i) => (obj[h] = row[i] ?? ''));
-              return obj;
-            });
-            return this.buildResultData(objects, allMatches);
-          })
-        );
-      })
+      map(({ matchDays, rawRows }) =>
+        this.buildResultData(rawRows, matchDays.flatMap((d) => d.matches))
+      )
     );
   }
 
