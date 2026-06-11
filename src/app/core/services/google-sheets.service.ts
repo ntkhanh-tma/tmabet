@@ -353,7 +353,11 @@ export class GoogleSheetsService {
         return this.getSheetRange('Result!A:ZZ').pipe(
           map((sheetRows) => {
             if (sheetRows.length === 0) return { columns: [], rows: [] };
-            const [headers, ...dataRows] = sheetRows;
+            // Normalise blank first-column header → "Player" to match the JSON cache produced by
+            // fetch-sheet-data.mjs and what buildResultData expects.
+            const rawHeaders = sheetRows[0];
+            const headers = rawHeaders.map((h, i) => (i === 0 && !h.trim() ? 'Player' : h));
+            const dataRows = sheetRows.slice(1);
             const objects: Record<string, string>[] = dataRows.map((row) => {
               const obj: Record<string, string> = {};
               headers.forEach((h, i) => (obj[h] = row[i] ?? ''));

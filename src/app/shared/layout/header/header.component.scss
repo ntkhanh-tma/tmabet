@@ -8,6 +8,58 @@
   height: 64px;
   min-height: 64px;
 
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    margin-left: 12px;
+    flex-shrink: 0;
+  }
+
+  &__action-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: opacity 0.15s;
+
+    mat-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+    }
+
+    &:hover { opacity: 0.82; }
+
+    &--momo {
+      background: #ae2070;
+      color: #fff;
+    }
+
+    &--teams {
+      background: #5059c9;
+      color: #fff;
+    }
+  }
+
+  &__action-icon {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+  }
+
+  &__action-label {
+    font-size: 11px;
+  }
+
   &__left {
     display: flex;
     align-items: center;
@@ -84,6 +136,9 @@
 
     &__greeting { font-size: 14px; }
     &__date     { font-size: 11px; }
+
+    &__action-label { display: none; }
+    &__action-btn   { padding: 4px 6px; }
   }
 
   // ── Phone ─────────────────────────────────────────────────────────────────
@@ -106,5 +161,9 @@
     &__center { gap: 0; }
     &__greeting { font-size: 13px; font-weight: 600; }
     &__date     { display: none; }
+
+    &__action-label { display: none; }
+    &__action-btn   { padding: 4px 6px; }
+    &__actions      { margin-left: 6px; gap: 3px; }
   }
 }

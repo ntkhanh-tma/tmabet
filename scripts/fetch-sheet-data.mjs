@@ -26,11 +26,13 @@ if (!API_KEY || !SPREADSHEET_ID) {
 
 const BASE_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values`;
 
-/** Sheets to fetch as object arrays: [tabName, outputFileName] */
+/** Sheets to fetch as object arrays: [tabName, outputFileName, headerNormalizer?] */
 const SHEETS = [
   ['Matches',  'matches.json'],
   ['Comments', 'comments.json'],
-  ['Result',   'result.json'],
+  // The Result sheet's first column has a blank header — normalise it to "Player" so
+  // that buildResultData in the Angular app can find the player-name column reliably.
+  ['Result',   'result.json',  (headers) => headers.map((h, i) => (i === 0 && !h.trim() ? 'Player' : h))],
 ];
 
 /**
@@ -92,11 +94,15 @@ function writeIfChanged(filePath, content) {
 
 let hasError = false;
 
-// Fetch full tabs as object arrays (Matches, WC2026 full, WC2026-Result)
-for (const [sheetName, fileName] of SHEETS) {
+// Fetch full tabs as object arrays (Matches, Comments, Result)
+for (const [sheetName, fileName, headerNormalizer] of SHEETS) {
   try {
     console.log(`⏳  Fetching sheet: ${sheetName}`);
-    const rows = await fetchRange(`${sheetName}!A:ZZ`);
+    let rows = await fetchRange(`${sheetName}!A:ZZ`);
+    // Apply optional header normalisation before converting rows → objects
+    if (headerNormalizer && rows.length > 0) {
+      rows = [headerNormalizer(rows[0]), ...rows.slice(1)];
+    }
     const data = rowsToObjects(rows);
     const outPath = join(OUT_DIR, fileName);
     const changed = writeIfChanged(outPath, JSON.stringify(data, null, 2));
