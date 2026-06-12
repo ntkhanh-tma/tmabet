@@ -18,9 +18,7 @@ import { getCountryCode, getGroupColor } from '../utils/country-flags';
 import { SheetCacheService } from './sheet-cache.service';
 
 interface Wc2026Data {
-  players: string[][];
   bets: string[][];
-  points: string[][];
   currentMatch: string[][];
 }
 
@@ -59,8 +57,9 @@ export class GoogleSheetsService {
     return forkJoin({
       wc2026: this.loadWc2026Data(),
       matchDays: this.getMatches(),
+      resultRows: this.loadResultRows(),
     }).pipe(
-      map(({ wc2026, matchDays }) => this.buildDashboard(wc2026, matchDays))
+      map(({ wc2026, matchDays, resultRows }) => this.buildDashboard(wc2026, matchDays, resultRows))
     );
   }
 
@@ -92,8 +91,9 @@ export class GoogleSheetsService {
     return forkJoin({
       wc2026: this.loadWc2026Data(),
       matchDays: this.getMatches(),
+      resultRows: this.loadResultRows(),
     }).pipe(
-      map(({ wc2026, matchDays }) => this.buildDashboard(wc2026, matchDays))
+      map(({ wc2026, matchDays, resultRows }) => this.buildDashboard(wc2026, matchDays, resultRows))
     );
   }
 
@@ -149,60 +149,36 @@ export class GoogleSheetsService {
    */
   private loadWc2026Data(): Observable<Wc2026Data> {
     const fetcher$ = forkJoin({
-      players: this.rawRange('WC2026!Players'),
       bets: this.rawRange('WC2026!Bets'),
-      points: this.rawRange('WC2026!Points'),
       currentMatch: this.rawRange('WC2026!I2:I5'),
     });
     return this.cache.getCached<Wc2026Data>(CACHE_KEYS.wc2026, fetcher$);
   }
 
+  /** Fetches and caches the raw Result sheet rows (shared by getResults and getDashboardData). */
+  private loadResultRows(): Observable<Record<string, string>[]> {
+    const fetcher$ = this.rawRange('Result!A:ZZ').pipe(
+      map((sheetRows) => {
+        if (sheetRows.length === 0) return [] as Record<string, string>[];
+        const rawHeaders = sheetRows[0];
+        const headers = rawHeaders.map((h, i) => (i === 0 && !h.trim() ? 'Player' : h));
+        const dataRows = sheetRows.slice(1);
+        return dataRows.map((row) => {
+          const obj: Record<string, string> = {};
+          headers.forEach((h, i) => (obj[h] = row[i] ?? ''));
+          return obj;
+        });
+      })
+    );
+    return this.cache.getCached<Record<string, string>[]>(CACHE_KEYS.results, fetcher$);
+  }
+
   /** Converts raw range arrays into `DashboardData`. */
-  private buildDashboard(data: Wc2026Data, matchDays: MatchDay[]): DashboardData {
+  private buildDashboard(data: Wc2026Data, matchDays: MatchDay[], resultRows: Record<string, string>[]): DashboardData {
     const allMatches = matchDays.flatMap((d) => d.matches);
 
-    // ── Featuring matches: next 4 that kicked off within the last 2 h or are still upcoming ──
-    // A match drops off the list only once its kickoff was more than 2 hours ago, which
-    // covers the full duration of a typical football match.
-    const cutoff = new Date(Date.now() - 2 * 60 * 60 * 1000);
-    const featuringMatches = allMatches
-      .filter((m) => {
-        const kickoff = m.matchTime
-          ? new Date(`${m.matchDate}T${m.matchTime}:00`)
-          : new Date(`${m.matchDate}T00:00:00`);
-        return !isNaN(kickoff.getTime()) && kickoff >= cutoff;
-      })
-      .sort((a, b) => `${a.matchDate}T${a.matchTime}`.localeCompare(`${b.matchDate}T${b.matchTime}`))
-      .slice(0, 4);
-
-    // ── Parse Bets range ────────────────────────────────────────────────────
-    const bets: BetRow[] = (data.bets ?? [])
-      .filter((r) => r[0]?.trim())
-      .map((r) => ({
-        playerName: r[0] ?? '',
-        match1Bet: r[1] ?? '',
-        match2Bet: r[2] ?? '',
-        modifier: r[3] ?? '',
-      }));
-
-    // ── Leaderboard: Players range ordered by Points descending ─────────────
-    const players = (data.players ?? []).flat().filter(Boolean);
-    const pointsMap = new Map<string, number>();
-    for (const r of (data.points ?? []).filter((r) => r[1]?.trim())) {
-      // Column order in sheet: [score, playerName]
-      pointsMap.set(r[1].trim().toLowerCase(), Number(r[0]) || 0);
-    }
-    const leaderboard: LeaderboardEntry[] = players
-      .map((name) => ({
-        rank: 0,
-        playerName: name,
-        totalPoints: pointsMap.get(name.trim().toLowerCase()) ?? 0,
-      }))
-      .sort((a, b) => b.totalPoints - a.totalPoints)
-      .slice(0, 10)
-      .map((e, i) => ({ ...e, rank: i + 1 }));
-
-    // ── Resolve I2:I5 against the flat matches list ─────────────────────────
+    // ── Resolve bet matches FIRST — they drive the featuring-match pinning ──
+    // I2:I5 is a single-column range: I2=home1, I3=away1, I4=home2, I5=away2.
     const t = (data.currentMatch ?? []).map((r) => (r[0] ?? '').trim());
     const findMatch = (home: string, away: string): Match | null => {
       if (!home || !away) return null;
@@ -214,9 +190,64 @@ export class GoogleSheetsService {
         ) ?? null
       );
     };
-
     const betMatch1 = findMatch(t[0] ?? '', t[1] ?? '');
     const betMatch2 = findMatch(t[2] ?? '', t[3] ?? '');
+
+    // ── Featuring matches ────────────────────────────────────────────────────
+    // A match is "active" until its kickoff was more than 2 hours ago
+    // (covers the full duration of a typical match).
+    // Bet matches are PINNED into the list regardless of their chronological
+    // position — they must always be visible so users can place their bets.
+    // Remaining slots (up to 4 total) are filled with the next upcoming matches.
+    const cutoff = new Date(Date.now() - 2 * 60 * 60 * 1000);
+    const isActive = (m: Match): boolean => {
+      const kickoff = m.matchTime
+        ? new Date(`${m.matchDate}T${m.matchTime}:00`)
+        : new Date(`${m.matchDate}T00:00:00`);
+      return !isNaN(kickoff.getTime()) && kickoff >= cutoff;
+    };
+
+    // Each bet match is an independent entity: pin it only if it is still active.
+    const pinnedIds = new Set<string>();
+    if (betMatch1 && isActive(betMatch1)) pinnedIds.add(betMatch1.id);
+    if (betMatch2 && isActive(betMatch2)) pinnedIds.add(betMatch2.id);
+
+    const pinned = allMatches.filter((m) => pinnedIds.has(m.id));
+    const fillers = allMatches
+      .filter((m) => !pinnedIds.has(m.id) && isActive(m))
+      .sort((a, b) => `${a.matchDate}T${a.matchTime}`.localeCompare(`${b.matchDate}T${b.matchTime}`))
+      .slice(0, Math.max(0, 4 - pinned.length));
+
+    const featuringMatches = [...pinned, ...fillers]
+      .sort((a, b) => `${a.matchDate}T${a.matchTime}`.localeCompare(`${b.matchDate}T${b.matchTime}`));
+
+    // ── Parse Bets range ────────────────────────────────────────────────────
+    const bets: BetRow[] = (data.bets ?? [])
+      .filter((r) => r[0]?.trim())
+      .map((r) => ({
+        playerName: r[0] ?? '',
+        match1Bet: r[1] ?? '',
+        match2Bet: r[2] ?? '',
+        modifier: r[3] ?? '',
+      }));
+
+    // ── Leaderboard: top 10 by Points from the Result sheet ─────────────────
+    const playerKey = resultRows.length > 0
+      ? (Object.keys(resultRows[0]).find((k) => k.trim().toLowerCase() === 'player') ?? '')
+      : '';
+    const pointsKey = resultRows.length > 0
+      ? (Object.keys(resultRows[0]).find((k) => k.trim().toLowerCase() === 'points') ?? '')
+      : '';
+    const leaderboard: LeaderboardEntry[] = resultRows
+      .filter((r) => r[playerKey]?.trim())
+      .map((r) => ({
+        rank: 0,
+        playerName: r[playerKey].trim(),
+        totalPoints: Number(r[pointsKey] ?? '0') || 0,
+      }))
+      .sort((a, b) => b.totalPoints - a.totalPoints)
+      .slice(0, 10)
+      .map((e, i) => ({ ...e, rank: i + 1 }));
 
     return { featuringMatches, leaderboard, betMatch1, betMatch2, bets };
   }
@@ -296,23 +327,9 @@ export class GoogleSheetsService {
    * Columns: Player | <matchNumber> | <matchNumber> | …
    */
   getResults(): Observable<ResultData> {
-    const resultFetcher$ = this.rawRange('Result!A:ZZ').pipe(
-      map((sheetRows) => {
-        if (sheetRows.length === 0) return [] as Record<string, string>[];
-        // Normalise blank first-column header → "Player"
-        const rawHeaders = sheetRows[0];
-        const headers = rawHeaders.map((h, i) => (i === 0 && !h.trim() ? 'Player' : h));
-        const dataRows = sheetRows.slice(1);
-        return dataRows.map((row) => {
-          const obj: Record<string, string> = {};
-          headers.forEach((h, i) => (obj[h] = row[i] ?? ''));
-          return obj;
-        });
-      })
-    );
     return forkJoin({
       matchDays: this.getMatches(),
-      rawRows: this.cache.getCached<Record<string, string>[]>(CACHE_KEYS.results, resultFetcher$),
+      rawRows: this.loadResultRows(),
     }).pipe(
       map(({ matchDays, rawRows }) =>
         this.buildResultData(rawRows, matchDays.flatMap((d) => d.matches))
@@ -364,7 +381,7 @@ export class GoogleSheetsService {
         const totalPoints = Number(r[pointsKey] ?? '0') || 0;
         return { playerName: r[playerKey].trim(), totalPoints, picks };
       })
-      .sort((a, b) => a.totalPoints - b.totalPoints);
+      .sort((a, b) => b.totalPoints - a.totalPoints);
 
     return { columns, rows: resultRows };
   }
