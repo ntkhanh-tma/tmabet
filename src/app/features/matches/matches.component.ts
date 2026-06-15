@@ -4,13 +4,14 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { GoogleSheetsService } from '../../core/services/google-sheets.service';
 import { MatchDay, Match } from '../../core/models/dashboard.model';
 
 @Component({
   selector: 'app-matches',
   standalone: true,
-  imports: [CommonModule, MatProgressBarModule, MatChipsModule, MatIconModule, MatTooltipModule],
+  imports: [CommonModule, MatProgressBarModule, MatChipsModule, MatIconModule, MatTooltipModule, MatExpansionModule],
   templateUrl: './matches.component.html',
   styleUrl: './matches.component.scss',
 })
@@ -25,6 +26,16 @@ export class MatchesComponent implements OnInit {
       this.matchDays = days;
       this.loading = false;
     });
+  }
+
+  get pastMatchDays(): MatchDay[] {
+    return this.matchDays.filter(
+      (d) => d.matches.length > 0 && d.matches.every((m) => m.status === 'finished')
+    );
+  }
+
+  get upcomingMatchDays(): MatchDay[] {
+    return this.matchDays.filter((d) => d.matches.some((m) => m.status !== 'finished'));
   }
 
   oddsDisplay(match: Match): { home: string; away: string } {

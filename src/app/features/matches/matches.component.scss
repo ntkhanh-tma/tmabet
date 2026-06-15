@@ -56,6 +56,30 @@
       height: 48px;
     }
   }
+
+  &__past-accordion {
+    margin-bottom: 24px;
+    display: block;
+  }
+
+  &__past-panel {
+    background: var(--mat-sys-surface-container) !important;
+  }
+
+  &__past-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--mat-sys-on-surface-variant);
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+  }
 }
 
 .match-day {

@@ -8,12 +8,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialog } from '@angular/material/dialog';
 import { GoogleSheetsService } from '../../core/services/google-sheets.service';
 import { AuthService } from '../../core/services/auth.service';
 import { BetService } from '../../core/services/bet.service';
 import { BetStateService } from '../../core/services/bet-state.service';
 import { DashboardData, Match, BetRow } from '../../core/models/dashboard.model';
 import { getCountryCode } from '../../core/utils/country-flags';
+import { DailyWelcomeDialogComponent, DailyWelcomeDialogData } from './daily-welcome-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -36,6 +38,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private readonly sheetsService = inject(GoogleSheetsService);
   private readonly betService = inject(BetService);
   private readonly betState = inject(BetStateService);
+  private readonly dialog = inject(MatDialog);
   readonly auth = inject(AuthService);
 
   data: DashboardData | null = null;
@@ -67,12 +70,40 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.data = d;
       this.loading = false;
       this.scheduleLockTimers(d);
+      this.showDailyWelcomeIfNeeded(d);
     });
   }
 
   ngOnDestroy(): void {
     this.lockTimers.forEach((t) => clearTimeout(t));
     this.lockTimers = [];
+  }
+
+  private static readonly DAILY_POPUP_KEY = 'tmabet_daily_popup_date';
+
+  private showDailyWelcomeIfNeeded(d: DashboardData): void {
+    const today = new Date().toDateString();
+    const lastShown = localStorage.getItem(DashboardComponent.DAILY_POPUP_KEY);
+    if (lastShown === today) return;
+    if (!d.betMatch1 && !d.betMatch2) return;
+
+    localStorage.setItem(DashboardComponent.DAILY_POPUP_KEY, today);
+
+    const me = this.auth.username();
+    const userPoints = me
+      ? d.leaderboard.find(
+          (e) => e.playerName.trim().toLowerCase() === me.trim().toLowerCase()
+        )?.totalPoints ?? null
+      : null;
+
+    this.dialog.open<DailyWelcomeDialogComponent, DailyWelcomeDialogData>(
+      DailyWelcomeDialogComponent,
+      {
+        data: { betMatch1: d.betMatch1, betMatch2: d.betMatch2, bets: d.bets, userPoints },
+        width: '600px',
+        maxWidth: '95vw',
+      }
+    );
   }
 
   /**

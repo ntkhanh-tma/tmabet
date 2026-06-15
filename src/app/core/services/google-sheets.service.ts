@@ -69,9 +69,26 @@ export class GoogleSheetsService {
       map((rawRows) => {
         if (rawRows.length === 0) return [] as SheetMatch[];
         const [headers, ...dataRows] = rawRows;
+        // The sheet column may be named "Match Number/Name" or similar variants;
+        // normalize it to "Match" so that row.Match is always populated correctly.
+        const normalizedHeaders = headers.map((h) => {
+          const lower = h.trim().toLowerCase();
+          if (
+            lower === 'match' ||
+            lower === 'match number/name' ||
+            lower === 'match number' ||
+            lower === 'match name' ||
+            lower === 'match no.' ||
+            lower === 'match no' ||
+            lower === 'match #'
+          ) {
+            return 'Match';
+          }
+          return h;
+        });
         return dataRows.map((row) => {
           const obj: Record<string, string> = {};
-          headers.forEach((h, i) => (obj[h] = row[i] ?? ''));
+          normalizedHeaders.forEach((h, i) => (obj[h] = row[i] ?? ''));
           return obj as unknown as SheetMatch;
         });
       })

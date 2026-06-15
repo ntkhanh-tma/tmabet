@@ -1,93 +1,84 @@
 /**
  * Maps country names (as they appear in the sheet) to ISO 3166-1 alpha-2 codes.
  * Used with the flag-icons library: <span class="fi fi-{code}"></span>
- * Full 48-team WC2026 participant list.
+ * Full 48-team WC2026 participant list plus common name aliases.
  */
 export const COUNTRY_ISO: Record<string, string> = {
-  // Group A
-  'United States': 'us',
-  'USA': 'us',
-  'US': 'us',
-  'Mexico': 'mx',
-  'Canada': 'ca',
-
-  // Group B
-  'Uruguay': 'uy',
-  'Panama': 'pa',
-  'Bolivia': 'bo',
-
-  // Group C
+  // ── WC2026 participants (exact names as used in the Matches sheet) ──────────
+  'Algeria': 'dz',
   'Argentina': 'ar',
-  'Chile': 'cl',
-  'Peru': 'pe',
-
-  // Group D
-  'Brazil': 'br',
-  'Ecuador': 'ec',
-  'Paraguay': 'py',
-  'Venezuela': 've',
-
-  // Group E
-  'Colombia': 'co',
-  'Costa Rica': 'cr',
-  'Honduras': 'hn',
-
-  // Group F
-  'Portugal': 'pt',
-  'Croatia': 'hr',
-  'Turkey': 'tr',
-  'Albania': 'al',
-
-  // Group G
-  'Spain': 'es',
-  'Netherlands': 'nl',
-  'Serbia': 'rs',
-  'Iceland': 'is',
-
-  // Group H
-  'France': 'fr',
-  'Belgium': 'be',
-  'Italy': 'it',
-  'Ukraine': 'ua',
-
-  // Group I
-  'Germany': 'de',
+  'Australia': 'au',
   'Austria': 'at',
-  'Hungary': 'hu',
-  'Switzerland': 'ch',
-
-  // Group J
+  'Belgium': 'be',
+  'Bosnia and Herzegovina': 'ba',
+  'Brazil': 'br',
+  'Cabo Verde': 'cv',
+  'Canada': 'ca',
+  'Colombia': 'co',
+  'Congo DR': 'cd',
+  "Côte d'Ivoire": 'ci',
+  'Croatia': 'hr',
+  'Curaçao': 'cw',
+  'Czechia': 'cz',
+  'Ecuador': 'ec',
+  'Egypt': 'eg',
   'England': 'gb-eng',
-  'Wales': 'gb-wls',
-  'Scotland': 'gb-sct',
-  'Slovenia': 'si',
-
-  // Group K
+  'France': 'fr',
+  'Germany': 'de',
+  'Ghana': 'gh',
+  'Haiti': 'ht',
+  'IR Iran': 'ir',
+  'Iraq': 'iq',
+  'Japan': 'jp',
+  'Jordan': 'jo',
+  'Korea Republic': 'kr',
+  'Mexico': 'mx',
   'Morocco': 'ma',
+  'Netherlands': 'nl',
+  'New Zealand': 'nz',
+  'Norway': 'no',
+  'Panama': 'pa',
+  'Paraguay': 'py',
+  'Portugal': 'pt',
+  'Qatar': 'qa',
+  'Saudi Arabia': 'sa',
+  'Scotland': 'gb-sct',
   'Senegal': 'sn',
   'South Africa': 'za',
+  'Spain': 'es',
+  'Sweden': 'se',
+  'Switzerland': 'ch',
+  'Tunisia': 'tn',
+  'Türkiye': 'tr',
+  'United States': 'us',
+  'Uruguay': 'uy',
+  'Uzbekistan': 'uz',
+
+  // ── Common name aliases ───────────────────────────────────────────────────
+  'USA': 'us',
+  'US': 'us',
+  'South Korea': 'kr',
+  'Korea': 'kr',
+  'Iran': 'ir',
+  'Turkey': 'tr',
   'DR Congo': 'cd',
   'Congo': 'cd',
-
-  // Group L
-  'Japan': 'jp',
-  'South Korea': 'kr',
-  'Korea Republic': 'kr',
-  'Australia': 'au',
-  'Saudi Arabia': 'sa',
-
-  // Group M (shared hosts / others)
-  'Nigeria': 'ng',
-  'Egypt': 'eg',
-  'Cameroon': 'cm',
-  'Ghana': 'gh',
-  'Tunisia': 'tn',
-
-  // Other qualifiers
-  'Iran': 'ir',
-  'Qatar': 'qa',
-  'China': 'cn',
-  'New Zealand': 'nz',
+  'Ivory Coast': 'ci',
+  'Czech Republic': 'cz',
+  'Wales': 'gb-wls',
+  'Bolivia': 'bo',
+  'Chile': 'cl',
+  'Venezuela': 've',
+  'Costa Rica': 'cr',
+  'Honduras': 'hn',
+  'Albania': 'al',
+  'Serbia': 'rs',
+  'Iceland': 'is',
+  'Italy': 'it',
+  'Ukraine': 'ua',
+  'Hungary': 'hu',
+  'Slovenia': 'si',
+  'Peru': 'pe',
   'Indonesia': 'id',
   'Cuba': 'cu',
   'Jamaica': 'jm',
