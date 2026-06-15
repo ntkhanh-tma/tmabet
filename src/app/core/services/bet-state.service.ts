@@ -4,7 +4,7 @@ import { Match } from '../models/dashboard.model';
 const BET_KEY_1 = 'tmabet_bet_1';
 const BET_KEY_2 = 'tmabet_bet_2';
 const LOCK_MS = 60 * 60 * 1000; // 1 hour (post-bet cooldown)
-const KICKOFF_LOCK_MS = 8 * 60 * 60 * 1000; // 8 hours before kickoff
+const KICKOFF_LOCK_MS = 3 * 60 * 60 * 1000; // 8 hours before kickoff
 
 export interface LocalBetRecord {
   /** "HomeTeam|AwayTeam" — scopes the record to the current match rotation */
