@@ -240,6 +240,17 @@
                       <span class="leaderboard__me-badge">You</span>
                     }
                   </span>
+                  @if (entry.results.length > 0) {
+                    <div class="leaderboard__results">
+                      @for (pick of entry.results; track $index) {
+                        <span class="leaderboard__pick"
+                          [class.leaderboard__pick--win]="pick.toUpperCase().startsWith('W')"
+                          [class.leaderboard__pick--loss]="pick.toUpperCase().startsWith('L')">
+                          {{ pick }}
+                        </span>
+                      }
+                    </div>
+                  }
                   <mat-progress-bar
                     mode="determinate"
                     [value]="(entry.totalPoints / getMaxPoints()) * 100"

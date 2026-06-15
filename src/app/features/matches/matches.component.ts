@@ -28,23 +28,20 @@ export class MatchesComponent implements OnInit {
     });
   }
 
+  private get todayDate(): string {
+    const d = new Date();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  }
+
   get pastMatchDays(): MatchDay[] {
-    const now = Date.now();
-    return this.matchDays.filter(
-      (d) => d.matches.length > 0 && d.matches.every((m) => this.kickoffMs(m) < now)
-    );
+    const today = this.todayDate;
+    return this.matchDays.filter((d) => d.date < today);
   }
 
   get upcomingMatchDays(): MatchDay[] {
-    const now = Date.now();
-    return this.matchDays.filter((d) => d.matches.some((m) => this.kickoffMs(m) >= now));
-  }
-
-  private kickoffMs(match: Match): number {
-    const dt = match.matchTime
-      ? new Date(`${match.matchDate}T${match.matchTime}:00`)
-      : new Date(`${match.matchDate}T00:00:00`);
-    return isNaN(dt.getTime()) ? Infinity : dt.getTime();
+    const today = this.todayDate;
+    return this.matchDays.filter((d) => d.date >= today);
   }
 
   oddsDisplay(match: Match): { home: string; away: string } {

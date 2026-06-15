@@ -255,12 +255,17 @@ export class GoogleSheetsService {
     const pointsKey = resultRows.length > 0
       ? (Object.keys(resultRows[0]).find((k) => k.trim().toLowerCase() === 'points') ?? '')
       : '';
+    const allResultKeys = resultRows.length > 0 ? Object.keys(resultRows[0]) : [];
+    const matchNumberKeys = allResultKeys.filter(
+      (k) => k !== playerKey && k.trim().toLowerCase() !== 'points' && k.trim() !== ''
+    );
     const leaderboard: LeaderboardEntry[] = resultRows
       .filter((r) => r[playerKey]?.trim())
       .map((r) => ({
         rank: 0,
         playerName: r[playerKey].trim(),
         totalPoints: Number(r[pointsKey] ?? '0') || 0,
+        results: matchNumberKeys.map((k) => (r[k] ?? '').trim()).filter(Boolean),
       }))
       .sort((a, b) => b.totalPoints - a.totalPoints)
       .slice(0, 10)

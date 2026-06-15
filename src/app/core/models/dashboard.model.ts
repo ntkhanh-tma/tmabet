@@ -54,6 +54,8 @@ export interface LeaderboardEntry {
   rank: number;
   playerName: string;
   totalPoints: number;
+  /** Ordered list of non-empty pick values for this player, e.g. ["W", "L", "W2"] */
+  results: string[];
 }
 
 /** One row from the Bets range */
