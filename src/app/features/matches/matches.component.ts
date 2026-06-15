@@ -29,13 +29,22 @@ export class MatchesComponent implements OnInit {
   }
 
   get pastMatchDays(): MatchDay[] {
+    const now = Date.now();
     return this.matchDays.filter(
-      (d) => d.matches.length > 0 && d.matches.every((m) => m.status === 'finished')
+      (d) => d.matches.length > 0 && d.matches.every((m) => this.kickoffMs(m) < now)
     );
   }
 
   get upcomingMatchDays(): MatchDay[] {
-    return this.matchDays.filter((d) => d.matches.some((m) => m.status !== 'finished'));
+    const now = Date.now();
+    return this.matchDays.filter((d) => d.matches.some((m) => this.kickoffMs(m) >= now));
+  }
+
+  private kickoffMs(match: Match): number {
+    const dt = match.matchTime
+      ? new Date(`${match.matchDate}T${match.matchTime}:00`)
+      : new Date(`${match.matchDate}T00:00:00`);
+    return isNaN(dt.getTime()) ? Infinity : dt.getTime();
   }
 
   oddsDisplay(match: Match): { home: string; away: string } {
