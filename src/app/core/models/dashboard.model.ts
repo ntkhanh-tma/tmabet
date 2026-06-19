@@ -67,6 +67,10 @@ export interface BetRow {
   match2Bet: string;
   /** Modifier value */
   modifier: string;
+  /** Player's total wallet balance */
+  wallet: string;
+  /** Amount of wallet already used */
+  used: string;
 }
 
 export interface DashboardData {
@@ -113,6 +117,8 @@ export interface ResultRow {
   totalPoints: number;
   /** Pick per match column: key = matchNumber, value = "W", "L", or "" */
   picks: Record<string, string>;
+  /** Player's current wallet balance (joined from WC2026 Bets range) */
+  wallet?: string;
 }
 
 export interface ResultData {

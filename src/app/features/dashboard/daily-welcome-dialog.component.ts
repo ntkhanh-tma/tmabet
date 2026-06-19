@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Match, BetRow } from '../../core/models/dashboard.model';
+import { AuthService } from '../../core/services/auth.service';
 
 export interface DailyWelcomeDialogData {
   betMatch1: Match | null;
@@ -31,9 +32,20 @@ export interface DailyWelcomeDialogData {
 })
 export class DailyWelcomeDialogComponent {
   readonly data = inject<DailyWelcomeDialogData>(MAT_DIALOG_DATA);
+  private readonly auth = inject(AuthService);
 
   get betMatches(): Match[] {
     return [this.data.betMatch1, this.data.betMatch2].filter((m): m is Match => m !== null);
+  }
+
+  get myBet(): BetRow | null {
+    const me = this.auth.username();
+    if (!me) return null;
+    return (
+      this.data.bets.find(
+        (b) => b.playerName.trim().toLowerCase() === me.trim().toLowerCase()
+      ) ?? null
+    );
   }
 
   slotFor(match: Match): 1 | 2 | null {

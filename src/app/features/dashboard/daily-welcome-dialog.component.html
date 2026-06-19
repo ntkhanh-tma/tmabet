@@ -103,6 +103,22 @@
   </div>
 </mat-dialog-content>
 
+@if (myBet?.wallet) {
+  <div class="welcome-dialog__wallet">
+    <mat-icon class="welcome-dialog__wallet-icon">account_balance_wallet</mat-icon>
+    <div class="welcome-dialog__wallet-info">
+      <span class="welcome-dialog__wallet-label">Your Wallet</span>
+      <span class="welcome-dialog__wallet-amount">{{ myBet!.wallet }}</span>
+    </div>
+    @if (myBet!.used) {
+      <div class="welcome-dialog__wallet-used">
+        <span class="welcome-dialog__wallet-used-label">Used</span>
+        <span class="welcome-dialog__wallet-used-amount">{{ myBet!.used }}</span>
+      </div>
+    }
+  </div>
+}
+
 <mat-dialog-actions align="end">
   <button mat-flat-button color="primary" mat-dialog-close>
     Let's go! 🚀

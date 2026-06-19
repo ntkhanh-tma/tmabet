@@ -26,6 +26,7 @@
           <table class="results-table">
             <thead>
               <tr>
+                <th class="results-table__wallet-header">Wallet</th>
                 <th class="results-table__player-header">Player</th>
                 @for (col of data.columns; track col.matchNumber) {
                   <th class="results-table__match-header" [matTooltip]="col.label">
@@ -43,6 +44,7 @@
             <tbody>
               @for (row of data.rows; track row.playerName) {
                 <tr [class.results-table__row--me]="isMe(row.playerName)">
+                  <td class="results-table__wallet-cell">{{ row.wallet || '—' }}</td>
                   <td class="results-table__player-cell">
                     {{ row.playerName }}
                     @if (isMe(row.playerName)) {

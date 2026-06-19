@@ -47,8 +47,9 @@ export class GoogleSheetsService {
    * Shares the wc2026 cache with getDashboardData — no extra API call when both run.
    */
   getBetCount(): Observable<number> {
+    const PLAYER_HEADERS = new Set(['player', 'name', 'player name', 'players']);
     return this.loadWc2026Data().pipe(
-      map((data) => data.bets.filter((r) => r[0]?.trim()).length)
+      map((data) => data.bets.filter((r) => r[1]?.trim() && !PLAYER_HEADERS.has(r[1].trim().toLowerCase())).length)
     );
   }
 
@@ -166,7 +167,10 @@ export class GoogleSheetsService {
    */
   private loadWc2026Data(): Observable<Wc2026Data> {
     const fetcher$ = forkJoin({
-      bets: this.rawRange('WC2026!Bets'),
+      // Use an explicit range instead of the named "Bets" range so that the
+      // new Wallet (col E) and Used (col F) columns are included. The named
+      // range was defined before those columns existed and is frozen at A:D.
+      bets: this.rawRange('WC2026!A:I'),
       currentMatch: this.rawRange('WC2026!I2:I5'),
     });
     return this.cache.getCached<Wc2026Data>(CACHE_KEYS.wc2026, fetcher$);
@@ -239,13 +243,20 @@ export class GoogleSheetsService {
       .sort((a, b) => `${a.matchDate}T${a.matchTime}`.localeCompare(`${b.matchDate}T${b.matchTime}`));
 
     // ── Parse Bets range ────────────────────────────────────────────────────
+    // Sheet layout (A:I): A=Points, B=Player, C=1stMatch, D=2ndMatch,
+    // E=Modifier, F=Comment, G=BetTeam, H=Wallet, I=Used.
+    // Rows above the header (metadata) and the header row itself are skipped
+    // by filtering on a non-empty, non-header value in column B (index 1).
+    const PLAYER_HEADERS = new Set(['player', 'name', 'player name', 'players']);
     const bets: BetRow[] = (data.bets ?? [])
-      .filter((r) => r[0]?.trim())
+      .filter((r) => r[1]?.trim() && !PLAYER_HEADERS.has(r[1].trim().toLowerCase()))
       .map((r) => ({
-        playerName: r[0] ?? '',
-        match1Bet: r[1] ?? '',
-        match2Bet: r[2] ?? '',
-        modifier: r[3] ?? '',
+        playerName: r[1] ?? '',
+        match1Bet: r[2] ?? '',
+        match2Bet: r[3] ?? '',
+        modifier: r[4] ?? '',
+        wallet: r[7] ?? '',
+        used: r[8] ?? '',
       }));
 
     // ── Leaderboard: top 10 by Points from the Result sheet ─────────────────
@@ -352,15 +363,21 @@ export class GoogleSheetsService {
     return forkJoin({
       matchDays: this.getMatches(),
       rawRows: this.loadResultRows(),
+      wc2026: this.loadWc2026Data(),
     }).pipe(
-      map(({ matchDays, rawRows }) =>
-        this.buildResultData(rawRows, matchDays.flatMap((d) => d.matches))
-      )
+      map(({ matchDays, rawRows, wc2026 }) => {
+        const walletByPlayer = new Map(
+          (wc2026.bets ?? [])
+            .filter((r) => r[1]?.trim())
+            .map((r) => [r[1].trim().toLowerCase(), r[7] ?? ''])
+        );
+        return this.buildResultData(rawRows, matchDays.flatMap((d) => d.matches), walletByPlayer);
+      })
     );
   }
 
   /** Converts raw Result-sheet rows into ResultData, resolving match numbers → team labels. */
-  private buildResultData(rows: Record<string, string>[], allMatches: Match[]): ResultData {
+  private buildResultData(rows: Record<string, string>[], allMatches: Match[], walletByPlayer = new Map<string, string>()): ResultData {
     if (rows.length === 0) return { columns: [], rows: [] };
 
     // Build a lookup: matchNumber → Match
@@ -401,7 +418,8 @@ export class GoogleSheetsService {
           picks[key.trim()] = (r[key] ?? '').trim();
         }
         const totalPoints = Number(r[pointsKey] ?? '0') || 0;
-        return { playerName: r[playerKey].trim(), totalPoints, picks };
+        const name = r[playerKey].trim();
+        return { playerName: name, totalPoints, picks, wallet: walletByPlayer.get(name.toLowerCase()) };
       })
       .sort((a, b) => b.totalPoints - a.totalPoints);
 
