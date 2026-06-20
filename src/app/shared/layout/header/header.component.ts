@@ -40,6 +40,13 @@ export class HeaderComponent implements OnInit {
     });
   }
 
+  onRefresh(): void {
+    this.sheetsService.triggerRefresh();
+    this.sheetsService.getBetCount().subscribe((count) => {
+      this.addictCount = count;
+    });
+  }
+
   openLogin(): void {
     this.dialog.open(LoginDialogComponent, { width: '360px' });
   }

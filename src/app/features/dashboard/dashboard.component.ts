@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -64,6 +65,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   /** Timer handles scheduled to flip a match into kickoff-lock state. */
   private lockTimers: ReturnType<typeof setTimeout>[] = [];
+  private refreshSub?: Subscription;
 
   ngOnInit(): void {
     this.sheetsService.getDashboardData().subscribe((d) => {
@@ -72,11 +74,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.scheduleLockTimers(d);
       this.showDailyWelcomeIfNeeded(d);
     });
+
+    this.refreshSub = this.sheetsService.refresh$.subscribe(() => {
+      this.loading = true;
+      this.sheetsService.getDashboardData().subscribe((d) => {
+        this.data = d;
+        this.loading = false;
+        this.scheduleLockTimers(d);
+      });
+    });
   }
 
   ngOnDestroy(): void {
     this.lockTimers.forEach((t) => clearTimeout(t));
     this.lockTimers = [];
+    this.refreshSub?.unsubscribe();
   }
 
   private static readonly DAILY_POPUP_KEY = 'tmabet_daily_popup_date';

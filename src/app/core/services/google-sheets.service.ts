@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, forkJoin, catchError } from 'rxjs';
+import { Observable, of, forkJoin, catchError, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {
   DashboardData,
@@ -34,6 +34,9 @@ export class GoogleSheetsService {
   private readonly http = inject(HttpClient);
   private readonly cache = inject(SheetCacheService);
 
+  private readonly _refresh$ = new Subject<void>();
+  readonly refresh$ = this._refresh$.asObservable();
+
   private readonly apiKey = 'AIzaSyAD9--6nWYRTNhBFGga0KF9GTDgAp_Z57M';
   private readonly spreadsheetId = '1KN7r6qdlnDKLbAitcn_KeN8ztP05KO2ZhW0nJ81WI78';
   private readonly baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${this.spreadsheetId}/values`;
@@ -49,7 +52,7 @@ export class GoogleSheetsService {
   getBetCount(): Observable<number> {
     const PLAYER_HEADERS = new Set(['player', 'name', 'player name', 'players']);
     return this.loadWc2026Data().pipe(
-      map((data) => data.bets.filter((r) => r[1]?.trim() && !PLAYER_HEADERS.has(r[1].trim().toLowerCase())).length)
+      map((data) => data.bets.filter((r) => r[0]?.trim() && !PLAYER_HEADERS.has(r[0].trim().toLowerCase())).length)
     );
   }
 
@@ -97,6 +100,12 @@ export class GoogleSheetsService {
     return this.cache.getCached<SheetMatch[]>(CACHE_KEYS.matches, fetcher$).pipe(
       map((rows) => this.sheetRowsToMatchDays(rows))
     );
+  }
+
+  /** Invalidates all sheet caches and signals subscribers to re-fetch. */
+  triggerRefresh(): void {
+    Object.values(CACHE_KEYS).forEach((k) => this.cache.invalidate(k));
+    this._refresh$.next();
   }
 
   /**
@@ -167,10 +176,10 @@ export class GoogleSheetsService {
    */
   private loadWc2026Data(): Observable<Wc2026Data> {
     const fetcher$ = forkJoin({
-      // Use an explicit range instead of the named "Bets" range so that the
-      // new Wallet (col E) and Used (col F) columns are included. The named
-      // range was defined before those columns existed and is frozen at A:D.
-      bets: this.rawRange('WC2026!A:I'),
+      // Start at B8 to match the "Bets" named range origin, extended through I
+      // to include Wallet (H) and Used (I). Indices in this slice: 0=Player,
+      // 1=1stMatch, 2=2ndMatch, 3=Modifier, 4=Comment, 5=BetTeam, 6=Wallet, 7=Used.
+      bets: this.rawRange('WC2026!B8:I'),
       currentMatch: this.rawRange('WC2026!I2:I5'),
     });
     return this.cache.getCached<Wc2026Data>(CACHE_KEYS.wc2026, fetcher$);
@@ -243,20 +252,18 @@ export class GoogleSheetsService {
       .sort((a, b) => `${a.matchDate}T${a.matchTime}`.localeCompare(`${b.matchDate}T${b.matchTime}`));
 
     // ── Parse Bets range ────────────────────────────────────────────────────
-    // Sheet layout (A:I): A=Points, B=Player, C=1stMatch, D=2ndMatch,
-    // E=Modifier, F=Comment, G=BetTeam, H=Wallet, I=Used.
-    // Rows above the header (metadata) and the header row itself are skipped
-    // by filtering on a non-empty, non-header value in column B (index 1).
-    const PLAYER_HEADERS = new Set(['player', 'name', 'player name', 'players']);
+    // Range B8:I starts at the first player row; no metadata or header to skip.
+    // Indices: 0=Player, 1=1stMatch, 2=2ndMatch, 3=Modifier, 4=Comment,
+    // 5=BetTeam, 6=Wallet, 7=Used.
     const bets: BetRow[] = (data.bets ?? [])
-      .filter((r) => r[1]?.trim() && !PLAYER_HEADERS.has(r[1].trim().toLowerCase()))
+      .filter((r) => r[0]?.trim())
       .map((r) => ({
-        playerName: r[1] ?? '',
-        match1Bet: r[2] ?? '',
-        match2Bet: r[3] ?? '',
-        modifier: r[4] ?? '',
-        wallet: r[7] ?? '',
-        used: r[8] ?? '',
+        playerName: r[0] ?? '',
+        match1Bet: r[1] ?? '',
+        match2Bet: r[2] ?? '',
+        modifier: r[3] ?? '',
+        wallet: r[6] ?? '',
+        used: r[7] ?? '',
       }));
 
     // ── Leaderboard: top 10 by Points from the Result sheet ─────────────────
@@ -368,8 +375,8 @@ export class GoogleSheetsService {
       map(({ matchDays, rawRows, wc2026 }) => {
         const walletByPlayer = new Map(
           (wc2026.bets ?? [])
-            .filter((r) => r[1]?.trim())
-            .map((r) => [r[1].trim().toLowerCase(), r[7] ?? ''])
+            .filter((r) => r[0]?.trim())
+            .map((r) => [r[0].trim().toLowerCase(), r[6] ?? ''])
         );
         return this.buildResultData(rawRows, matchDays.flatMap((d) => d.matches), walletByPlayer);
       })
