@@ -449,7 +449,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
     return betters.map((b, i) => {
       const seed = (b.playerName.length * 7 + i * 13) % DashboardComponent.ANIMALS.length;
-      return { animal: DashboardComponent.ANIMALS[seed], playerName: b.playerName };
+      const modStr = slot === 1 ? b.modifier1 : slot === 2 ? b.modifier2 : b.modifier1;
+      const modifier = Math.max(1, Math.min(5, parseInt(modStr || '1', 10) || 1));
+      const base = DashboardComponent.ANIMALS[seed];
+      return { animal: base.repeat(modifier), playerName: b.playerName };
     });
   }
 }
