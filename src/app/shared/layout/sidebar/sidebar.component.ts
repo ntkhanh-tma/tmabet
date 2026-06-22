@@ -53,4 +53,16 @@ export class SidebarComponent implements OnInit {
   getFlag(country: string): string {
     return getCountryCode(country) ?? 'un';
   }
+
+  private static readonly MODIFIER_ICONS: Record<string, string> = {
+    '1': '🔥',
+    '2': '🔥🔥',
+    '3': '❤️‍🔥',
+    '4': '❤️‍🔥❤️‍🔥',
+    '5': '🐦‍🔥',
+  };
+
+  modifierIcon(modifier: string): string {
+    return SidebarComponent.MODIFIER_ICONS[modifier.trim()] ?? '';
+  }
 }

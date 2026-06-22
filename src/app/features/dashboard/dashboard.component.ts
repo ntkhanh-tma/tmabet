@@ -193,7 +193,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (!slot || !player || this.isBetLocked(match) || this.submitting() !== null) return;
     this.pendingBet.set({ match, team });
     this.pendingComment.set('');
-    this.pendingModifier.set(1);
+    // Pre-populate with existing modifier for this slot, falling back to 1
+    const existingModifier = slot === 1
+      ? (this.myBet?.modifier1 ? +this.myBet.modifier1 : 1)
+      : (this.myBet?.modifier2 ? +this.myBet.modifier2 : 1);
+    this.pendingModifier.set(existingModifier || 1);
   }
 
   cancelBet(): void {
@@ -306,13 +310,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const sheetBet = this.myBet;
     const match1Bet = slot === 1 ? team : (otherRecord?.chosenTeam ?? sheetBet?.match1Bet ?? '');
     const match2Bet = slot === 2 ? team : (otherRecord?.chosenTeam ?? sheetBet?.match2Bet ?? '');
+    const modifier1 = slot === 1 ? String(modifier) : (sheetBet?.modifier1 || '1');
+    const modifier2 = slot === 2 ? String(modifier) : (sheetBet?.modifier2 || '1');
 
     this.betService
       .submitBet({
         player,
         match1Bet,
         match2Bet,
-        modifier: String(modifier),
+        modifier1,
+        modifier2,
         betTeam: team,
         ...(comment ? { comment } : {}),
       })
@@ -370,9 +377,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   /** Columns shown in the bets table depend on which match picks are present in the data. */
   get betColumns(): string[] {
     const cols = ['player'];
-    if (this.data?.betMatch1 || this.hasMatch1Bets) cols.push('match1');
-    if (this.data?.betMatch2 || this.hasMatch2Bets) cols.push('match2');
-    cols.push('modifier');
+    if (this.data?.betMatch1 || this.hasMatch1Bets) {
+      cols.push('match1');
+      cols.push('modifier1');
+    }
+    if (this.data?.betMatch2 || this.hasMatch2Bets) {
+      cols.push('match2');
+      cols.push('modifier2');
+    }
     return cols;
   }
 

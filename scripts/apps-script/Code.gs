@@ -31,7 +31,8 @@ function doPost(e) {
     var player    = (payload.player    || '').trim();
     var match1Bet = (payload.match1Bet || '').trim();
     var match2Bet = (payload.match2Bet || '').trim();
-    var modifier  = (payload.modifier  || '').trim() || '1';
+    var modifier1 = (payload.modifier1 || '').trim() || '1';
+    var modifier2 = (payload.modifier2 || '').trim() || '1';
     var betTeam   = (payload.betTeam   || '').trim();
     var comment   = (payload.comment   || '').trim();
 
@@ -77,28 +78,27 @@ function doPost(e) {
         ? startRow + firstEmptyOffset
         : startRow + numRows;
 
-      // Write player name + bets starting at startCol (B, C, D, E)
-      sheet.getRange(targetRow, startCol, 1, 4).setValues([[player, match1Bet, match2Bet, modifier]]);
+      // Write player name + bets starting at startCol (B, C, D, E, F)
+      sheet.getRange(targetRow, startCol, 1, 5).setValues([[player, match1Bet, match2Bet, modifier1, modifier2]]);
     } else {
-      // Player exists — update only the bet columns (C, D, E); leave player name untouched
+      // Player exists — update only the bet columns (C, D, E, F); leave player name untouched
       targetRow = startRow + rowOffset;
-      sheet.getRange(targetRow, startCol + 1, 1, 3).setValues([[match1Bet, match2Bet, modifier]]);
+      sheet.getRange(targetRow, startCol + 1, 1, 4).setValues([[match1Bet, match2Bet, modifier1, modifier2]]);
     }
 
     SpreadsheetApp.flush();
 
-    // ── Write optional comment to Comments sheet ──────────────────────────
-    if (comment) {
-      var commentsSheet = ss.getSheetByName(COMMENTS_SHEET);
-      if (!commentsSheet) {
-        // Create the sheet if it doesn't exist yet
-        commentsSheet = ss.insertSheet(COMMENTS_SHEET);
-        commentsSheet.appendRow(['Datetime', 'Player', 'Comment', 'Bet']);
-      }
-      var now = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd'T'HH:mm:ss");
-      commentsSheet.appendRow([now, player, comment, betTeam]);
-      SpreadsheetApp.flush();
+    // ── Always write to Comments sheet to track modifier and comment ──────
+    var commentsSheet = ss.getSheetByName(COMMENTS_SHEET);
+    if (!commentsSheet) {
+      commentsSheet = ss.insertSheet(COMMENTS_SHEET);
+      commentsSheet.appendRow(['Datetime', 'Player', 'Comment', 'Bet', 'Modifier']);
     }
+    // Determine which modifier applies to this specific bet action
+    var activeModifier = (betTeam && betTeam === match1Bet) ? modifier1 : modifier2;
+    var now = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd'T'HH:mm:ss");
+    commentsSheet.appendRow([now, player, comment, betTeam, activeModifier]);
+    SpreadsheetApp.flush();
 
     return jsonResponse({ ok: true, updatedRow: targetRow });
 

@@ -8,7 +8,8 @@ export interface BetPayload {
   player: string;
   match1Bet: string;
   match2Bet: string;
-  modifier: string;
+  modifier1: string;
+  modifier2: string;
   /** The specific team chosen in this action — used to tag the comment row */
   betTeam?: string;
   /** Optional chat-style comment submitted alongside the bet */

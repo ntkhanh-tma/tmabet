@@ -65,8 +65,10 @@ export interface BetRow {
   match1Bet: string;
   /** Team the player bet for match 2 */
   match2Bet: string;
-  /** Modifier value */
-  modifier: string;
+  /** Modifier for match 1 */
+  modifier1: string;
+  /** Modifier for match 2 */
+  modifier2: string;
   /** Player's total wallet balance */
   wallet: string;
   /** Amount of wallet already used */
@@ -96,6 +98,8 @@ export interface CommentEntry {
   message: string;
   /** Country name the player bet on (may be empty) */
   bet: string;
+  /** Modifier value (1–5) associated with this bet, empty if not set */
+  modifier: string;
 }
 
 /** One column in the Results table — represents a featured match */

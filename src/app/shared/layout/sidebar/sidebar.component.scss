@@ -241,6 +241,12 @@
     word-break: break-word;
   }
 
+  &__chat-msg-modifier {
+    font-size: 13px;
+    margin-right: 3px;
+    vertical-align: middle;
+  }
+
   // ── Mobile / tablet: bottom nav bar ────────────────────────────────────────
   @media (max-width: 959px) {
     position: fixed;

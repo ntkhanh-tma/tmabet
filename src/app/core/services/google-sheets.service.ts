@@ -148,7 +148,14 @@ export class GoogleSheetsService {
         const playerIdx = headers.findIndex((h) => h.toLowerCase() === 'player');
         const msgIdx = headers.findIndex((h) => h.toLowerCase() === 'message' || h.toLowerCase() === 'comment');
         const betIdx = headers.findIndex((h) => h.toLowerCase() === 'bet' || h.toLowerCase() === 'country');
-        const rows = dataRows.map((r) => [r[dtIdx] ?? '', r[playerIdx] ?? '', r[msgIdx] ?? '', betIdx >= 0 ? (r[betIdx] ?? '') : '']);
+        const modifierIdx = headers.findIndex((h) => h.toLowerCase() === 'modifier');
+        const rows = dataRows.map((r) => [
+          r[dtIdx] ?? '',
+          r[playerIdx] ?? '',
+          r[msgIdx] ?? '',
+          betIdx >= 0 ? (r[betIdx] ?? '') : '',
+          modifierIdx >= 0 ? (r[modifierIdx] ?? '') : '',
+        ]);
         return this.parseCommentRows(rows);
       })
     );
@@ -176,9 +183,10 @@ export class GoogleSheetsService {
    */
   private loadWc2026Data(): Observable<Wc2026Data> {
     const fetcher$ = forkJoin({
-      // Start at B8 to match the "Bets" named range origin, extended through I
-      // to include Wallet (H) and Used (I). Indices in this slice: 0=Player,
-      // 1=1stMatch, 2=2ndMatch, 3=Modifier, 4=Comment, 5=BetTeam, 6=Wallet, 7=Used.
+      // Start at B8 to match the "Bets" named range origin through I (USED).
+      // Columns: B=Player, C=1stMatch, D=2ndMatch, E=Modifier1, F=Modifier2,
+      // G=ORDER, H=Wallet, I=Used. Indices: 0=Player, 1=1stMatch, 2=2ndMatch,
+      // 3=Modifier1, 4=Modifier2, 5=ORDER, 6=Wallet, 7=Used.
       bets: this.rawRange('WC2026!B8:I'),
       currentMatch: this.rawRange('WC2026!I2:I5'),
     });
@@ -252,16 +260,16 @@ export class GoogleSheetsService {
       .sort((a, b) => `${a.matchDate}T${a.matchTime}`.localeCompare(`${b.matchDate}T${b.matchTime}`));
 
     // ── Parse Bets range ────────────────────────────────────────────────────
-    // Range B8:I starts at the first player row; no metadata or header to skip.
-    // Indices: 0=Player, 1=1stMatch, 2=2ndMatch, 3=Modifier, 4=Comment,
-    // 5=BetTeam, 6=Wallet, 7=Used.
+    // Range B8:I — columns: B=Player, C=1stMatch, D=2ndMatch, E=Modifier1,
+    // F=Modifier2, G=ORDER, H=Wallet, I=Used.
     const bets: BetRow[] = (data.bets ?? [])
       .filter((r) => r[0]?.trim())
       .map((r) => ({
         playerName: r[0] ?? '',
         match1Bet: r[1] ?? '',
         match2Bet: r[2] ?? '',
-        modifier: r[3] ?? '',
+        modifier1: r[3] ?? '',
+        modifier2: r[4] ?? '',
         wallet: r[6] ?? '',
         used: r[7] ?? '',
       }));
@@ -352,11 +360,17 @@ export class GoogleSheetsService {
     return Array.from(dayMap.entries()).map(([date, dayMatches]) => ({ date, matches: dayMatches }));
   }
 
-  /** Converts raw [dateTime, player, message, bet] rows to CommentEntry[], newest first, max 50. */
+  /** Converts raw [dateTime, player, message, bet, modifier] rows to CommentEntry[], newest first, max 50. */
   private parseCommentRows(rows: string[][]): CommentEntry[] {
     return rows
-      .filter((r) => r[2]?.trim())
-      .map((r) => ({ dateTime: r[0] ?? '', player: r[1] ?? '', message: r[2] ?? '', bet: r[3] ?? '' }))
+      .filter((r) => r[2]?.trim() || r[4]?.trim())
+      .map((r) => ({
+        dateTime: r[0] ?? '',
+        player: r[1] ?? '',
+        message: r[2] ?? '',
+        bet: r[3] ?? '',
+        modifier: r[4] ?? '',
+      }))
       .sort((a, b) => b.dateTime.localeCompare(a.dateTime))
       .slice(0, 50);
   }

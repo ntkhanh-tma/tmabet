@@ -68,7 +68,12 @@
               </span>
               <span class="sidebar__chat-msg-time">{{ formatDateTime(c.dateTime) }}</span>
             </div>
-            <div class="sidebar__chat-msg-text">{{ c.message }}</div>
+            <div class="sidebar__chat-msg-text">
+              @if (modifierIcon(c.modifier)) {
+                <span class="sidebar__chat-msg-modifier">{{ modifierIcon(c.modifier) }}</span>
+              }
+              {{ c.message }}
+            </div>
           </div>
         }
       </div>
