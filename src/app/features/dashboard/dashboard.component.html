@@ -361,7 +361,7 @@
                 <th mat-header-cell *matHeaderCellDef>Mod</th>
                 <td mat-cell *matCellDef="let bet">
                   @if (bet.modifier1) {
-                    <span class="bet-modifier">{{ bet.modifier1 }}</span>
+                    <span class="bet-modifier">{{ modifierIcon(bet.modifier1) }}</span>
                   } @else {
                     <span class="bets-table__empty">–</span>
                   }
@@ -372,7 +372,7 @@
                 <th mat-header-cell *matHeaderCellDef>Mod</th>
                 <td mat-cell *matCellDef="let bet">
                   @if (bet.modifier2) {
-                    <span class="bet-modifier">{{ bet.modifier2 }}</span>
+                    <span class="bet-modifier">{{ modifierIcon(bet.modifier2) }}</span>
                   } @else {
                     <span class="bets-table__empty">–</span>
                   }

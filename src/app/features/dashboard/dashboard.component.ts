@@ -421,6 +421,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
       : { home: '0', away: match.odds };
   }
 
+  private static readonly MODIFIER_ICONS: Record<string, string> = {
+    '1': '🔥',
+    '2': '🔥🔥',
+    '3': '❤️‍🔥',
+    '4': '❤️‍🔥❤️‍🔥',
+    '5': '🐦‍🔥',
+  };
+
+  modifierIcon(modifier: string): string {
+    return DashboardComponent.MODIFIER_ICONS[modifier.trim()] ?? modifier;
+  }
+
   private static readonly ANIMALS = [
     '🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵',
     '🐔','🐧','🐦','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄','🐝','🐛','🦋','🐌',
