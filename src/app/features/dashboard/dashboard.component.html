@@ -158,6 +158,7 @@
                         <select
                           class="match-card__modifier-select"
                           [value]="pendingModifier()"
+                          [disabled]="isModifierDisabled()"
                           (change)="pendingModifier.set(+$any($event.target).value)"
                         >
                           @for (opt of modifierOptions; track opt) {
@@ -301,6 +302,7 @@
                       <span class="bet-chip" [class.bet-chip--home]="bet.match1Bet === data.betMatch1!.homeTeam"
                         [matTooltip]="bet.match1Bet">
                         <span class="fi fi-{{ getFlag(bet.match1Bet) }} bets-table__flag"></span>
+                        <span class="bet-modifier">{{ modifierIcon(bet.modifier1 || '1') }}</span>
                       </span>
                     } @else {
                       <span class="bets-table__empty">–</span>
@@ -314,6 +316,7 @@
                     @if (bet.match1Bet) {
                       <span class="bet-chip" [matTooltip]="bet.match1Bet">
                         <span class="fi fi-{{ getFlag(bet.match1Bet) }} bets-table__flag"></span>
+                        <span class="bet-modifier">{{ modifierIcon(bet.modifier1 || '1') }}</span>
                       </span>
                     } @else {
                       <span class="bets-table__empty">–</span>
@@ -336,6 +339,7 @@
                       <span class="bet-chip" [class.bet-chip--home]="bet.match2Bet === data.betMatch2!.homeTeam"
                         [matTooltip]="bet.match2Bet">
                         <span class="fi fi-{{ getFlag(bet.match2Bet) }} bets-table__flag"></span>
+                        <span class="bet-modifier">{{ modifierIcon(bet.modifier2 || '1') }}</span>
                       </span>
                     } @else {
                       <span class="bets-table__empty">–</span>
@@ -349,6 +353,7 @@
                     @if (bet.match2Bet) {
                       <span class="bet-chip" [matTooltip]="bet.match2Bet">
                         <span class="fi fi-{{ getFlag(bet.match2Bet) }} bets-table__flag"></span>
+                        <span class="bet-modifier">{{ modifierIcon(bet.modifier2 || '1') }}</span>
                       </span>
                     } @else {
                       <span class="bets-table__empty">–</span>
@@ -356,28 +361,6 @@
                   </td>
                 </ng-container>
               }
-
-              <ng-container matColumnDef="modifier1">
-                <th mat-header-cell *matHeaderCellDef>Mod</th>
-                <td mat-cell *matCellDef="let bet">
-                  @if (bet.modifier1) {
-                    <span class="bet-modifier">{{ modifierIcon(bet.modifier1) }}</span>
-                  } @else {
-                    <span class="bets-table__empty">–</span>
-                  }
-                </td>
-              </ng-container>
-
-              <ng-container matColumnDef="modifier2">
-                <th mat-header-cell *matHeaderCellDef>Mod</th>
-                <td mat-cell *matCellDef="let bet">
-                  @if (bet.modifier2) {
-                    <span class="bet-modifier">{{ modifierIcon(bet.modifier2) }}</span>
-                  } @else {
-                    <span class="bets-table__empty">–</span>
-                  }
-                </td>
-              </ng-container>
 
               <tr mat-header-row *matHeaderRowDef="betColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: betColumns"

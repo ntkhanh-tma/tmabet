@@ -183,8 +183,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   /** Modifier multiplier selected in the confirmation panel (1–5, default 1). */
   readonly pendingModifier = signal<number>(1);
 
-  /** Available modifier values shown in the dropdown. */
-  readonly modifierOptions = [1, 2, 3, 4, 5];
+  /** Available modifier values shown in the dropdown, gated by date. */
+  readonly modifierOptions = computed<number[]>(() => {
+    const today = new Date();
+    if (today >= new Date(2026, 6, 10)) return [1, 2, 3, 4, 5]; // July 10+
+    if (today >= new Date(2026, 5, 29)) return [1, 2, 3];        // June 29+
+    return [1];
+  });
+
+  /** Modifier dropdown is locked until June 29, 2026. */
+  readonly isModifierDisabled = computed<boolean>(() => new Date() < new Date(2026, 5, 29));
 
   /** Open the inline confirmation panel instead of immediately placing a bet. */
   openBetConfirm(match: Match, team: string): void {
@@ -377,14 +385,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   /** Columns shown in the bets table depend on which match picks are present in the data. */
   get betColumns(): string[] {
     const cols = ['player'];
-    if (this.data?.betMatch1 || this.hasMatch1Bets) {
-      cols.push('match1');
-      cols.push('modifier1');
-    }
-    if (this.data?.betMatch2 || this.hasMatch2Bets) {
-      cols.push('match2');
-      cols.push('modifier2');
-    }
+    if (this.data?.betMatch1 || this.hasMatch1Bets) cols.push('match1');
+    if (this.data?.betMatch2 || this.hasMatch2Bets) cols.push('match2');
     return cols;
   }
 

@@ -88,17 +88,19 @@ function doPost(e) {
 
     SpreadsheetApp.flush();
 
-    // ── Always write to Comments sheet to track modifier and comment ──────
-    var commentsSheet = ss.getSheetByName(COMMENTS_SHEET);
-    if (!commentsSheet) {
-      commentsSheet = ss.insertSheet(COMMENTS_SHEET);
-      commentsSheet.appendRow(['Datetime', 'Player', 'Comment', 'Bet', 'Modifier']);
+    // ── Write to Comments sheet only when the user typed a comment ───────
+    if (comment) {
+      var commentsSheet = ss.getSheetByName(COMMENTS_SHEET);
+      if (!commentsSheet) {
+        commentsSheet = ss.insertSheet(COMMENTS_SHEET);
+        commentsSheet.appendRow(['Datetime', 'Player', 'Comment', 'Bet', 'Modifier']);
+      }
+      // Determine which modifier applies to this specific bet action
+      var activeModifier = (betTeam && betTeam === match1Bet) ? modifier1 : modifier2;
+      var now = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd'T'HH:mm:ss");
+      commentsSheet.appendRow([now, player, comment, betTeam, activeModifier]);
+      SpreadsheetApp.flush();
     }
-    // Determine which modifier applies to this specific bet action
-    var activeModifier = (betTeam && betTeam === match1Bet) ? modifier1 : modifier2;
-    var now = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd'T'HH:mm:ss");
-    commentsSheet.appendRow([now, player, comment, betTeam, activeModifier]);
-    SpreadsheetApp.flush();
 
     return jsonResponse({ ok: true, updatedRow: targetRow });
 
