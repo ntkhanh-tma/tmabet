@@ -161,7 +161,7 @@
                           [disabled]="isModifierDisabled()"
                           (change)="pendingModifier.set(+$any($event.target).value)"
                         >
-                          @for (opt of modifierOptions; track opt) {
+                          @for (opt of modifierOptions(); track opt) {
                             <option [value]="opt" [selected]="opt === pendingModifier()">{{ opt }}</option>
                           }
                         </select>
