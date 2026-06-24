@@ -272,11 +272,11 @@
         <mat-card-header>
           <mat-icon mat-card-avatar>casino</mat-icon>
           <mat-card-title>Current Bets</mat-card-title>
-          <mat-card-subtitle>{{ data.bets.length }} bets placed</mat-card-subtitle>
+          <mat-card-subtitle>{{ betsWithPicks.length }} bets placed</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-          @if (data.bets.length > 0) {
-            <table mat-table [dataSource]="data.bets" class="bets-table">
+          @if (betsWithPicks.length > 0) {
+            <table mat-table [dataSource]="betsWithPicks" class="bets-table">
 
               <ng-container matColumnDef="player">
                 <th mat-header-cell *matHeaderCellDef>Player</th>

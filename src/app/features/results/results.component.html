@@ -19,7 +19,7 @@
       <mat-card-header>
         <mat-icon mat-card-avatar>emoji_events</mat-icon>
         <mat-card-title>Results</mat-card-title>
-        <mat-card-subtitle>{{ data.rows.length }} players · {{ data.columns.length }} matches</mat-card-subtitle>
+        <mat-card-subtitle>{{ data.rows.length }} players · {{ visibleColumns.length }} matches</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
         <div class="results-table-wrap">
@@ -28,7 +28,7 @@
               <tr>
                 <th class="results-table__wallet-header">Wallet</th>
                 <th class="results-table__player-header">Player</th>
-                @for (col of data.columns; track col.matchNumber) {
+                @for (col of visibleColumns; track col.matchNumber) {
                   <th class="results-table__match-header" [matTooltip]="col.label">
                     <div class="results-table__match-header-inner">
                       <span class="fi fi-{{ col.homeFlag }} results-table__flag"></span>
@@ -51,7 +51,7 @@
                       <span class="results-table__me-badge">You</span>
                     }
                   </td>
-                  @for (col of data.columns; track col.matchNumber) {
+                  @for (col of visibleColumns; track col.matchNumber) {
                     <td class="results-table__pick-cell" [ngClass]="pickClass(row.picks[col.matchNumber])">
                       {{ row.picks[col.matchNumber] || '–' }}
                     </td>

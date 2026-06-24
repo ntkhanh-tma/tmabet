@@ -398,6 +398,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return this.data?.bets.some((b) => b.match2Bet) ?? false;
   }
 
+  /** Only rows where the player has bet on at least one of the two matches. */
+  get betsWithPicks(): BetRow[] {
+    return this.data?.bets.filter((b) => b.match1Bet || b.match2Bet) ?? [];
+  }
+
   /** Returns true when the given match is one of the two current bet matches (I2/I3 or I4/I5). */
   isBetMatch(match: Match): boolean {
     if (!this.data) return false;

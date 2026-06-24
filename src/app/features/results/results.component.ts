@@ -47,4 +47,12 @@ export class ResultsComponent implements OnInit {
     if (!this.data || this.data.rows.length === 0) return 1;
     return Math.max(...this.data.rows.map((r) => r.totalPoints), 1);
   }
+
+  /** Only columns where at least one player has a result. */
+  get visibleColumns() {
+    if (!this.data) return [];
+    return this.data.columns.filter((col) =>
+      this.data!.rows.some((row) => !!row.picks[col.matchNumber])
+    );
+  }
 }
