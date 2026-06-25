@@ -129,3 +129,13 @@ export interface ResultData {
   columns: ResultColumn[];
   rows: ResultRow[];
 }
+
+export interface MenuItem {
+  drink: string;
+  price: string;
+}
+
+export interface OrderEntry {
+  playerName: string;
+  order: string;
+}

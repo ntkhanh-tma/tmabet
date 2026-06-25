@@ -32,6 +32,7 @@ export class SidebarComponent implements OnInit {
     { label: 'Dashboard', icon: 'dashboard', route: '/' },
     { label: 'Matches', icon: 'sports_soccer', route: '/matches' },
     { label: 'Results', icon: 'emoji_events', route: '/results' },
+    { label: 'Order', icon: 'local_cafe', route: '/order' },
   ];
 
   ngOnInit(): void {

@@ -13,6 +13,8 @@ import {
   ResultData,
   ResultColumn,
   ResultRow,
+  MenuItem,
+  OrderEntry,
 } from '../models/dashboard.model';
 import { getCountryCode, getGroupColor } from '../utils/country-flags';
 import { SheetCacheService } from './sheet-cache.service';
@@ -121,6 +123,32 @@ export class GoogleSheetsService {
       resultRows: this.loadResultRows(),
     }).pipe(
       map(({ wc2026, matchDays, resultRows }) => this.buildDashboard(wc2026, matchDays, resultRows))
+    );
+  }
+
+  /** Fetches the drink menu from Database!E:F and current orders from WC2026!B8:G. */
+  getOrderPageData(): Observable<{ menu: MenuItem[]; orders: OrderEntry[] }> {
+    const PLAYER_HEADERS = new Set(['player', 'name', 'player name', 'players']);
+    return forkJoin({
+      menu: this.rawRange('Database!E:F'),
+      orders: this.rawRange('WC2026!B8:G'),
+    }).pipe(
+      map(({ menu, orders }) => {
+        const [, ...menuRows] = menu;
+        const menuItems: MenuItem[] = menuRows
+          .filter((r) => r[0]?.trim())
+          .map((r) => ({ drink: r[0] ?? '', price: r[1] ?? '' }));
+
+        const orderEntries: OrderEntry[] = orders
+          .filter((r) => r[0]?.trim() && !PLAYER_HEADERS.has(r[0].trim().toLowerCase()))
+          .map((r) => ({ playerName: r[0] ?? '', order: r[5] ?? '' }));
+
+        return { menu: menuItems, orders: orderEntries };
+      }),
+      catchError((err) => {
+        console.error('[GoogleSheetsService] Failed to load order page data:', err);
+        return of({ menu: [], orders: [] });
+      })
     );
   }
 

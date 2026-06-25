@@ -1,0 +1,334 @@
+.order-page {
+  padding: 24px;
+  max-width: 760px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  &__header-icon {
+    font-size: 38px;
+    width: 38px;
+    height: 38px;
+    color: var(--mat-sys-primary);
+    flex-shrink: 0;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  &__subtitle {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__login-prompt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px;
+    gap: 12px;
+    color: var(--mat-sys-on-surface-variant);
+
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      opacity: 0.4;
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+    }
+  }
+
+  &__current-order {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background: var(--mat-sys-secondary-container);
+    color: var(--mat-sys-on-secondary-container);
+    font-size: 14px;
+
+    mat-icon {
+      color: var(--mat-sys-secondary);
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px;
+    gap: 12px;
+    color: var(--mat-sys-on-surface-variant);
+
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      opacity: 0.3;
+    }
+
+    p { margin: 0; }
+  }
+
+  &__menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  &__menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 2px solid var(--mat-sys-outline-variant);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    background: var(--mat-sys-surface-container-low);
+    user-select: none;
+
+    &:hover {
+      border-color: var(--mat-sys-primary);
+      background: var(--mat-sys-surface-container);
+    }
+
+    &--selected {
+      border-color: var(--mat-sys-primary);
+      background: var(--mat-sys-primary-container);
+    }
+  }
+
+  &__menu-item-icon {
+    color: var(--mat-sys-primary);
+    flex-shrink: 0;
+    opacity: 0.8;
+  }
+
+  &__menu-item-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__menu-item-name {
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__menu-item-price {
+    font-size: 12px;
+    color: var(--mat-sys-on-surface-variant);
+    margin-top: 2px;
+  }
+
+  &__menu-item-check {
+    color: var(--mat-sys-primary);
+    flex-shrink: 0;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &__actions {
+    margin-bottom: 20px;
+  }
+
+  &__confirm {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 14px 18px;
+    border-radius: 8px;
+    background: var(--mat-sys-surface-container);
+    margin-bottom: 20px;
+
+    p {
+      margin: 0;
+      font-size: 14px;
+    }
+  }
+
+  &__confirm-buttons {
+    display: flex;
+    gap: 8px;
+  }
+
+  &__summary {
+    margin-top: 8px;
+  }
+
+  &__admin-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: var(--mat-sys-tertiary-container);
+    color: var(--mat-sys-on-tertiary-container);
+    font-size: 14px;
+
+    mat-icon {
+      color: var(--mat-sys-tertiary);
+      flex-shrink: 0;
+    }
+
+    span { flex: 1; }
+  }
+
+  &__admin-btn {
+    background: var(--mat-sys-tertiary) !important;
+    color: var(--mat-sys-on-tertiary) !important;
+    white-space: nowrap;
+  }
+
+  &__admin-confirm {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: var(--mat-sys-error-container);
+    color: var(--mat-sys-on-error-container);
+
+    mat-icon {
+      color: var(--mat-sys-error);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    p {
+      margin: 0 0 10px;
+      font-size: 14px;
+      line-height: 1.5;
+      flex: 1;
+    }
+  }
+
+  &__admin-confirm-note {
+    font-size: 12px;
+    opacity: 0.75;
+  }
+
+  &__admin-confirm-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__history {
+    margin-top: 24px;
+  }
+
+  &__history-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--mat-sys-on-surface-variant);
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__round-card {
+    margin-bottom: 12px;
+  }
+}
+
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  th, td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+  }
+
+  th {
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__row--me {
+    background: var(--mat-sys-secondary-container);
+  }
+
+  &__player {
+    font-weight: 600;
+    min-width: 140px;
+  }
+
+  &__order-value {
+    font-weight: 500;
+    color: var(--mat-sys-primary);
+  }
+
+  &__order-empty {
+    color: var(--mat-sys-outline);
+  }
+
+  &__price {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 12px;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  &__price-header {
+    text-align: right;
+  }
+
+  &__me-badge {
+    display: inline-block;
+    margin-left: 5px;
+    padding: 1px 5px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    background: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
+    vertical-align: middle;
+  }
+
+  tbody tr:hover {
+    background: var(--mat-sys-surface-container-low);
+  }
+}

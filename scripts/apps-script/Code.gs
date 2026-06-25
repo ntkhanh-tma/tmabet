@@ -28,6 +28,17 @@ var COMMENTS_SHEET   = 'Comments';
 function doPost(e) {
   try {
     var payload = JSON.parse(e.postData.contents);
+    var action  = (payload.action || 'bet').trim();
+    var ss      = SpreadsheetApp.openById(SPREADSHEET_ID);
+
+    if (action === 'order') {
+      return handleOrder(payload, ss);
+    }
+
+    if (action === 'addToUsed') {
+      return handleAddToUsed(payload, ss);
+    }
+
     var player    = (payload.player    || '').trim();
     var match1Bet = (payload.match1Bet || '').trim();
     var match2Bet = (payload.match2Bet || '').trim();
@@ -40,7 +51,6 @@ function doPost(e) {
       return jsonResponse({ ok: false, message: 'Missing player name' }, 400);
     }
 
-    var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
     var sheet = ss.getSheetByName(BETS_SHEET);
     if (!sheet) {
       return jsonResponse({ ok: false, message: 'Sheet "' + BETS_SHEET + '" not found' }, 500);
@@ -121,6 +131,82 @@ function doGet(e) {
     }
   }
   return jsonResponse({ ok: true, message: 'tmabet-proxy is running' });
+}
+
+// ---------------------------------------------------------------------------
+// Used handler — adds drink price to each player's Used value (col I)
+// ---------------------------------------------------------------------------
+function handleAddToUsed(payload, ss) {
+  var deductions = payload.deductions || [];
+  if (!deductions.length) return jsonResponse({ ok: false, message: 'No deductions provided' });
+
+  var sheet = ss.getSheetByName(BETS_SHEET);
+  if (!sheet) return jsonResponse({ ok: false, message: 'Sheet "' + BETS_SHEET + '" not found' });
+
+  var betsRange = sheet.getRange(BETS_RANGE);
+  var startRow  = betsRange.getRow();
+  var startCol  = betsRange.getColumn();  // column B = 2
+  var values    = betsRange.getValues();
+
+  for (var i = 0; i < deductions.length; i++) {
+    var player = String(deductions[i].player || '').trim();
+    var amount = Number(deductions[i].amount) || 0;
+    if (!player || amount === 0) continue;
+
+    var rowOffset = -1;
+    for (var j = 0; j < values.length; j++) {
+      if (String(values[j][0]).trim().toLowerCase() === player.toLowerCase()) {
+        rowOffset = j;
+        break;
+      }
+    }
+    if (rowOffset === -1) continue;
+
+    // Column I = startCol + 7 (B=+0, C=+1, D=+2, E=+3, F=+4, G=+5, H=+6, I=+7)
+    var usedCell = sheet.getRange(startRow + rowOffset, startCol + 7, 1, 1);
+    var raw = String(usedCell.getValue()).replace(/[^0-9.\-]/g, '');
+    var current = parseFloat(raw) || 0;
+    usedCell.setValue(current + amount);
+  }
+
+  SpreadsheetApp.flush();
+  return jsonResponse({ ok: true });
+}
+
+// ---------------------------------------------------------------------------
+// Order handler — writes drink choice to column G (ORDER) of the player's row
+// ---------------------------------------------------------------------------
+function handleOrder(payload, ss) {
+  var player = (payload.player || '').trim();
+  var drink  = (payload.drink  || '').trim();
+
+  if (!player) return jsonResponse({ ok: false, message: 'Missing player name' });
+  if (!drink)  return jsonResponse({ ok: false, message: 'Missing drink' });
+
+  var sheet = ss.getSheetByName(BETS_SHEET);
+  if (!sheet) return jsonResponse({ ok: false, message: 'Sheet "' + BETS_SHEET + '" not found' });
+
+  var betsRange = sheet.getRange(BETS_RANGE);
+  var startRow  = betsRange.getRow();
+  var startCol  = betsRange.getColumn();  // column B = 2
+  var values    = betsRange.getValues();
+
+  var rowOffset = -1;
+  for (var i = 0; i < values.length; i++) {
+    if (String(values[i][0]).trim().toLowerCase() === player.toLowerCase()) {
+      rowOffset = i;
+      break;
+    }
+  }
+
+  if (rowOffset === -1) return jsonResponse({ ok: false, message: 'Player not found' });
+
+  var targetRow = startRow + rowOffset;
+  // B=startCol(+0), C(+1), D(+2), E(+3), F(+4), G(+5)=ORDER
+  sheet.getRange(targetRow, startCol + 5, 1, 1).setValues([[drink]]);
+  SpreadsheetApp.flush();
+
+  return jsonResponse({ ok: true, updatedRow: targetRow });
 }
 
 // ---------------------------------------------------------------------------

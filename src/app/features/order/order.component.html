@@ -1,0 +1,190 @@
+<div class="order-page">
+
+  <div class="order-page__header">
+    <mat-icon class="order-page__header-icon">local_cafe</mat-icon>
+    <div>
+      <h2 class="order-page__title">Order a Drink</h2>
+      <p class="order-page__subtitle">Select one drink — placing a new order replaces your previous one.</p>
+    </div>
+  </div>
+
+  @if (loading) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  }
+
+  @if (!loading && !auth.username()) {
+    <div class="order-page__login-prompt">
+      <mat-icon>person_outline</mat-icon>
+      <p>Please log in to place an order.</p>
+    </div>
+  }
+
+  @if (!loading && auth.username()) {
+
+    @if (myOrder) {
+      <div class="order-page__current-order">
+        <mat-icon>check_circle</mat-icon>
+        Your current order: <strong>{{ myOrder }}</strong>
+      </div>
+    }
+
+    @if (menu.length === 0) {
+      <div class="order-page__empty">
+        <mat-icon>local_cafe</mat-icon>
+        <p>No menu items available.</p>
+      </div>
+    }
+
+    @if (menu.length > 0) {
+      <div class="order-page__menu">
+        @for (item of menu; track item.drink) {
+          <div
+            class="order-page__menu-item"
+            [class.order-page__menu-item--selected]="selectedDrink === item.drink"
+            (click)="selectDrink(item.drink)"
+          >
+            <mat-icon class="order-page__menu-item-icon">local_cafe</mat-icon>
+            <div class="order-page__menu-item-info">
+              <span class="order-page__menu-item-name">{{ item.drink }}</span>
+              <span class="order-page__menu-item-price">{{ item.price }}</span>
+            </div>
+            @if (selectedDrink === item.drink) {
+              <mat-icon class="order-page__menu-item-check">check_circle</mat-icon>
+            }
+          </div>
+        }
+      </div>
+
+      @if (selectedDrink && !confirming) {
+        <div class="order-page__actions">
+          <button mat-flat-button (click)="confirmOrder()">
+            Order <strong>{{ selectedDrink }}</strong>
+          </button>
+        </div>
+      }
+
+      @if (confirming) {
+        <div class="order-page__confirm">
+          <p>Confirm order: <strong>{{ selectedDrink }}</strong>?</p>
+          <div class="order-page__confirm-buttons">
+            <button mat-flat-button [disabled]="submitting" (click)="submitOrder()">
+              {{ submitting ? 'Submitting…' : 'Confirm' }}
+            </button>
+            <button mat-button [disabled]="submitting" (click)="cancelConfirm()">Cancel</button>
+          </div>
+        </div>
+      }
+    }
+  }
+
+  @if (!loading && orders.length > 0) {
+    <mat-card class="order-page__summary">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>people</mat-icon>
+        <mat-card-title>All Orders</mat-card-title>
+        <mat-card-subtitle>{{ orderedCount }} of {{ orders.length }} ordered</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <table class="order-table">
+          <thead>
+            <tr>
+              <th class="order-table__player-header">Player</th>
+              <th class="order-table__order-header">Order</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (o of orders; track o.playerName) {
+              <tr [class.order-table__row--me]="isMe(o.playerName)">
+                <td class="order-table__player">
+                  {{ o.playerName }}
+                  @if (isMe(o.playerName)) {
+                    <span class="order-table__me-badge">You</span>
+                  }
+                </td>
+                <td class="order-table__order">
+                  @if (o.order) {
+                    <span class="order-table__order-value">{{ o.order }}</span>
+                  } @else {
+                    <span class="order-table__order-empty">—</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        @if (isAdmin && allOrdered && !adminConfirmStep) {
+          <div class="order-page__admin-bar">
+            <mat-icon class="order-page__admin-bar-icon">admin_panel_settings</mat-icon>
+            <span>Everyone has ordered.</span>
+            <button mat-flat-button class="order-page__admin-btn" (click)="openAdminConfirm()">
+              Confirm &amp; Deduct Wallets
+            </button>
+          </div>
+        }
+
+        @if (isAdmin && adminConfirmStep) {
+          <div class="order-page__admin-confirm">
+            <mat-icon>warning_amber</mat-icon>
+            <p>Deduct each member's wallet by their drink price?<br>
+              <span class="order-page__admin-confirm-note">This cannot be undone from the app.</span>
+            </p>
+            <div class="order-page__admin-confirm-buttons">
+              <button mat-flat-button class="order-page__admin-btn" [disabled]="submittingAll" (click)="settleOrders()">
+                {{ submittingAll ? 'Processing…' : 'Yes, Deduct Wallets' }}
+              </button>
+              <button mat-button [disabled]="submittingAll" (click)="cancelAdminConfirm()">Cancel</button>
+            </div>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (savedRounds.length > 0) {
+    <div class="order-page__history">
+      <div class="order-page__history-header">
+        <mat-icon>history</mat-icon>
+        <span>Confirmed Rounds</span>
+      </div>
+
+      @for (round of savedRounds; track round.confirmedAt; let i = $index) {
+        <mat-card class="order-page__round-card">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>receipt_long</mat-icon>
+            <mat-card-title>Round {{ i + 1 }}</mat-card-title>
+            <mat-card-subtitle>{{ formatDateTime(round.confirmedAt) }}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <table class="order-table">
+              <thead>
+                <tr>
+                  <th class="order-table__player-header">Player</th>
+                  <th class="order-table__order-header">Drink</th>
+                  <th class="order-table__price-header">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (o of round.orders; track o.playerName) {
+                  <tr [class.order-table__row--me]="isMe(o.playerName)">
+                    <td class="order-table__player">
+                      {{ o.playerName }}
+                      @if (isMe(o.playerName)) {
+                        <span class="order-table__me-badge">You</span>
+                      }
+                    </td>
+                    <td class="order-table__order">
+                      <span class="order-table__order-value">{{ o.drink }}</span>
+                    </td>
+                    <td class="order-table__price">{{ o.price }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  }
+
+</div>
