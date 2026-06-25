@@ -158,7 +158,7 @@
     <div class="order-page__history">
       <div class="order-page__history-header">
         <mat-icon>history</mat-icon>
-        <span>Confirmed Rounds</span>
+        <span>Order History</span>
       </div>
 
       @for (round of savedRounds; track round.confirmedAt; let i = $index) {
@@ -172,27 +172,28 @@
             <table class="order-table">
               <thead>
                 <tr>
-                  <th class="order-table__player-header">Player</th>
-                  <th class="order-table__order-header">Drink</th>
-                  <th class="order-table__price-header">Price</th>
+                  <th class="order-table__drink-header">Drink</th>
+                  <th class="order-table__players-header">Players</th>
+                  <th class="order-table__price-header">Total</th>
                 </tr>
               </thead>
               <tbody>
-                @for (o of round.orders; track o.playerName) {
-                  <tr [class.order-table__row--me]="isMe(o.playerName)">
-                    <td class="order-table__player">
-                      {{ o.playerName }}
-                      @if (isMe(o.playerName)) {
-                        <span class="order-table__me-badge">You</span>
-                      }
+                @for (g of groupRound(round.orders); track g.drink) {
+                  <tr>
+                    <td class="order-table__drink">
+                      {{ g.drink }}<span class="order-table__count"> ×{{ g.count }}</span>
                     </td>
-                    <td class="order-table__order">
-                      <span class="order-table__order-value">{{ o.drink }}</span>
-                    </td>
-                    <td class="order-table__price">{{ o.price }}</td>
+                    <td class="order-table__players">{{ g.players.join(', ') }}</td>
+                    <td class="order-table__price">{{ formatTotal(g.total) }}</td>
                   </tr>
                 }
               </tbody>
+              <tfoot>
+                <tr class="order-table__total-row">
+                  <td colspan="2" class="order-table__total-label">Round Total ({{ round.orders.length }})</td>
+                  <td class="order-table__total-value">{{ formatTotal(roundTotal(round.orders)) }}</td>
+                </tr>
+              </tfoot>
             </table>
           </mat-card-content>
         </mat-card>

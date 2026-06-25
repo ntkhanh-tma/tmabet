@@ -124,29 +124,37 @@ export class OrderComponent implements OnInit, OnDestroy {
       orders: enriched.map(({ playerName, drink, price }) => ({ playerName, drink, price })),
     };
 
+    const players = enriched.map((e) => e.playerName);
+    this.submittingAll = true;
+
+    const clearAndFinalize = () => {
+      this.orderService.clearOrders(players).subscribe({
+        next: () => this.finalizeSettle(round),
+        error: () => this.finalizeSettle(round), // finalize even if clear fails
+      });
+    };
+
     if (!this.useWallets) {
-      this.saveRound(round);
-      this.snackBar.open('Round confirmed!', 'OK', { duration: 3000 });
-      this.adminConfirmStep = false;
-      this.load();
+      clearAndFinalize();
       return;
     }
 
-    this.submittingAll = true;
     this.orderService.addToUsed(enriched.map((e) => ({ player: e.playerName, amount: e.amount }))).subscribe({
-      next: () => {
-        this.saveRound(round);
-        this.snackBar.open('Used values updated!', 'OK', { duration: 3000 });
-        this.adminConfirmStep = false;
-        this.submittingAll = false;
-        this.load();
-      },
+      next: clearAndFinalize,
       error: (err: Error) => {
         this.snackBar.open(`Error: ${err.message}`, 'Dismiss', { duration: 5000 });
         this.adminConfirmStep = false;
         this.submittingAll = false;
       },
     });
+  }
+
+  private finalizeSettle(round: ConfirmedRound): void {
+    this.saveRound(round);
+    this.snackBar.open('Round confirmed!', 'OK', { duration: 3000 });
+    this.adminConfirmStep = false;
+    this.submittingAll = false;
+    this.load();
   }
 
   // ── Lock logic ────────────────────────────────────────────────────────────
@@ -272,5 +280,29 @@ export class OrderComponent implements OnInit, OnDestroy {
 
   formatTotal(n: number): string {
     return n.toLocaleString('en-US');
+  }
+
+  groupRound(orders: ConfirmedOrderEntry[]): { drink: string; count: number; players: string[]; total: number }[] {
+    const map = new Map<string, { players: string[]; total: number }>();
+    for (const o of orders) {
+      const entry = map.get(o.drink);
+      const amount = this.parsePrice(o.price);
+      if (entry) {
+        entry.players.push(o.playerName);
+        entry.total += amount;
+      } else {
+        map.set(o.drink, { players: [o.playerName], total: amount });
+      }
+    }
+    return Array.from(map.entries()).map(([drink, d]) => ({
+      drink,
+      count: d.players.length,
+      players: d.players,
+      total: d.total,
+    }));
+  }
+
+  roundTotal(orders: ConfirmedOrderEntry[]): number {
+    return orders.reduce((sum, o) => sum + this.parsePrice(o.price), 0);
   }
 }

@@ -39,6 +39,10 @@ function doPost(e) {
       return handleAddToUsed(payload, ss);
     }
 
+    if (action === 'clearOrders') {
+      return handleClearOrders(payload, ss);
+    }
+
     var player    = (payload.player    || '').trim();
     var match1Bet = (payload.match1Bet || '').trim();
     var match2Bet = (payload.match2Bet || '').trim();
@@ -167,6 +171,39 @@ function handleAddToUsed(payload, ss) {
     var raw = String(usedCell.getValue()).replace(/[^0-9.\-]/g, '');
     var current = parseFloat(raw) || 0;
     usedCell.setValue(current + amount);
+  }
+
+  SpreadsheetApp.flush();
+  return jsonResponse({ ok: true });
+}
+
+// ---------------------------------------------------------------------------
+// Clear orders handler — empties column G (ORDER) for each given player
+// ---------------------------------------------------------------------------
+function handleClearOrders(payload, ss) {
+  var players = payload.players || [];
+  if (!players.length) return jsonResponse({ ok: true });
+
+  var sheet = ss.getSheetByName(BETS_SHEET);
+  if (!sheet) return jsonResponse({ ok: false, message: 'Sheet "' + BETS_SHEET + '" not found' });
+
+  var betsRange = sheet.getRange(BETS_RANGE);
+  var startRow  = betsRange.getRow();
+  var startCol  = betsRange.getColumn();
+  var values    = betsRange.getValues();
+
+  for (var i = 0; i < players.length; i++) {
+    var player = String(players[i]).trim();
+    var rowOffset = -1;
+    for (var j = 0; j < values.length; j++) {
+      if (String(values[j][0]).trim().toLowerCase() === player.toLowerCase()) {
+        rowOffset = j;
+        break;
+      }
+    }
+    if (rowOffset === -1) continue;
+    // Column G = startCol + 5
+    sheet.getRange(startRow + rowOffset, startCol + 5, 1, 1).setValue('');
   }
 
   SpreadsheetApp.flush();
