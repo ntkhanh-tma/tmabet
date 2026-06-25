@@ -4,7 +4,7 @@
     <mat-icon class="order-page__header-icon">local_cafe</mat-icon>
     <div>
       <h2 class="order-page__title">Order a Drink</h2>
-      <p class="order-page__subtitle">Select one drink — placing a new order replaces your previous one.</p>
+      <p class="order-page__subtitle">Tap a drink to order. Locked for 10 minutes after placing.</p>
     </div>
   </div>
 
@@ -21,10 +21,13 @@
 
   @if (!loading && auth.username()) {
 
-    @if (myOrder) {
-      <div class="order-page__current-order">
-        <mat-icon>check_circle</mat-icon>
-        Your current order: <strong>{{ myOrder }}</strong>
+    @if (myOrder || isLocked) {
+      <div class="order-page__status-bar" [class.order-page__status-bar--locked]="isLocked">
+        <mat-icon>{{ isLocked ? 'lock' : 'check_circle' }}</mat-icon>
+        <span>Your order: <strong>{{ myOrder }}</strong></span>
+        @if (isLocked) {
+          <span class="order-page__lock-timer">{{ lockRemainingLabel }}</span>
+        }
       </div>
     }
 
@@ -36,44 +39,35 @@
     }
 
     @if (menu.length > 0) {
-      <div class="order-page__menu">
+      <div class="order-page__menu" [class.order-page__menu--locked]="isLocked">
         @for (item of menu; track item.drink) {
           <div
-            class="order-page__menu-item"
-            [class.order-page__menu-item--selected]="selectedDrink === item.drink"
-            (click)="selectDrink(item.drink)"
+            class="order-page__tile"
+            [class.tile--pending]="pendingDrink === item.drink"
+            [class.tile--current]="myOrder === item.drink && pendingDrink === null"
+            [class.tile--dimmed]="pendingDrink !== null && pendingDrink !== item.drink"
+            (click)="clickTile(item.drink)"
           >
-            <mat-icon class="order-page__menu-item-icon">local_cafe</mat-icon>
-            <div class="order-page__menu-item-info">
-              <span class="order-page__menu-item-name">{{ item.drink }}</span>
-              <span class="order-page__menu-item-price">{{ item.price }}</span>
-            </div>
-            @if (selectedDrink === item.drink) {
-              <mat-icon class="order-page__menu-item-check">check_circle</mat-icon>
+            <span class="order-page__tile-name">{{ item.drink }}</span>
+            <span class="order-page__tile-price">{{ item.price }}</span>
+
+            @if (pendingDrink === item.drink) {
+              <div class="order-page__tile-actions" (click)="$event.stopPropagation()">
+                <button
+                  class="order-page__tile-confirm-btn"
+                  [disabled]="submitting"
+                  (click)="submitOrder()"
+                >{{ submitting ? '…' : '✓ Confirm' }}</button>
+                <button
+                  class="order-page__tile-cancel-btn"
+                  [disabled]="submitting"
+                  (click)="cancelPending()"
+                >✗</button>
+              </div>
             }
           </div>
         }
       </div>
-
-      @if (selectedDrink && !confirming) {
-        <div class="order-page__actions">
-          <button mat-flat-button (click)="confirmOrder()">
-            Order <strong>{{ selectedDrink }}</strong>
-          </button>
-        </div>
-      }
-
-      @if (confirming) {
-        <div class="order-page__confirm">
-          <p>Confirm order: <strong>{{ selectedDrink }}</strong>?</p>
-          <div class="order-page__confirm-buttons">
-            <button mat-flat-button [disabled]="submitting" (click)="submitOrder()">
-              {{ submitting ? 'Submitting…' : 'Confirm' }}
-            </button>
-            <button mat-button [disabled]="submitting" (click)="cancelConfirm()">Cancel</button>
-          </div>
-        </div>
-      }
     }
   }
 
@@ -115,10 +109,10 @@
 
         @if (isAdmin && allOrdered && !adminConfirmStep) {
           <div class="order-page__admin-bar">
-            <mat-icon class="order-page__admin-bar-icon">admin_panel_settings</mat-icon>
+            <mat-icon>admin_panel_settings</mat-icon>
             <span>Everyone has ordered.</span>
             <button mat-flat-button class="order-page__admin-btn" (click)="openAdminConfirm()">
-              Confirm &amp; Deduct Wallets
+              Confirm &amp; Add to Used
             </button>
           </div>
         }
@@ -126,12 +120,13 @@
         @if (isAdmin && adminConfirmStep) {
           <div class="order-page__admin-confirm">
             <mat-icon>warning_amber</mat-icon>
-            <p>Deduct each member's wallet by their drink price?<br>
+            <div>
+              <p>Add each member's drink price to their Used value?</p>
               <span class="order-page__admin-confirm-note">This cannot be undone from the app.</span>
-            </p>
+            </div>
             <div class="order-page__admin-confirm-buttons">
               <button mat-flat-button class="order-page__admin-btn" [disabled]="submittingAll" (click)="settleOrders()">
-                {{ submittingAll ? 'Processing…' : 'Yes, Deduct Wallets' }}
+                {{ submittingAll ? 'Processing…' : 'Yes, Confirm' }}
               </button>
               <button mat-button [disabled]="submittingAll" (click)="cancelAdminConfirm()">Cancel</button>
             </div>

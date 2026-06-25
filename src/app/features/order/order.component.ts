@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,6 +23,7 @@ interface ConfirmedRound {
 
 const ADMIN_NAME = 'Khanh Nguyen';
 const STORAGE_KEY = 'tmabet_confirmed_orders';
+const LOCK_DURATION_MS = 10 * 60 * 1000;
 
 @Component({
   selector: 'app-order',
@@ -31,7 +32,7 @@ const STORAGE_KEY = 'tmabet_confirmed_orders';
   templateUrl: './order.component.html',
   styleUrl: './order.component.scss',
 })
-export class OrderComponent implements OnInit {
+export class OrderComponent implements OnInit, OnDestroy {
   private readonly sheetsService = inject(GoogleSheetsService);
   private readonly orderService = inject(OrderService);
   private readonly snackBar = inject(MatSnackBar);
@@ -39,17 +40,25 @@ export class OrderComponent implements OnInit {
 
   loading = true;
   submitting = false;
-  confirming = false;
   adminConfirmStep = false;
   submittingAll = false;
+
   menu: MenuItem[] = [];
   orders: OrderEntry[] = [];
-  selectedDrink: string | null = null;
   savedRounds: ConfirmedRound[] = [];
+
+  pendingDrink: string | null = null;
+  lockRemainingMs = 0;
+  private lockInterval: ReturnType<typeof setInterval> | null = null;
 
   ngOnInit(): void {
     this.loadSavedRounds();
+    this.checkLock();
     this.load();
+  }
+
+  ngOnDestroy(): void {
+    this.clearLockInterval();
   }
 
   load(): void {
@@ -61,38 +70,39 @@ export class OrderComponent implements OnInit {
     });
   }
 
-  // ── Single drink ordering ──────────────────────────────────────────────────
+  // ── Menu interaction ──────────────────────────────────────────────────────
 
-  selectDrink(drink: string): void {
-    if (!this.auth.username()) return;
-    this.selectedDrink = this.selectedDrink === drink ? null : drink;
-    this.confirming = false;
+  clickTile(drink: string): void {
+    if (this.isLocked || !this.auth.username()) return;
+    this.pendingDrink = this.pendingDrink === drink ? null : drink;
   }
 
-  confirmOrder(): void { this.confirming = true; }
-  cancelConfirm(): void { this.confirming = false; }
+  cancelPending(): void {
+    this.pendingDrink = null;
+  }
 
   submitOrder(): void {
     const player = this.auth.username();
-    if (!player || !this.selectedDrink) return;
+    const drink = this.pendingDrink;
+    if (!player || !drink) return;
     this.submitting = true;
-    this.orderService.submitOrder({ player, drink: this.selectedDrink }).subscribe({
+    this.orderService.submitOrder({ player, drink }).subscribe({
       next: () => {
-        this.snackBar.open(`Ordered: ${this.selectedDrink}`, 'OK', { duration: 3000 });
-        this.confirming = false;
+        this.snackBar.open(`Ordered: ${drink}`, 'OK', { duration: 3000 });
+        this.pendingDrink = null;
         this.submitting = false;
-        this.selectedDrink = null;
+        this.setLock(drink);
         this.load();
       },
       error: (err: Error) => {
         this.snackBar.open(`Error: ${err.message}`, 'Dismiss', { duration: 5000 });
-        this.confirming = false;
+        this.pendingDrink = null;
         this.submitting = false;
       },
     });
   }
 
-  // ── Admin: settle all orders ───────────────────────────────────────────────
+  // ── Admin: settle all orders ──────────────────────────────────────────────
 
   openAdminConfirm(): void { this.adminConfirmStep = true; }
   cancelAdminConfirm(): void { this.adminConfirmStep = false; }
@@ -115,7 +125,7 @@ export class OrderComponent implements OnInit {
           orders: enriched.map(({ playerName, drink, price }) => ({ playerName, drink, price })),
         };
         this.saveRound(round);
-        this.snackBar.open('Wallets updated successfully!', 'OK', { duration: 3000 });
+        this.snackBar.open('Used values updated!', 'OK', { duration: 3000 });
         this.adminConfirmStep = false;
         this.submittingAll = false;
         this.load();
@@ -128,7 +138,65 @@ export class OrderComponent implements OnInit {
     });
   }
 
-  // ── localStorage ───────────────────────────────────────────────────────────
+  // ── Lock logic ────────────────────────────────────────────────────────────
+
+  private get lockKey(): string {
+    return `tmabet_order_lock_${(this.auth.username() ?? 'anon').toLowerCase().replace(/\s+/g, '_')}`;
+  }
+
+  private checkLock(): void {
+    try {
+      const raw = localStorage.getItem(this.lockKey);
+      if (!raw) return;
+      const lock = JSON.parse(raw) as { drink: string; lockedAt: number };
+      const elapsed = Date.now() - lock.lockedAt;
+      if (elapsed >= LOCK_DURATION_MS) {
+        localStorage.removeItem(this.lockKey);
+        return;
+      }
+      this.lockRemainingMs = LOCK_DURATION_MS - elapsed;
+      this.startLockInterval();
+    } catch {
+      /* ignore */
+    }
+  }
+
+  private setLock(drink: string): void {
+    localStorage.setItem(this.lockKey, JSON.stringify({ drink, lockedAt: Date.now() }));
+    this.lockRemainingMs = LOCK_DURATION_MS;
+    this.startLockInterval();
+  }
+
+  private startLockInterval(): void {
+    this.clearLockInterval();
+    this.lockInterval = setInterval(() => {
+      this.lockRemainingMs = Math.max(0, this.lockRemainingMs - 1000);
+      if (this.lockRemainingMs === 0) {
+        this.clearLockInterval();
+        localStorage.removeItem(this.lockKey);
+      }
+    }, 1000);
+  }
+
+  private clearLockInterval(): void {
+    if (this.lockInterval !== null) {
+      clearInterval(this.lockInterval);
+      this.lockInterval = null;
+    }
+  }
+
+  get isLocked(): boolean {
+    return this.lockRemainingMs > 0;
+  }
+
+  get lockRemainingLabel(): string {
+    const totalSecs = Math.ceil(this.lockRemainingMs / 1000);
+    const m = Math.floor(totalSecs / 60);
+    const s = totalSecs % 60;
+    return m > 0 ? `${m}m ${s}s` : `${s}s`;
+  }
+
+  // ── localStorage (confirmed rounds) ──────────────────────────────────────
 
   private loadSavedRounds(): void {
     try {
