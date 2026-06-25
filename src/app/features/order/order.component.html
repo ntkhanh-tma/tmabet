@@ -87,7 +87,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (o of orders; track o.playerName) {
+            @for (o of ordersWithDrinks; track o.playerName) {
               <tr [class.order-table__row--me]="isMe(o.playerName)">
                 <td class="order-table__player">
                   {{ o.playerName }}
@@ -96,11 +96,7 @@
                   }
                 </td>
                 <td class="order-table__order">
-                  @if (o.order) {
-                    <span class="order-table__order-value">{{ o.order }}</span>
-                  } @else {
-                    <span class="order-table__order-empty">—</span>
-                  }
+                  <span class="order-table__order-value">{{ o.order }}</span>
                 </td>
               </tr>
             }
@@ -111,8 +107,13 @@
           <div class="order-page__admin-bar">
             <mat-icon>admin_panel_settings</mat-icon>
             <span>Everyone has ordered.</span>
+            <mat-checkbox
+              class="order-page__admin-checkbox"
+              [checked]="useWallets"
+              (change)="useWallets = $event.checked"
+            >Use Wallets</mat-checkbox>
             <button mat-flat-button class="order-page__admin-btn" (click)="openAdminConfirm()">
-              Confirm &amp; Add to Used
+              Confirm
             </button>
           </div>
         }
@@ -121,7 +122,11 @@
           <div class="order-page__admin-confirm">
             <mat-icon>warning_amber</mat-icon>
             <div>
-              <p>Add each member's drink price to their Used value?</p>
+              @if (useWallets) {
+                <p>Add each member's drink price to their Used value?</p>
+              } @else {
+                <p>Confirm this round without updating Used values?</p>
+              }
               <span class="order-page__admin-confirm-note">This cannot be undone from the app.</span>
             </div>
             <div class="order-page__admin-confirm-buttons">

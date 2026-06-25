@@ -1,6 +1,5 @@
 .order-page {
   padding: 24px;
-  max-width: 760px;
 
   &__header {
     display: flex;
@@ -208,6 +207,16 @@
 
     mat-icon { color: var(--mat-sys-tertiary); flex-shrink: 0; }
     span { flex: 1; }
+  }
+
+  &__admin-checkbox {
+    flex-shrink: 0;
+    font-size: 13px;
+    --mdc-checkbox-selected-checkmark-color: var(--mat-sys-on-tertiary);
+    --mdc-checkbox-selected-focus-icon-color: var(--mat-sys-tertiary);
+    --mdc-checkbox-selected-hover-icon-color: var(--mat-sys-tertiary);
+    --mdc-checkbox-selected-icon-color: var(--mat-sys-tertiary);
+    --mdc-checkbox-selected-pressed-icon-color: var(--mat-sys-tertiary);
   }
 
   &__admin-btn {

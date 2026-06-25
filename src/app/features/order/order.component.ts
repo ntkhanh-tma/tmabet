@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { GoogleSheetsService } from '../../core/services/google-sheets.service';
@@ -28,7 +29,7 @@ const LOCK_DURATION_MS = 10 * 60 * 1000;
 @Component({
   selector: 'app-order',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatIconModule, MatButtonModule, MatProgressBarModule],
+  imports: [CommonModule, MatCardModule, MatIconModule, MatButtonModule, MatCheckboxModule, MatProgressBarModule],
   templateUrl: './order.component.html',
   styleUrl: './order.component.scss',
 })
@@ -49,6 +50,7 @@ export class OrderComponent implements OnInit, OnDestroy {
 
   pendingDrink: string | null = null;
   lockRemainingMs = 0;
+  useWallets = true;
   private lockInterval: ReturnType<typeof setInterval> | null = null;
 
   ngOnInit(): void {
@@ -117,13 +119,22 @@ export class OrderComponent implements OnInit, OnDestroy {
 
     if (!enriched.length) return;
 
+    const round: ConfirmedRound = {
+      confirmedAt: new Date().toISOString(),
+      orders: enriched.map(({ playerName, drink, price }) => ({ playerName, drink, price })),
+    };
+
+    if (!this.useWallets) {
+      this.saveRound(round);
+      this.snackBar.open('Round confirmed!', 'OK', { duration: 3000 });
+      this.adminConfirmStep = false;
+      this.load();
+      return;
+    }
+
     this.submittingAll = true;
     this.orderService.addToUsed(enriched.map((e) => ({ player: e.playerName, amount: e.amount }))).subscribe({
       next: () => {
-        const round: ConfirmedRound = {
-          confirmedAt: new Date().toISOString(),
-          orders: enriched.map(({ playerName, drink, price }) => ({ playerName, drink, price })),
-        };
         this.saveRound(round);
         this.snackBar.open('Used values updated!', 'OK', { duration: 3000 });
         this.adminConfirmStep = false;
@@ -246,5 +257,9 @@ export class OrderComponent implements OnInit, OnDestroy {
 
   get orderedCount(): number {
     return this.orders.filter((o) => o.order).length;
+  }
+
+  get ordersWithDrinks(): OrderEntry[] {
+    return this.orders.filter((o) => o.order.trim() !== '');
   }
 }
