@@ -209,6 +209,14 @@
     span { flex: 1; }
   }
 
+  &__admin-total {
+    font-weight: 700;
+    font-size: 13px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    color: var(--mat-sys-on-tertiary-container);
+  }
+
   &__admin-checkbox {
     flex-shrink: 0;
     font-size: 13px;
@@ -306,6 +314,30 @@
 
   &__price { color: var(--mat-sys-on-surface-variant); font-size: 12px; text-align: right; white-space: nowrap; }
   &__price-header { text-align: right; }
+
+  &__total-row {
+    td {
+      border-top: 2px solid var(--mat-sys-outline-variant);
+      border-bottom: none;
+      padding-top: 9px;
+    }
+  }
+
+  &__total-label {
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__total-value {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--mat-sys-primary);
+    text-align: right;
+    white-space: nowrap;
+  }
 
   &__me-badge {
     display: inline-block;

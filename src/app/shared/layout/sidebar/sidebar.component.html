@@ -32,8 +32,6 @@
       Luật chơi
     </div>
     <p class="sidebar__rules-text">
-      <span class="rule-hi rule-hi--win">Thắng: +20</span>,
-      <span class="rule-hi rule-hi--loss">Thua: -25</span>.<br>
       Mỗi <span class="rule-hi rule-hi--time">thứ năm</span> chốt sổ đặt nước.<br>
       Đóng bet <span class="rule-hi rule-hi--time">03 tiếng</span> trước khi trận đấu bắt đầu.<br>
       <span class="rule-hi rule-hi--highlight">Modifier</span> không được xài ở
@@ -41,6 +39,29 @@
       Không nhất thiết trận nào cũng chơi,
       <span class="rule-hi rule-hi--optional">thích thì hãy chơi</span>.
     </p>
+  </div>
+
+  <div class="sidebar__modifiers">
+    <div class="sidebar__modifiers-title">
+      <mat-icon class="sidebar__modifiers-icon">bolt</mat-icon>
+      Ngôi Sao Hy Vọng (Modifier)
+    </div>
+    <div class="sidebar__modifiers-grid">
+      <div class="mod-col mod-col--win">
+        <div class="mod-row"><span class="mod-key">W / W1</span><span class="mod-val mod-val--win">+20</span></div>
+        <div class="mod-row"><span class="mod-key">W2</span><span class="mod-val mod-val--win">+40</span></div>
+        <div class="mod-row"><span class="mod-key">W3</span><span class="mod-val mod-val--win">+50</span></div>
+        <div class="mod-row"><span class="mod-key">W4</span><span class="mod-val mod-val--win">+60</span></div>
+        <div class="mod-row"><span class="mod-key">W5</span><span class="mod-val mod-val--win">+70</span></div>
+      </div>
+      <div class="mod-col mod-col--loss">
+        <div class="mod-row"><span class="mod-key">L / L1</span><span class="mod-val mod-val--loss">-25</span></div>
+        <div class="mod-row"><span class="mod-key">L2</span><span class="mod-val mod-val--loss">-50</span></div>
+        <div class="mod-row"><span class="mod-key">L3</span><span class="mod-val mod-val--loss">-60</span></div>
+        <div class="mod-row"><span class="mod-key">L4</span><span class="mod-val mod-val--loss">-70</span></div>
+        <div class="mod-row"><span class="mod-key">L5</span><span class="mod-val mod-val--loss">-75</span></div>
+      </div>
+    </div>
   </div>
 
   @if (auth.username()) {

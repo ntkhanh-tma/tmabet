@@ -84,6 +84,7 @@
             <tr>
               <th class="order-table__player-header">Player</th>
               <th class="order-table__order-header">Order</th>
+              <th class="order-table__price-header">Price</th>
             </tr>
           </thead>
           <tbody>
@@ -98,15 +99,27 @@
                 <td class="order-table__order">
                   <span class="order-table__order-value">{{ o.order }}</span>
                 </td>
+                <td class="order-table__price">{{ getPriceForOrder(o.order) }}</td>
               </tr>
             }
           </tbody>
+          @if (ordersWithDrinks.length > 0) {
+            <tfoot>
+              <tr class="order-table__total-row">
+                <td colspan="2" class="order-table__total-label">Total ({{ orderedCount }})</td>
+                <td class="order-table__total-value">{{ formatTotal(totalPrice) }}</td>
+              </tr>
+            </tfoot>
+          }
         </table>
 
-        @if (isAdmin && allOrdered && !adminConfirmStep) {
+        @if (isAdmin && !adminConfirmStep) {
           <div class="order-page__admin-bar">
             <mat-icon>admin_panel_settings</mat-icon>
-            <span>Everyone has ordered.</span>
+            <span>{{ orderedCount }} of {{ orders.length }} ordered</span>
+            @if (orderedCount > 0) {
+              <span class="order-page__admin-total">Total: {{ formatTotal(totalPrice) }}</span>
+            }
             <mat-checkbox
               class="order-page__admin-checkbox"
               [checked]="useWallets"

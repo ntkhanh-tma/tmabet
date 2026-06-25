@@ -251,15 +251,26 @@ export class OrderComponent implements OnInit, OnDestroy {
     return this.auth.username()?.trim().toLowerCase() === ADMIN_NAME.toLowerCase();
   }
 
-  get allOrdered(): boolean {
-    return this.orders.length > 0 && this.orders.every((o) => o.order.trim() !== '');
-  }
-
   get orderedCount(): number {
     return this.orders.filter((o) => o.order).length;
   }
 
   get ordersWithDrinks(): OrderEntry[] {
     return this.orders.filter((o) => o.order.trim() !== '');
+  }
+
+  getPriceForOrder(drink: string): string {
+    return this.menu.find((m) => m.drink === drink)?.price ?? '—';
+  }
+
+  get totalPrice(): number {
+    return this.ordersWithDrinks.reduce((sum, o) => {
+      const item = this.menu.find((m) => m.drink === o.order);
+      return sum + this.parsePrice(item?.price ?? '0');
+    }, 0);
+  }
+
+  formatTotal(n: number): string {
+    return n.toLocaleString('en-US');
   }
 }

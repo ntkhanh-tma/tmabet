@@ -121,6 +121,38 @@
     margin: 0;
   }
 
+  &__modifiers {
+    margin: 0 10px 12px;
+    padding: 10px 12px;
+    border: 1.5px solid #7b1fa2;
+    border-radius: 8px;
+    background: rgba(123, 31, 162, 0.06);
+  }
+
+  &__modifiers-title {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #ab47bc;
+    margin-bottom: 8px;
+  }
+
+  &__modifiers-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    color: #ab47bc;
+  }
+
+  &__modifiers-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
   &__chat {
     flex: 1;
     display: flex;
@@ -265,6 +297,7 @@
     &__brand,
     &__footer,
     &__rules,
+    &__modifiers,
     &__chat {
       display: none;
     }
@@ -298,6 +331,43 @@
       font-size: 10px;
     }
   }
+}
+
+// ── Modifier table ────────────────────────────────────────────────────────────
+
+.mod-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  &--win {
+    border-right: 1px solid var(--mat-sys-outline-variant);
+    padding-right: 6px;
+  }
+
+  &--loss {
+    padding-left: 8px;
+  }
+}
+
+.mod-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mod-key {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.mod-val {
+  font-size: 10px;
+  font-weight: 700;
+
+  &--win  { color: #66bb6a; }
+  &--loss { color: #ef5350; }
 }
 
 // ── Rule highlight spans ──────────────────────────────────────────────────────
