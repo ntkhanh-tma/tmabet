@@ -9,21 +9,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { GoogleSheetsService } from '../../core/services/google-sheets.service';
 import { AuthService } from '../../core/services/auth.service';
 import { OrderService } from '../../core/services/order.service';
-import { MenuItem, OrderEntry } from '../../core/models/dashboard.model';
-
-interface ConfirmedOrderEntry {
-  playerName: string;
-  drink: string;
-  price: string;
-}
-
-interface ConfirmedRound {
-  confirmedAt: string;
-  orders: ConfirmedOrderEntry[];
-}
+import { MenuItem, OrderEntry, ConfirmedOrderEntry, ConfirmedRound } from '../../core/models/dashboard.model';
 
 const ADMIN_NAME = 'Khanh Nguyen';
-const STORAGE_KEY = 'tmabet_confirmed_orders';
 const LOCK_DURATION_MS = 10 * 60 * 1000;
 
 @Component({
@@ -40,6 +28,7 @@ export class OrderComponent implements OnInit, OnDestroy {
   readonly auth = inject(AuthService);
 
   loading = true;
+  loadingHistory = false;
   submitting = false;
   adminConfirmStep = false;
   submittingAll = false;
@@ -54,9 +43,9 @@ export class OrderComponent implements OnInit, OnDestroy {
   private lockInterval: ReturnType<typeof setInterval> | null = null;
 
   ngOnInit(): void {
-    this.loadSavedRounds();
     this.checkLock();
     this.load();
+    this.loadOrderHistory();
   }
 
   ngOnDestroy(): void {
@@ -150,11 +139,19 @@ export class OrderComponent implements OnInit, OnDestroy {
   }
 
   private finalizeSettle(round: ConfirmedRound): void {
-    this.saveRound(round);
+    this.orderService.appendOrderHistory(round.confirmedAt, JSON.stringify(round.orders)).subscribe({
+      next: () => this.afterHistorySaved(),
+      error: () => this.afterHistorySaved(),
+    });
+  }
+
+  private afterHistorySaved(): void {
+    this.sheetsService.invalidateResultsCache();
     this.snackBar.open('Round confirmed!', 'OK', { duration: 3000 });
     this.adminConfirmStep = false;
     this.submittingAll = false;
     this.load();
+    this.loadOrderHistory();
   }
 
   // ── Lock logic ────────────────────────────────────────────────────────────
@@ -215,20 +212,19 @@ export class OrderComponent implements OnInit, OnDestroy {
     return m > 0 ? `${m}m ${s}s` : `${s}s`;
   }
 
-  // ── localStorage (confirmed rounds) ──────────────────────────────────────
+  // ── Order history (loaded from Sheets) ───────────────────────────────────
 
-  private loadSavedRounds(): void {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      this.savedRounds = raw ? (JSON.parse(raw) as ConfirmedRound[]) : [];
-    } catch {
-      this.savedRounds = [];
-    }
-  }
-
-  private saveRound(round: ConfirmedRound): void {
-    this.savedRounds = [...this.savedRounds, round];
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.savedRounds));
+  loadOrderHistory(): void {
+    this.loadingHistory = true;
+    this.sheetsService.getOrderHistory().subscribe({
+      next: (rounds) => {
+        this.savedRounds = rounds;
+        this.loadingHistory = false;
+      },
+      error: () => {
+        this.loadingHistory = false;
+      },
+    });
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────

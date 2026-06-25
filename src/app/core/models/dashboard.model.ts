@@ -135,6 +135,17 @@ export interface MenuItem {
   price: string;
 }
 
+export interface ConfirmedOrderEntry {
+  playerName: string;
+  drink: string;
+  price: string;
+}
+
+export interface ConfirmedRound {
+  confirmedAt: string;
+  orders: ConfirmedOrderEntry[];
+}
+
 export interface OrderEntry {
   playerName: string;
   order: string;

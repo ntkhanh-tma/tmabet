@@ -154,7 +154,11 @@
     </mat-card>
   }
 
-  @if (savedRounds.length > 0) {
+  @if (loadingHistory) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  }
+
+  @if (!loadingHistory && savedRounds.length > 0) {
     <div class="order-page__history">
       <div class="order-page__history-header">
         <mat-icon>history</mat-icon>

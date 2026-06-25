@@ -21,6 +21,7 @@ var SPREADSHEET_ID   = '1KN7r6qdlnDKLbAitcn_KeN8ztP05KO2ZhW0nJ81WI78';
 var BETS_SHEET       = 'WC2026';
 var BETS_RANGE       = 'Bets';
 var COMMENTS_SHEET   = 'Comments';
+var RESULT_SHEET     = 'Result';
 
 // ---------------------------------------------------------------------------
 // Entry point — handles POST from Angular
@@ -41,6 +42,10 @@ function doPost(e) {
 
     if (action === 'clearOrders') {
       return handleClearOrders(payload, ss);
+    }
+
+    if (action === 'appendOrderHistory') {
+      return handleAppendOrderHistory(payload, ss);
     }
 
     var player    = (payload.player    || '').trim();
@@ -244,6 +249,60 @@ function handleOrder(payload, ss) {
   SpreadsheetApp.flush();
 
   return jsonResponse({ ok: true, updatedRow: targetRow });
+}
+
+// ---------------------------------------------------------------------------
+// Order history handler — appends a confirmed round to the Result sheet
+// Columns: "Datetime" and "Order" are stored in a dedicated block to the
+// right of the match-result columns. The first time this runs it creates
+// the two-column header; subsequent calls append a new row below.
+// ---------------------------------------------------------------------------
+function handleAppendOrderHistory(payload, ss) {
+  var datetime = (payload.datetime || '').trim();
+  var order    = (payload.order    || '').trim();
+
+  if (!datetime) return jsonResponse({ ok: false, message: 'Missing datetime' });
+  if (!order)    return jsonResponse({ ok: false, message: 'Missing order' });
+
+  var sheet = ss.getSheetByName(RESULT_SHEET);
+  if (!sheet) return jsonResponse({ ok: false, message: 'Sheet "' + RESULT_SHEET + '" not found' });
+
+  // Find the "Datetime" header in row 1 to locate the history block.
+  // If not present, create it two columns past the current last column.
+  var lastCol = sheet.getLastColumn();
+  var row1 = lastCol > 0
+    ? sheet.getRange(1, 1, 1, lastCol).getValues()[0]
+    : [];
+
+  var dtCol = -1;
+  for (var i = 0; i < row1.length; i++) {
+    if (String(row1[i]).trim().toLowerCase() === 'datetime') {
+      dtCol = i + 1; // convert to 1-based column index
+      break;
+    }
+  }
+
+  if (dtCol === -1) {
+    // Create headers in the first unused column area (skip one gap column)
+    dtCol = lastCol + 2;
+    sheet.getRange(1, dtCol, 1, 2).setValues([['Datetime', 'Order']]);
+  }
+
+  // Find the first empty row in the Datetime column (data starts at row 2)
+  var maxRow = sheet.getMaxRows();
+  var colData = sheet.getRange(2, dtCol, maxRow - 1, 1).getValues();
+  var insertRow = 2;
+  for (var j = 0; j < colData.length; j++) {
+    if (colData[j][0] === '' || colData[j][0] === null || colData[j][0] === undefined) {
+      insertRow = j + 2;
+      break;
+    }
+    insertRow = j + 3; // all rows occupied; go one beyond
+  }
+
+  sheet.getRange(insertRow, dtCol, 1, 2).setValues([[datetime, order]]);
+  SpreadsheetApp.flush();
+  return jsonResponse({ ok: true });
 }
 
 // ---------------------------------------------------------------------------

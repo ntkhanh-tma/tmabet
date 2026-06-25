@@ -15,6 +15,7 @@ import {
   ResultRow,
   MenuItem,
   OrderEntry,
+  ConfirmedRound,
 } from '../models/dashboard.model';
 import { getCountryCode, getGroupColor } from '../utils/country-flags';
 import { SheetCacheService } from './sheet-cache.service';
@@ -108,6 +109,30 @@ export class GoogleSheetsService {
   triggerRefresh(): void {
     Object.values(CACHE_KEYS).forEach((k) => this.cache.invalidate(k));
     this._refresh$.next();
+  }
+
+  /** Invalidates only the results cache (used after appending order history). */
+  invalidateResultsCache(): void {
+    this.cache.invalidate(CACHE_KEYS.results);
+  }
+
+  /** Reads order history rows from the cached Result sheet data. */
+  getOrderHistory(): Observable<ConfirmedRound[]> {
+    return this.loadResultRows().pipe(
+      map((rows) =>
+        rows
+          .filter((r) => r['Datetime']?.trim())
+          .map((r) => {
+            try {
+              return { confirmedAt: r['Datetime'], orders: JSON.parse(r['Order'] ?? '[]') } as ConfirmedRound;
+            } catch {
+              return null;
+            }
+          })
+          .filter((r): r is ConfirmedRound => r !== null)
+          .sort((a, b) => a.confirmedAt.localeCompare(b.confirmedAt))
+      )
+    );
   }
 
   /**
@@ -310,8 +335,9 @@ export class GoogleSheetsService {
       ? (Object.keys(resultRows[0]).find((k) => k.trim().toLowerCase() === 'points') ?? '')
       : '';
     const allResultKeys = resultRows.length > 0 ? Object.keys(resultRows[0]) : [];
+    const NON_MATCH = new Set(['points', 'datetime', 'order']);
     const matchNumberKeys = allResultKeys.filter(
-      (k) => k !== playerKey && k.trim().toLowerCase() !== 'points' && k.trim() !== ''
+      (k) => k !== playerKey && !NON_MATCH.has(k.trim().toLowerCase()) && k.trim() !== ''
     );
     const leaderboard: LeaderboardEntry[] = resultRows
       .filter((r) => r[playerKey]?.trim())
@@ -442,9 +468,9 @@ export class GoogleSheetsService {
     const playerKey = allKeys.find((k) => k.trim().toLowerCase() === 'player') ?? '';
     const pointsKey = allKeys.find((k) => k.trim().toLowerCase() === 'points') ?? 'Points';
 
-    // Match-number columns: everything except the player key and the Points key
+    const NON_MATCH_KEYS = new Set(['points', 'datetime', 'order']);
     const matchNumberKeys = allKeys.filter(
-      (k) => k !== playerKey && k.trim().toLowerCase() !== 'points' && k.trim() !== ''
+      (k) => k !== playerKey && !NON_MATCH_KEYS.has(k.trim().toLowerCase()) && k.trim() !== ''
     );
 
     const columns: ResultColumn[] = matchNumberKeys.map((key) => {

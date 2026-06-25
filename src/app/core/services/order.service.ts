@@ -61,6 +61,30 @@ export class OrderService {
       );
   }
 
+  appendOrderHistory(datetime: string, orderJson: string): Observable<{ ok: boolean }> {
+    if (!this.appsScriptUrl) {
+      return throwError(() => new Error('Apps Script URL is not configured.'));
+    }
+
+    const params = new HttpParams().set(
+      'payload',
+      JSON.stringify({ action: 'appendOrderHistory', datetime, order: orderJson })
+    );
+
+    return this.http
+      .get<{ ok: boolean; message?: string }>(this.appsScriptUrl, { params })
+      .pipe(
+        map((res) => {
+          if (!res.ok) throw new Error(res.message ?? 'Server returned ok: false');
+          return res;
+        }),
+        catchError((err) => {
+          const message = err.error?.message ?? err.message ?? 'Unknown error';
+          return throwError(() => new Error(message));
+        })
+      );
+  }
+
   submitOrder(payload: OrderPayload): Observable<{ ok: boolean }> {
     if (!this.appsScriptUrl) {
       return throwError(() => new Error('Apps Script URL is not configured.'));
