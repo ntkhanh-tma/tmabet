@@ -146,7 +146,7 @@ export class OrderComponent implements OnInit, OnDestroy {
   }
 
   private afterHistorySaved(): void {
-    this.sheetsService.invalidateResultsCache();
+    this.sheetsService.invalidateOrderHistoryCache();
     this.snackBar.open('Round confirmed!', 'OK', { duration: 3000 });
     this.adminConfirmStep = false;
     this.submittingAll = false;

@@ -21,7 +21,7 @@ var SPREADSHEET_ID   = '1KN7r6qdlnDKLbAitcn_KeN8ztP05KO2ZhW0nJ81WI78';
 var BETS_SHEET       = 'WC2026';
 var BETS_RANGE       = 'Bets';
 var COMMENTS_SHEET   = 'Comments';
-var RESULT_SHEET     = 'Result';
+var DATABASE_SHEET   = 'Database';
 
 // ---------------------------------------------------------------------------
 // Entry point — handles POST from Angular
@@ -252,10 +252,9 @@ function handleOrder(payload, ss) {
 }
 
 // ---------------------------------------------------------------------------
-// Order history handler — appends a confirmed round to the Result sheet
-// Columns: "Datetime" and "Order" are stored in a dedicated block to the
-// right of the match-result columns. The first time this runs it creates
-// the two-column header; subsequent calls append a new row below.
+// Order history handler — appends a confirmed round to the Database sheet
+// (named range "OrderHistory", columns H:I). The first time this runs it
+// creates the two-column header; subsequent calls append a new row below.
 // ---------------------------------------------------------------------------
 function handleAppendOrderHistory(payload, ss) {
   var datetime = (payload.datetime || '').trim();
@@ -264,8 +263,8 @@ function handleAppendOrderHistory(payload, ss) {
   if (!datetime) return jsonResponse({ ok: false, message: 'Missing datetime' });
   if (!order)    return jsonResponse({ ok: false, message: 'Missing order' });
 
-  var sheet = ss.getSheetByName(RESULT_SHEET);
-  if (!sheet) return jsonResponse({ ok: false, message: 'Sheet "' + RESULT_SHEET + '" not found' });
+  var sheet = ss.getSheetByName(DATABASE_SHEET);
+  if (!sheet) return jsonResponse({ ok: false, message: 'Sheet "' + DATABASE_SHEET + '" not found' });
 
   // Find the "Datetime" header in row 1 to locate the history block.
   // If not present, create it two columns past the current last column.

@@ -30,6 +30,7 @@ const CACHE_KEYS = {
   matches: 'tmabet_cache_matches',
   comments: 'tmabet_cache_comments',
   results: 'tmabet_cache_results',
+  orderHistory: 'tmabet_cache_order_history',
 } as const;
 
 @Injectable({ providedIn: 'root' })
@@ -111,28 +112,33 @@ export class GoogleSheetsService {
     this._refresh$.next();
   }
 
-  /** Invalidates only the results cache (used after appending order history). */
-  invalidateResultsCache(): void {
-    this.cache.invalidate(CACHE_KEYS.results);
+  /** Invalidates the order history cache (used after appending a confirmed round). */
+  invalidateOrderHistoryCache(): void {
+    this.cache.invalidate(CACHE_KEYS.orderHistory);
   }
 
-  /** Reads order history rows from the cached Result sheet data. */
+  /** Reads order history rows from the Database sheet's "OrderHistory" named range (columns H:I). */
   getOrderHistory(): Observable<ConfirmedRound[]> {
-    return this.loadResultRows().pipe(
-      map((rows) =>
-        rows
-          .filter((r) => r['Datetime']?.trim())
+    const fetcher$ = this.rawRange('OrderHistory').pipe(
+      map((rows) => {
+        if (rows.length === 0) return [] as ConfirmedRound[];
+        const [headers, ...dataRows] = rows;
+        const dtIdx = headers.findIndex((h) => h.trim().toLowerCase() === 'datetime');
+        const orderIdx = headers.findIndex((h) => h.trim().toLowerCase().startsWith('order'));
+        return dataRows
+          .filter((r) => r[dtIdx]?.trim())
           .map((r) => {
             try {
-              return { confirmedAt: r['Datetime'], orders: JSON.parse(r['Order'] ?? '[]') } as ConfirmedRound;
+              return { confirmedAt: r[dtIdx], orders: JSON.parse(r[orderIdx] ?? '[]') } as ConfirmedRound;
             } catch {
               return null;
             }
           })
           .filter((r): r is ConfirmedRound => r !== null)
-          .sort((a, b) => a.confirmedAt.localeCompare(b.confirmedAt))
-      )
+          .sort((a, b) => a.confirmedAt.localeCompare(b.confirmedAt));
+      })
     );
+    return this.cache.getCached<ConfirmedRound[]>(CACHE_KEYS.orderHistory, fetcher$);
   }
 
   /**
