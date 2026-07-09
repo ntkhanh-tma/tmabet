@@ -56,16 +56,16 @@ jobs:
 
       # ── 5. Inject Google Sheets API key ───────────────────────────────────
       #
-      # The key lives in the GOOGLE_API_KEY repository secret (Settings →
+      # The key lives in the GOOGLE_SHEETS_API_KEY repository secret (Settings →
       # Secrets and variables → Actions). The source tree only contains the
       # __GOOGLE_API_KEY__ placeholder in environment.prod.ts.
       #
       - name: Inject Google API key
         env:
-          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_SHEETS_API_KEY }}
         run: |
           if [ -z "$GOOGLE_API_KEY" ]; then
-            echo "::error::GOOGLE_API_KEY secret is not set — add it under Settings → Secrets and variables → Actions."
+            echo "::error::GOOGLE_SHEETS_API_KEY secret is not set — add it under Settings → Secrets and variables → Actions."
             exit 1
           fi
           sed -i "s|__GOOGLE_API_KEY__|$GOOGLE_API_KEY|g" src/environments/environment.prod.ts
