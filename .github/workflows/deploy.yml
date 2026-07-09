@@ -97,6 +97,10 @@ jobs:
           # Save built output before switching branches
           cp -r docs /tmp/angular-docs
 
+          # Discard working-tree changes (injected API key, rebuilt docs/) —
+          # git refuses to switch branches with modified tracked files.
+          git reset --hard HEAD
+
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
