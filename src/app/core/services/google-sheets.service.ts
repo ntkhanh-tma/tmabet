@@ -19,6 +19,7 @@ import {
 } from '../models/dashboard.model';
 import { getCountryCode, getGroupColor } from '../utils/country-flags';
 import { SheetCacheService } from './sheet-cache.service';
+import { environment } from '../../../environments/environment';
 
 interface Wc2026Data {
   bets: string[][];
@@ -41,7 +42,7 @@ export class GoogleSheetsService {
   private readonly _refresh$ = new Subject<void>();
   readonly refresh$ = this._refresh$.asObservable();
 
-  private readonly apiKey = 'AIzaSyAD9--6nWYRTNhBFGga0KF9GTDgAp_Z57M';
+  private readonly apiKey = environment.googleApiKey;
   private readonly spreadsheetId = '1KN7r6qdlnDKLbAitcn_KeN8ztP05KO2ZhW0nJ81WI78';
   private readonly baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${this.spreadsheetId}/values`;
 

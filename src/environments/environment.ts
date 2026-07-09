@@ -4,4 +4,7 @@ export const environment = {
   // Extensions → Apps Script → Deploy → Manage deployments → copy Web App URL
   // Do NOT commit a real URL — keep this empty and set APPS_SCRIPT_URL in GitHub Secrets for CI.
   appsScriptUrl: 'https://script.google.com/macros/s/AKfycbzRtVSZuOpCRc9KjvdpjsjQwgNGo3W8n0hP3kYNRHDAgBONRvAoHuP2Iv8lhiEk2Y-DqA/exec',
+  // Paste your Google Sheets API key here for local development.
+  // Do NOT commit a real key — CI injects the GOOGLE_API_KEY secret at build time.
+  googleApiKey: '',
 };

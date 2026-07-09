@@ -54,7 +54,24 @@ jobs:
           printf 'BASE_HREF=%s\n' "$BASE_HREF" >> "$GITHUB_ENV"
           echo "Deploying with base-href: $BASE_HREF"
 
-      # ── 5. Production build ───────────────────────────────────────────────
+      # ── 5. Inject Google Sheets API key ───────────────────────────────────
+      #
+      # The key lives in the GOOGLE_API_KEY repository secret (Settings →
+      # Secrets and variables → Actions). The source tree only contains the
+      # __GOOGLE_API_KEY__ placeholder in environment.prod.ts.
+      #
+      - name: Inject Google API key
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: |
+          if [ -z "$GOOGLE_API_KEY" ]; then
+            echo "::error::GOOGLE_API_KEY secret is not set — add it under Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+          sed -i "s|__GOOGLE_API_KEY__|$GOOGLE_API_KEY|g" src/environments/environment.prod.ts
+          echo "Injected GOOGLE_API_KEY into environment.prod.ts"
+
+      # ── 6. Production build ───────────────────────────────────────────────
       #
       # angular.json outputPath.base = "docs", outputPath.browser = ""  → flat ./docs/
       #
@@ -66,7 +83,7 @@ jobs:
       - name: Build (production)
         run: npm run build -- --base-href="$BASE_HREF"
 
-      # ── 6. Push docs/ to gh-pages branch ────────────────────────────────
+      # ── 7. Push docs/ to gh-pages branch ────────────────────────────────
       #
       # Strategy:
       #   a) Move ./docs out of the git working tree.
