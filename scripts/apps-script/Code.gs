@@ -23,6 +23,25 @@ var BETS_RANGE       = 'Bets';
 var COMMENTS_SHEET   = 'Comments';
 var DATABASE_SHEET   = 'Database';
 
+// Input limits — reject/trim oversized input so a hostile client can't bloat
+// the sheet or ship a huge request body.
+var MAX_FIELD_LEN    = 200;    // player name, team, drink, modifier, etc.
+var MAX_COMMENT_LEN  = 1000;   // free-text comment / order-history JSON
+var MAX_BATCH        = 500;    // max rows in deductions/players/order arrays
+
+/**
+ * Coerces any incoming value to a trimmed, length-capped string AND neutralises
+ * spreadsheet formula injection: a value that starts with = + - @ is treated by
+ * Google Sheets as a formula (e.g. =IMPORTXML(...) can exfiltrate sheet data).
+ * Prefixing with an apostrophe forces Sheets to store it as literal text.
+ */
+function sanitize(value, maxLen) {
+  var s = String(value == null ? '' : value).trim();
+  if (maxLen && s.length > maxLen) s = s.substring(0, maxLen);
+  if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+  return s;
+}
+
 // ---------------------------------------------------------------------------
 // Entry point — handles POST from Angular
 // ---------------------------------------------------------------------------
@@ -48,13 +67,13 @@ function doPost(e) {
       return handleAppendOrderHistory(payload, ss);
     }
 
-    var player    = (payload.player    || '').trim();
-    var match1Bet = (payload.match1Bet || '').trim();
-    var match2Bet = (payload.match2Bet || '').trim();
-    var modifier1 = (payload.modifier1 || '').trim() || '1';
-    var modifier2 = (payload.modifier2 || '').trim() || '1';
-    var betTeam   = (payload.betTeam   || '').trim();
-    var comment   = (payload.comment   || '').trim();
+    var player    = sanitize(payload.player,    MAX_FIELD_LEN);
+    var match1Bet = sanitize(payload.match1Bet, MAX_FIELD_LEN);
+    var match2Bet = sanitize(payload.match2Bet, MAX_FIELD_LEN);
+    var modifier1 = sanitize(payload.modifier1, MAX_FIELD_LEN) || '1';
+    var modifier2 = sanitize(payload.modifier2, MAX_FIELD_LEN) || '1';
+    var betTeam   = sanitize(payload.betTeam,   MAX_FIELD_LEN);
+    var comment   = sanitize(payload.comment,   MAX_COMMENT_LEN);
 
     if (!player) {
       return jsonResponse({ ok: false, message: 'Missing player name' }, 400);
@@ -124,7 +143,10 @@ function doPost(e) {
     return jsonResponse({ ok: true, updatedRow: targetRow });
 
   } catch (err) {
-    return jsonResponse({ ok: false, message: err.message }, 500);
+    // Log the detail server-side (View → Executions) but return a generic
+    // message so internal errors aren't exposed to the caller.
+    console.error('doPost failed: ' + (err && err.stack ? err.stack : err));
+    return jsonResponse({ ok: false, message: 'Request could not be processed' }, 500);
   }
 }
 
@@ -136,7 +158,8 @@ function doGet(e) {
     try {
       return doPost({ postData: { contents: e.parameter.payload } });
     } catch (err) {
-      return jsonResponse({ ok: false, message: err.message });
+      console.error('doGet failed: ' + (err && err.stack ? err.stack : err));
+      return jsonResponse({ ok: false, message: 'Request could not be processed' });
     }
   }
   return jsonResponse({ ok: true, message: 'tmabet-proxy is running' });
@@ -148,6 +171,7 @@ function doGet(e) {
 function handleAddToUsed(payload, ss) {
   var deductions = payload.deductions || [];
   if (!deductions.length) return jsonResponse({ ok: false, message: 'No deductions provided' });
+  if (deductions.length > MAX_BATCH) return jsonResponse({ ok: false, message: 'Too many deductions' });
 
   var sheet = ss.getSheetByName(BETS_SHEET);
   if (!sheet) return jsonResponse({ ok: false, message: 'Sheet "' + BETS_SHEET + '" not found' });
@@ -158,7 +182,7 @@ function handleAddToUsed(payload, ss) {
   var values    = betsRange.getValues();
 
   for (var i = 0; i < deductions.length; i++) {
-    var player = String(deductions[i].player || '').trim();
+    var player = sanitize(deductions[i].player, MAX_FIELD_LEN);
     var amount = Number(deductions[i].amount) || 0;
     if (!player || amount === 0) continue;
 
@@ -188,6 +212,7 @@ function handleAddToUsed(payload, ss) {
 function handleClearOrders(payload, ss) {
   var players = payload.players || [];
   if (!players.length) return jsonResponse({ ok: true });
+  if (players.length > MAX_BATCH) return jsonResponse({ ok: false, message: 'Too many players' });
 
   var sheet = ss.getSheetByName(BETS_SHEET);
   if (!sheet) return jsonResponse({ ok: false, message: 'Sheet "' + BETS_SHEET + '" not found' });
@@ -198,7 +223,7 @@ function handleClearOrders(payload, ss) {
   var values    = betsRange.getValues();
 
   for (var i = 0; i < players.length; i++) {
-    var player = String(players[i]).trim();
+    var player = sanitize(players[i], MAX_FIELD_LEN);
     var rowOffset = -1;
     for (var j = 0; j < values.length; j++) {
       if (String(values[j][0]).trim().toLowerCase() === player.toLowerCase()) {
@@ -219,8 +244,8 @@ function handleClearOrders(payload, ss) {
 // Order handler — writes drink choice to column G (ORDER) of the player's row
 // ---------------------------------------------------------------------------
 function handleOrder(payload, ss) {
-  var player = (payload.player || '').trim();
-  var drink  = (payload.drink  || '').trim();
+  var player = sanitize(payload.player, MAX_FIELD_LEN);
+  var drink  = sanitize(payload.drink,  MAX_FIELD_LEN);
 
   if (!player) return jsonResponse({ ok: false, message: 'Missing player name' });
   if (!drink)  return jsonResponse({ ok: false, message: 'Missing drink' });
@@ -257,8 +282,8 @@ function handleOrder(payload, ss) {
 // creates the two-column header; subsequent calls append a new row below.
 // ---------------------------------------------------------------------------
 function handleAppendOrderHistory(payload, ss) {
-  var datetime = (payload.datetime || '').trim();
-  var order    = (payload.order    || '').trim();
+  var datetime = sanitize(payload.datetime, MAX_FIELD_LEN);
+  var order    = sanitize(payload.order,    MAX_COMMENT_LEN);
 
   if (!datetime) return jsonResponse({ ok: false, message: 'Missing datetime' });
   if (!order)    return jsonResponse({ ok: false, message: 'Missing order' });
