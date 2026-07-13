@@ -10,6 +10,14 @@ export interface BetPayload {
   match2Bet: string;
   modifier1: string;
   modifier2: string;
+  /**
+   * Which match slot this action actually changed (1 or 2). The server writes
+   * ONLY this slot's pick column, leaving the other untouched. This avoids
+   * re-writing a stale pick from a previous match rotation into a column whose
+   * data-validation dropdown no longer accepts it (which would throw and fail
+   * the whole bet). Omitted → server falls back to writing both columns.
+   */
+  betSlot?: 1 | 2;
   /** The specific team chosen in this action — used to tag the comment row */
   betTeam?: string;
   /** Optional chat-style comment submitted alongside the bet */

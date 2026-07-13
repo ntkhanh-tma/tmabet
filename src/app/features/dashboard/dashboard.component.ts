@@ -328,6 +328,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         match2Bet,
         modifier1,
         modifier2,
+        // Tell the server which slot actually changed so it only writes that
+        // column — never re-writing the preserved (possibly stale) other slot.
+        betSlot: slot,
         betTeam: team,
         ...(comment ? { comment } : {}),
       })

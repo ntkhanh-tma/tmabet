@@ -42,6 +42,23 @@ function sanitize(value, maxLen) {
   return s;
 }
 
+/**
+ * Writes a single cell, returning null on success or the error message on
+ * failure. The bet-pick columns carry a strict "reject input" data-validation
+ * dropdown tied to the currently featured teams (WC2026!I2:I5). Writing a value
+ * that is no longer in that dropdown — e.g. a pick preserved from before the
+ * match rotated — makes setValue THROW. Isolating each write lets a stale value
+ * in one column fail on its own instead of blocking the whole bet.
+ */
+function writeCell(sheet, row, col, value) {
+  try {
+    sheet.getRange(row, col, 1, 1).setValue(value);
+    return null;
+  } catch (err) {
+    return String(err && err.message ? err.message : err);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Entry point — handles POST from Angular
 // ---------------------------------------------------------------------------
@@ -74,6 +91,10 @@ function doPost(e) {
     var modifier2 = sanitize(payload.modifier2, MAX_FIELD_LEN) || '1';
     var betTeam   = sanitize(payload.betTeam,   MAX_FIELD_LEN);
     var comment   = sanitize(payload.comment,   MAX_COMMENT_LEN);
+    // Which match slot changed (1 or 2); 0 = unknown → write both columns.
+    var betSlot   = (Number(payload.betSlot) === 1 || Number(payload.betSlot) === 2)
+      ? Number(payload.betSlot)
+      : 0;
 
     if (!player) {
       return jsonResponse({ ok: false, message: 'Missing player name' }, 400);
@@ -116,12 +137,50 @@ function doPost(e) {
         ? startRow + firstEmptyOffset
         : startRow + numRows;
 
-      // Write player name + bets starting at startCol (B, C, D, E, F)
-      sheet.getRange(targetRow, startCol, 1, 5).setValues([[player, match1Bet, match2Bet, modifier1, modifier2]]);
+      // Write the player name (col B — no data validation) up front so the row
+      // exists even if a pick column is rejected below.
+      sheet.getRange(targetRow, startCol, 1, 1).setValue(player);
     } else {
-      // Player exists — update only the bet columns (C, D, E, F); leave player name untouched
+      // Player exists — leave the player name (col B) untouched.
       targetRow = startRow + rowOffset;
-      sheet.getRange(targetRow, startCol + 1, 1, 4).setValues([[match1Bet, match2Bet, modifier1, modifier2]]);
+    }
+
+    // ── Write the pick columns ──────────────────────────────────────────────
+    // Column offsets from startCol (B): C(+1)=match1, D(+2)=match2,
+    // E(+3)=modifier1, F(+4)=modifier2. Each pick column has a strict
+    // data-validation dropdown, so writes are isolated (see writeCell).
+    //
+    // When the client tells us which slot changed (betSlot), write ONLY that
+    // slot's pick + modifier. This is the key fix: the untouched slot keeps its
+    // stored value instead of being re-written with a possibly stale pick that
+    // the current dropdown would reject and thereby fail the whole bet.
+    if (betSlot === 1 || betSlot === 2) {
+      var pickCol = betSlot === 1 ? 1 : 2;
+      var pickVal = betSlot === 1 ? match1Bet : match2Bet;
+      var modCol  = betSlot === 1 ? 3 : 4;
+      var modVal  = betSlot === 1 ? modifier1 : modifier2;
+
+      // The chosen team comes from the currently featured match, so it should
+      // satisfy the dropdown. If it doesn't, surface the real reason (this is
+      // an actionable validation message, not an internal error).
+      var pickErr = writeCell(sheet, targetRow, startCol + pickCol, pickVal);
+      if (pickErr) {
+        console.error('bet pick rejected (slot ' + betSlot + '): ' + pickErr);
+        return jsonResponse({ ok: false, message: 'That pick is not valid for the current match.' }, 400);
+      }
+      // A modifier write failure is non-fatal — keep the pick.
+      writeCell(sheet, targetRow, startCol + modCol, modVal);
+    } else {
+      // Legacy fallback (no betSlot): write all four columns independently so a
+      // single stale/invalid column can't block the others.
+      var writes = [[1, match1Bet], [2, match2Bet], [3, modifier1], [4, modifier2]];
+      var failures = 0;
+      for (var w = 0; w < writes.length; w++) {
+        if (writeCell(sheet, targetRow, startCol + writes[w][0], writes[w][1])) failures++;
+      }
+      if (failures === writes.length) {
+        return jsonResponse({ ok: false, message: 'That pick is not valid for the current match.' }, 400);
+      }
     }
 
     SpreadsheetApp.flush();
