@@ -20,8 +20,32 @@
         <mat-icon mat-card-avatar>emoji_events</mat-icon>
         <mat-card-title>Results</mat-card-title>
         <mat-card-subtitle>{{ data.rows.length }} players · {{ visibleColumns.length }} matches</mat-card-subtitle>
+        <button
+          mat-stroked-button
+          class="results-page__screenshot-btn"
+          (click)="captureScreenshot()"
+          [disabled]="capturing"
+          matTooltip="Capture the whole grid (excluding Wallet) as a 4K image"
+        >
+          <mat-icon>{{ capturing ? 'hourglass_top' : 'photo_camera' }}</mat-icon>
+          {{ capturing ? 'Capturing…' : 'Screenshot' }}
+        </button>
       </mat-card-header>
       <mat-card-content>
+        @if (awards.length) {
+          <div class="results-awards">
+            @for (a of awards; track a.key) {
+              <div class="results-awards__card results-awards__card--{{ a.variant }}">
+                <span class="results-awards__emoji">{{ a.emoji }}</span>
+                <div class="results-awards__body">
+                  <div class="results-awards__label">{{ a.label }}</div>
+                  <div class="results-awards__player" [matTooltip]="a.player">{{ a.player }}</div>
+                  <div class="results-awards__detail">{{ a.detail }}</div>
+                </div>
+              </div>
+            }
+          </div>
+        }
         <div class="results-table-wrap">
           <table class="results-table">
             <thead>

@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>
+  <mat-icon>photo_camera</mat-icon>
+  Result Screenshot
+</h2>
+
+<mat-dialog-content class="screenshot-dialog__content">
+  <div class="screenshot-dialog__preview">
+    <img [src]="url" alt="Result grid screenshot" />
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Close</button>
+  <button mat-stroked-button (click)="download()">
+    <mat-icon>download</mat-icon>
+    Download
+  </button>
+  <button mat-flat-button color="primary" (click)="copyToClipboard()" [disabled]="copying">
+    <mat-icon>content_copy</mat-icon>
+    Copy to clipboard
+  </button>
+</mat-dialog-actions>
