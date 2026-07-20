@@ -101,6 +101,14 @@ jobs:
           # git refuses to switch branches with modified tracked files.
           git reset --hard HEAD
 
+          # Remove *untracked* build artifacts too. The production build emits
+          # content-hashed filenames (e.g. docs/chunk-XXXX.js) that differ from
+          # the stale hashes committed under docs/ on main. `git reset --hard`
+          # leaves these untracked files in place, and the subsequent checkout of
+          # gh-pages (which also tracks docs/*) aborts with "untracked working
+          # tree files would be overwritten by checkout". Clean them first.
+          git clean -fd
+
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 

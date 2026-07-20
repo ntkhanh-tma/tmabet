@@ -219,7 +219,10 @@ export class OrderComponent implements OnInit, OnDestroy {
     this.loadingHistory = true;
     this.sheetsService.getOrderHistory().subscribe({
       next: (rounds) => {
-        this.savedRounds = rounds;
+        // Newest first — descending by confirmation date/time.
+        this.savedRounds = [...rounds].sort(
+          (a, b) => new Date(b.confirmedAt).getTime() - new Date(a.confirmedAt).getTime()
+        );
         this.loadingHistory = false;
       },
       error: () => {
