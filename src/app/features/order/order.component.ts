@@ -10,6 +10,7 @@ import { GoogleSheetsService } from '../../core/services/google-sheets.service';
 import { AuthService } from '../../core/services/auth.service';
 import { OrderService } from '../../core/services/order.service';
 import { MenuItem, OrderEntry, ConfirmedOrderEntry, ConfirmedRound } from '../../core/models/dashboard.model';
+import { safeGetItem, safeRemoveItem, safeSetItem } from '../../core/utils/safe-storage';
 
 const ADMIN_NAME = 'Khanh Nguyen';
 const LOCK_DURATION_MS = 10 * 60 * 1000;
@@ -161,24 +162,24 @@ export class OrderComponent implements OnInit, OnDestroy {
   }
 
   private checkLock(): void {
+    const raw = safeGetItem(this.lockKey);
+    if (!raw) return;
     try {
-      const raw = localStorage.getItem(this.lockKey);
-      if (!raw) return;
       const lock = JSON.parse(raw) as { drink: string; lockedAt: number };
       const elapsed = Date.now() - lock.lockedAt;
       if (elapsed >= LOCK_DURATION_MS) {
-        localStorage.removeItem(this.lockKey);
+        safeRemoveItem(this.lockKey);
         return;
       }
       this.lockRemainingMs = LOCK_DURATION_MS - elapsed;
       this.startLockInterval();
     } catch {
-      /* ignore */
+      /* corrupt entry — ignore */
     }
   }
 
   private setLock(drink: string): void {
-    localStorage.setItem(this.lockKey, JSON.stringify({ drink, lockedAt: Date.now() }));
+    safeSetItem(this.lockKey, JSON.stringify({ drink, lockedAt: Date.now() }));
     this.lockRemainingMs = LOCK_DURATION_MS;
     this.startLockInterval();
   }
@@ -189,7 +190,7 @@ export class OrderComponent implements OnInit, OnDestroy {
       this.lockRemainingMs = Math.max(0, this.lockRemainingMs - 1000);
       if (this.lockRemainingMs === 0) {
         this.clearLockInterval();
-        localStorage.removeItem(this.lockKey);
+        safeRemoveItem(this.lockKey);
       }
     }, 1000);
   }

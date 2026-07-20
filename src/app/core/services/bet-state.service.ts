@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Match } from '../models/dashboard.model';
+import { safeGetItem, safeSetItem } from '../utils/safe-storage';
 
 const BET_KEY_1 = 'tmabet_bet_1';
 const BET_KEY_2 = 'tmabet_bet_2';
@@ -26,9 +27,9 @@ export class BetStateService {
    * or the stored record belongs to a different match (team rotation).
    */
   getRecord(slot: 1 | 2, matchKey: string): LocalBetRecord | null {
+    const raw = safeGetItem(this.storageKey(slot));
+    if (!raw) return null;
     try {
-      const raw = localStorage.getItem(this.storageKey(slot));
-      if (!raw) return null;
       const record: LocalBetRecord = JSON.parse(raw);
       return record.matchKey === matchKey ? record : null;
     } catch {
@@ -36,10 +37,10 @@ export class BetStateService {
     }
   }
 
-  /** Persists a bet record to localStorage with the current timestamp. */
+  /** Persists a bet record to localStorage with the current timestamp (best-effort). */
   saveRecord(slot: 1 | 2, matchKey: string, chosenTeam: string): void {
     const record: LocalBetRecord = { matchKey, chosenTeam, betTime: Date.now() };
-    localStorage.setItem(this.storageKey(slot), JSON.stringify(record));
+    safeSetItem(this.storageKey(slot), JSON.stringify(record));
   }
 
   /** Returns true when the bet was placed less than 1 hour ago (post-bet cooldown). */

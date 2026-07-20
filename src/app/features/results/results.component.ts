@@ -323,25 +323,31 @@ export class ResultsComponent implements OnInit {
     ctx.scale(scale, scale);
     ctx.textBaseline = 'middle';
 
-    // ── Palette (matches the dark app theme) ──────────────────────────────────
+    // ── Palette (fancy light theme) ───────────────────────────────────────────
     const C = {
-      bg: '#161616',
-      surface: '#232323',
-      text: '#e8e6ea',
-      muted: '#9a9a9a',
-      faint: '#6f6f6f',
-      gold: '#ffd740',
-      line: 'rgba(255,255,255,0.09)',
-      meRow: 'rgba(102,187,106,0.16)',
-      winText: '#7bd67f',
-      winBg: 'rgba(102,187,106,0.16)',
-      lossText: '#f4776f',
-      lossBg: 'rgba(239,83,80,0.14)',
-      pos: '#7bd67f',
-      neg: '#f4776f',
+      surface: '#ffffff',
+      text: '#1e293b',
+      muted: '#64748b',
+      faint: '#94a3b8',
+      gold: '#b45309',
+      goldSoft: '#d97706',
+      line: 'rgba(15,23,42,0.08)',
+      stripe: 'rgba(15,23,42,0.028)',
+      winText: '#15803d',
+      winBg: 'rgba(34,197,94,0.14)',
+      lossText: '#dc2626',
+      lossBg: 'rgba(239,68,68,0.11)',
+      pos: '#16a34a',
+      neg: '#dc2626',
+      track: 'rgba(15,23,42,0.07)',
     };
 
-    ctx.fillStyle = C.bg;
+    // Soft diagonal gradient backdrop for a polished, "fancy" feel.
+    const bgGrad = ctx.createLinearGradient(0, 0, contentW, contentH);
+    bgGrad.addColorStop(0, '#f8fafc');
+    bgGrad.addColorStop(0.5, '#eef2f8');
+    bgGrad.addColorStop(1, '#f4ecfb');
+    ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, contentW, contentH);
 
     const originX = pad;
@@ -361,6 +367,20 @@ export class ResultsComponent implements OnInit {
     );
     y += titleH;
 
+    // ── Floating card behind the grid (soft shadow for a fancy, elevated look) ──
+    const cardX = originX - 6;
+    const cardY = y - 6;
+    const cardCW = gridW + 12;
+    const cardCH = headerH + rowH * rows.length + 12;
+    ctx.save();
+    ctx.shadowColor = 'rgba(30,41,59,0.16)';
+    ctx.shadowBlur = 26;
+    ctx.shadowOffsetY = 10;
+    ctx.fillStyle = C.surface;
+    this.roundRect(ctx, cardX, cardY, cardCW, cardCH, 18);
+    ctx.fill();
+    ctx.restore();
+
     // ── Preload flags ──────────────────────────────────────────────────────────
     const flagImgs = await Promise.all(
       columns.map(async (c) => ({
@@ -376,8 +396,16 @@ export class ResultsComponent implements OnInit {
 
     // ── Header row ──────────────────────────────────────────────────────────────
     const headerTop = y;
-    ctx.fillStyle = C.surface;
-    ctx.fillRect(originX, headerTop, gridW, headerH);
+    // Tinted header band, clipped to the card so its top corners stay rounded.
+    ctx.save();
+    this.roundRect(ctx, cardX, cardY, cardCW, cardCH, 18);
+    ctx.clip();
+    const headGrad = ctx.createLinearGradient(originX, headerTop, originX, headerTop + headerH);
+    headGrad.addColorStop(0, 'rgba(180,83,9,0.10)');
+    headGrad.addColorStop(1, 'rgba(180,83,9,0.03)');
+    ctx.fillStyle = headGrad;
+    ctx.fillRect(cardX, cardY, cardCW, headerH + (headerTop - cardY));
+    ctx.restore();
 
     ctx.fillStyle = C.muted;
     ctx.font = '700 12px Roboto, "Segoe UI", sans-serif';
@@ -413,9 +441,12 @@ export class ResultsComponent implements OnInit {
 
     y += headerH;
 
-    // Header underline.
-    ctx.strokeStyle = C.line;
-    ctx.lineWidth = 1;
+    // Header underline — subtle gold gradient accent.
+    const ulGrad = ctx.createLinearGradient(originX, 0, originX + gridW, 0);
+    ulGrad.addColorStop(0, 'rgba(217,119,6,0.55)');
+    ulGrad.addColorStop(1, 'rgba(217,119,6,0.12)');
+    ctx.strokeStyle = ulGrad;
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(originX, y + 0.5);
     ctx.lineTo(originX + gridW, y + 0.5);
@@ -424,35 +455,21 @@ export class ResultsComponent implements OnInit {
     const maxPoints = this.getMaxPoints();
 
     // ── Player rows ──────────────────────────────────────────────────────────────
-    rows.forEach((row) => {
+    rows.forEach((row, rowIndex) => {
       const rowTop = y;
       const midY = rowTop + rowH / 2;
-      const me = this.isMe(row.playerName);
 
-      if (me) {
-        ctx.fillStyle = C.meRow;
+      // Zebra striping for readability — everyone treated the same.
+      if (rowIndex % 2 === 1) {
+        ctx.fillStyle = C.stripe;
         ctx.fillRect(originX, rowTop, gridW, rowH);
       }
 
-      // Player name (+ "You" badge).
+      // Player name.
       ctx.textAlign = 'left';
       ctx.fillStyle = C.text;
-      ctx.font = `${me ? 700 : 600} 14px Roboto, "Segoe UI", sans-serif`;
-      const name = row.playerName;
-      ctx.fillText(name, playerX + 10, midY);
-      if (me) {
-        const nameW = ctx.measureText(name).width;
-        const bx = playerX + 10 + nameW + 8;
-        const bw = 34;
-        const bh = 16;
-        ctx.fillStyle = C.gold;
-        this.roundRect(ctx, bx, midY - bh / 2, bw, bh, 8);
-        ctx.fill();
-        ctx.fillStyle = '#161616';
-        ctx.font = '700 10px Roboto, "Segoe UI", sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('You', bx + bw / 2, midY + 0.5);
-      }
+      ctx.font = '600 14px Roboto, "Segoe UI", sans-serif';
+      ctx.fillText(row.playerName, playerX + 10, midY);
 
       // Pick cells.
       columns.forEach((col, i) => {
@@ -512,12 +529,12 @@ export class ResultsComponent implements OnInit {
     // ── Awards footer ────────────────────────────────────────────────────────────
     if (awards.length) {
       const awardColors: Record<ResultAward['variant'], { accent: string; bg: string }> = {
-        gold: { accent: '#ffd740', bg: 'rgba(255,215,64,0.13)' },
-        blue: { accent: '#64b5f6', bg: 'rgba(100,181,246,0.13)' },
-        green: { accent: '#7bd67f', bg: 'rgba(102,187,106,0.15)' },
-        red: { accent: '#f4776f', bg: 'rgba(239,83,80,0.15)' },
-        orange: { accent: '#ffa726', bg: 'rgba(255,167,38,0.15)' },
-        frost: { accent: '#90caf9', bg: 'rgba(144,202,249,0.14)' },
+        gold: { accent: '#b45309', bg: 'rgba(217,119,6,0.11)' },
+        blue: { accent: '#2563eb', bg: 'rgba(37,99,235,0.10)' },
+        green: { accent: '#15803d', bg: 'rgba(34,197,94,0.11)' },
+        red: { accent: '#dc2626', bg: 'rgba(239,68,68,0.10)' },
+        orange: { accent: '#ea580c', bg: 'rgba(234,88,12,0.11)' },
+        frost: { accent: '#0891b2', bg: 'rgba(8,145,178,0.10)' },
       };
 
       y += footerGap;
@@ -536,6 +553,16 @@ export class ResultsComponent implements OnInit {
         const x = originX + i * (cardW + cardGap);
         const col = awardColors[a.variant];
 
+        // Elevated white base with a soft shadow…
+        ctx.save();
+        ctx.shadowColor = 'rgba(30,41,59,0.14)';
+        ctx.shadowBlur = 16;
+        ctx.shadowOffsetY = 6;
+        ctx.fillStyle = C.surface;
+        this.roundRect(ctx, x, cardTop, cardW, footerCardH, 12);
+        ctx.fill();
+        ctx.restore();
+        // …then the colored tint on top.
         ctx.fillStyle = col.bg;
         this.roundRect(ctx, x, cardTop, cardW, footerCardH, 12);
         ctx.fill();

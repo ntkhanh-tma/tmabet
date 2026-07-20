@@ -17,6 +17,7 @@ import { BetStateService } from '../../core/services/bet-state.service';
 import { DashboardData, Match, BetRow } from '../../core/models/dashboard.model';
 import { getCountryCode } from '../../core/utils/country-flags';
 import { DailyWelcomeDialogComponent, DailyWelcomeDialogData } from './daily-welcome-dialog.component';
+import { safeGetItem, safeSetItem } from '../../core/utils/safe-storage';
 
 @Component({
   selector: 'app-dashboard',
@@ -95,11 +96,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private showDailyWelcomeIfNeeded(d: DashboardData): void {
     const today = new Date().toDateString();
-    const lastShown = localStorage.getItem(DashboardComponent.DAILY_POPUP_KEY);
+    const lastShown = safeGetItem(DashboardComponent.DAILY_POPUP_KEY);
     if (lastShown === today) return;
     if (!d.betMatch1 && !d.betMatch2) return;
 
-    localStorage.setItem(DashboardComponent.DAILY_POPUP_KEY, today);
+    safeSetItem(DashboardComponent.DAILY_POPUP_KEY, today);
 
     const me = this.auth.username();
     const userPoints = me
